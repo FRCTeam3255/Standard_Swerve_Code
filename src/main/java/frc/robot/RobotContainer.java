@@ -11,6 +11,7 @@ import frc.robot.subsystems.Drivetrain;
 
 import com.frcteam3255.joystick.SN_XboxController;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -28,6 +29,10 @@ public class RobotContainer {
         .setDefaultCommand(new Drive(subDrivetain, conDriver.axis_LeftY, conDriver.axis_LeftX, conDriver.axis_RightX));
 
     configureBindings();
+
+    Timer.delay(2.5);
+    // NOTE: Not quite sure if this delay is needed. I added a delay in Drivetrain
+    // so idk
     subDrivetain.resetModulesToAbsolute();
   }
 

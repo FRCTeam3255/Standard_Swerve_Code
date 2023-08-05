@@ -52,16 +52,10 @@ public class Drivetrain extends SubsystemBase {
 
     navX = new AHRS();
 
-    // Both the NavX and the absolute encoders need time to initialize before being
-    // used
-    new Thread(() -> {
-      try {
-        Thread.sleep(1000);
-        navX.reset();
-        resetModulesToAbsolute();
-      } catch (Exception e) {
-      }
-    }).start();
+    // Both the NavX and the absolute encoders need time to initialize
+    Timer.delay(2.5);
+    navX.reset();
+    resetModulesToAbsolute();
 
     swervePoseEstimator = new SwerveDrivePoseEstimator(
         swerveKinematics,
@@ -76,6 +70,17 @@ public class Drivetrain extends SubsystemBase {
             Units.feetToMeters(prefVision.measurementStdDevsFeet.getValue()),
             Units.feetToMeters(prefVision.measurementStdDevsFeet.getValue()),
             Units.degreesToRadians(prefVision.measurementStdDevsDegrees.getValue())));
+    configure();
+  }
+
+  public void configure() {
+    for (SwerveModule mod : modules) {
+      mod.configure();
+    }
+
+    // TODO: Figure out if you need PID here too
+
+    // TODO: Implement AUTO
 
   }
 
@@ -157,6 +162,9 @@ public class Drivetrain extends SubsystemBase {
     setModuleStates(desiredModuleStates, isOpenLoop);
   }
 
+  /**
+   * Sets all modules to neutrual output
+   */
   public void neutralDriveOutputs() {
     for (SwerveModule mod : modules) {
       mod.neutralDriveOutput();
@@ -176,6 +184,9 @@ public class Drivetrain extends SubsystemBase {
         getModulePositions());
   }
 
+  /**
+   * Resets the Yaw of the NavX
+   */
   public void resetYaw() {
     navX.reset();
   }

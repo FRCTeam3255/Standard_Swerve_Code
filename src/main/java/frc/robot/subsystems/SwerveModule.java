@@ -59,7 +59,7 @@ public class SwerveModule extends SubsystemBase {
   public void configure() {
     // TODO: Current Limiting on both motors ?
 
-    // Drive Motor Config
+    // -✨- Drive Motor Config -✨-
     driveMotor.configFactoryDefault();
 
     driveConfiguration.slot0.kF = prefDrivetrain.driveF.getValue();
@@ -72,7 +72,7 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.setNeutralMode(constDrivetrain.DRIVE_NEUTRAL_MODE);
     driveMotor.setInverted(constDrivetrain.DRIVE_MOTOR_INVERT);
 
-    // Steer Motor Config
+    // -✨- Steer Motor Config -✨-
 
     steerMotor.configFactoryDefault();
 
@@ -85,7 +85,7 @@ public class SwerveModule extends SubsystemBase {
     steerMotor.setNeutralMode(constDrivetrain.STEER_NEUTRAL_MODE);
     steerMotor.setInverted(constDrivetrain.STEER_MOTOR_INVERT);
 
-    // Absolute Encoder Config
+    // -✨- Absolute Encoder Config -✨-
     absoluteEncoder.configFactoryDefault();
 
     lastAngleDegrees = getModuleState().angle.getDegrees();
@@ -113,7 +113,6 @@ public class SwerveModule extends SubsystemBase {
     // "This could make the value negative but it doesn't matter." - Ian 2023
     // I dont know why it doesnt matter but it probably has to do with it being a
     // continuous circle
-    // TODO: FIGURE OUT WHY IT DOESNT MATTER
     radians -= Units.degreesToRadians(absoluteEncoderOffset);
 
     return radians;
@@ -125,7 +124,11 @@ public class SwerveModule extends SubsystemBase {
    * not reset here because the absolute encoder does not record it's value.
    */
   public void resetSteerMotorToAbsolute() {
-    steerMotor.setSelectedSensorPosition(getAbsoluteEncoder());
+    double absoluteEncoderCount = SN_Math.degreesToFalcon(
+        Units.radiansToDegrees(getAbsoluteEncoder()),
+        constDrivetrain.STEER_GEAR_RATIO);
+
+    steerMotor.setSelectedSensorPosition(absoluteEncoderCount);
   }
 
   /**
