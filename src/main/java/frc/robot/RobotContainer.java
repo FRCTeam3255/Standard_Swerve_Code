@@ -38,6 +38,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetain.resetModulesToAbsolute()));
+    conDriver.btn_A.onTrue(Commands.runOnce(() -> subDrivetain.resetYaw()));
   }
 
   public Command getAutonomousCommand() {
