@@ -7,7 +7,6 @@ import edu.wpi.first.math.util.Units;
 public class RobotPreferences {
   public static final class prefDrivetrain {
     // This PID is implemented on each module, not the Drivetrain subsystem.
-    // TODO: Figure out if more pid is required
     public static final SN_DoublePreference driveF = new SN_DoublePreference("driveF", 0.045);
     public static final SN_DoublePreference driveP = new SN_DoublePreference("driveP", 0.1);
     public static final SN_DoublePreference driveI = new SN_DoublePreference("driveI", 0.0);

@@ -15,7 +15,7 @@ public class ExampleAuto extends SequentialCommandGroup {
     this.subDrivetain = subDrivetrain;
 
     addCommands(
-        Commands.runOnce(() -> subDrivetain.resetYaw()),
+        Commands.runOnce(() -> subDrivetrain.resetYaw()),
         Commands.runOnce(() -> subDrivetrain
             .setNavXAngleAdjustment(subDrivetrain.exampleAuto.getInitialHolonomicPose().getRotation().getDegrees())),
 

@@ -63,7 +63,13 @@ public class Drivetrain extends SubsystemBase {
     Timer.delay(2.5);
     navX.reset();
     resetModulesToAbsolute();
+    configure();
+  }
 
+  public void configure() {
+    for (SwerveModule mod : modules) {
+      mod.configure();
+    }
     swervePoseEstimator = new SwerveDrivePoseEstimator(
         swerveKinematics,
         navX.getRotation2d(),
@@ -93,21 +99,9 @@ public class Drivetrain extends SubsystemBase {
         constDrivetrain.AUTO_USE_ALLIANCE_COLOR,
         this);
 
-    exampleAuto = PathPlanner.loadPath("exampleAuto", new PathConstraints(
+    exampleAuto = PathPlanner.loadPath("examplePath", new PathConstraints(
         Units.feetToMeters(prefDrivetrain.autoMaxSpeedFeet.getValue()),
         Units.feetToMeters(prefDrivetrain.autoMaxAccelFeet.getValue())));
-
-    configure();
-  }
-
-  public void configure() {
-    for (SwerveModule mod : modules) {
-      mod.configure();
-    }
-
-    // TODO: Figure out if you need PID here too
-
-    // TODO: Implement AUTO
 
   }
 
@@ -224,21 +218,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Resets the Yaw of the NavX
+   * Resets the Yaw of the NavX, along with the angle adjustment of the NavX.
    */
   public void resetYaw() {
+    navX.setAngleAdjustment(0);
     navX.reset();
-  }
-
-  // TODO: TEST if this method is actually required
-  /**
-   * Sets the Yaw of the NavX to it's current value plus an adjustment value. Used
-   * at the start of auto to match the setup of the robot.
-   * 
-   * @param adjustment Value to add to the current yaw
-   */
-  public void setNavXAngleAdjustment(double adjustment) {
-    navX.setAngleAdjustment(adjustment);
   }
 
   /**
@@ -257,6 +241,17 @@ public class Drivetrain extends SubsystemBase {
    */
   public void resetPoseToPose(Pose2d pose) {
     swervePoseEstimator.resetPosition(navX.getRotation2d(), getModulePositions(), pose);
+  }
+
+  /**
+   * Sets value of the NavX's adjustment value, which is a constant added to the
+   * NavX value. Used at the start of auto to match the setup of the robot, as
+   * drive(); reads the NavX yaw to figure out it's angle.
+   * 
+   * @param adjustment Value to add to the current yaw
+   */
+  public void setNavXAngleAdjustment(double adjustment) {
+    navX.setAngleAdjustment(adjustment);
   }
 
   @Override

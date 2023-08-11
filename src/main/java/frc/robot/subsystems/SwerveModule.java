@@ -14,7 +14,6 @@ import com.frcteam3255.utils.SN_Math;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap.mapDrivetrain;
 import frc.robot.RobotPreferences.prefDrivetrain;
@@ -56,9 +55,6 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void configure() {
-    // TODO: Current Limiting on both motors? Tayler didnt even know we had current
-    // limiting in the code so maybe it never worked 🤷‍♀️
-
     // -✨- Drive Motor Config -✨-
     driveMotor.configFactoryDefault();
 
@@ -100,7 +96,6 @@ public class SwerveModule extends SubsystemBase {
     return absoluteEncoder.getAbsolutePosition();
   }
 
-  // TODO; SEE IF CONVERTING TO DEGREES BREAKS EVERYTHING
   /**
    * Get the current position, with the offset applied, of the module's absolute
    * encoder. This value should match the physical angle of the module's wheel.
@@ -111,9 +106,8 @@ public class SwerveModule extends SubsystemBase {
     double degrees = getRawAbsoluteEncoder();
 
     // "This could make the value negative but it doesn't matter." - Ian 2023
-    // I dont know why it doesnt matter but it probably has to do with it being a
-    // continuous circle
-    // TODO: figure that out
+    // Not 100% sure why but it's probably because it's a continuous circle
+
     degrees -= absoluteEncoderOffset;
 
     return degrees;

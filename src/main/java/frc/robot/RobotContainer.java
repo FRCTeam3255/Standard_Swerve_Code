@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.constControllers;
 import frc.robot.RobotMap.mapControllers;
+import frc.robot.autos.ExampleAuto;
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.Drivetrain;
 
@@ -42,6 +43,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new ExampleAuto(subDrivetain);
   }
 }
