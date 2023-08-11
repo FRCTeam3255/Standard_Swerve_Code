@@ -205,6 +205,20 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * Set the drive method to use field relative drive controls
+   */
+  public void setFieldRelative() {
+    isFieldRelative = true;
+  }
+
+  /**
+   * Set the drive method to use robot relative drive controls
+   */
+  public void setRobotRelative() {
+    isFieldRelative = false;
+  }
+
+  /**
    * Updates the pose estimator with the current robot uptime, the gyro yaw, and
    * each swerve module position.
    * <p>
@@ -215,14 +229,6 @@ public class Drivetrain extends SubsystemBase {
         Timer.getFPGATimestamp(),
         navX.getRotation2d(),
         getModulePositions());
-  }
-
-  /**
-   * Resets the Yaw of the NavX, along with the angle adjustment of the NavX.
-   */
-  public void resetYaw() {
-    navX.setAngleAdjustment(0);
-    navX.reset();
   }
 
   /**
@@ -244,6 +250,14 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * Resets the Yaw of the NavX, along with the angle adjustment of the NavX.
+   */
+  public void resetYaw() {
+    navX.setAngleAdjustment(0);
+    navX.reset();
+  }
+
+  /**
    * Sets value of the NavX's adjustment value, which is a constant added to the
    * NavX value. Used at the start of auto to match the setup of the robot, as
    * drive(); reads the NavX yaw to figure out it's angle.
@@ -257,6 +271,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updatePoseEstimator();
+    SmartDashboard.putBoolean("Is Drivetrain Field Relative", isFieldRelative);
     for (SwerveModule mod : modules) {
       SmartDashboard.putNumber("Module " + mod.moduleNumber + " Speed",
           Units.metersToFeet(mod.getModuleState().speedMetersPerSecond));

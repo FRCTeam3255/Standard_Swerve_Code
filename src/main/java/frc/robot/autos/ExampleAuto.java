@@ -9,10 +9,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drivetrain;
 
 public class ExampleAuto extends SequentialCommandGroup {
-  Drivetrain subDrivetain;
+  Drivetrain subDrivetrain;
 
   public ExampleAuto(Drivetrain subDrivetrain) {
-    this.subDrivetain = subDrivetrain;
+    this.subDrivetrain = subDrivetrain;
 
     addCommands(
         Commands.runOnce(() -> subDrivetrain.resetYaw()),

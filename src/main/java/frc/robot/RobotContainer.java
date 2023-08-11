@@ -19,30 +19,35 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class RobotContainer {
 
   private final SN_XboxController conDriver = new SN_XboxController(mapControllers.DRIVER_USB);
-  private final Drivetrain subDrivetain = new Drivetrain();
+  private final Drivetrain subDrivetrain = new Drivetrain();
 
   public RobotContainer() {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
 
     // The Left Y and X Axies are swapped because from behind the glass, the X Axis
     // is actually in front of you
-    subDrivetain
-        .setDefaultCommand(new Drive(subDrivetain, conDriver.axis_LeftY, conDriver.axis_LeftX, conDriver.axis_RightX));
+    subDrivetrain
+        .setDefaultCommand(new Drive(subDrivetrain, conDriver.axis_LeftY, conDriver.axis_LeftX, conDriver.axis_RightX));
 
     configureBindings();
 
     Timer.delay(2.5);
     // NOTE: Not quite sure if this delay is needed. I added a delay in Drivetrain
-    // so idk
-    subDrivetain.resetModulesToAbsolute();
+    // TODO: figure that out
+    subDrivetrain.resetModulesToAbsolute();
   }
 
   private void configureBindings() {
-    conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetain.resetModulesToAbsolute()));
-    conDriver.btn_A.onTrue(Commands.runOnce(() -> subDrivetain.resetYaw()));
+    conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetrain.resetModulesToAbsolute()));
+    conDriver.btn_A.onTrue(Commands.runOnce(() -> subDrivetrain.resetYaw()));
+
+    // Defaults to Field-Relative, is Robot-Relative while held
+    conDriver.btn_LeftBumper
+        .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative()))
+        .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
   }
 
   public Command getAutonomousCommand() {
-    return new ExampleAuto(subDrivetain);
+    return new ExampleAuto(subDrivetrain);
   }
 }
