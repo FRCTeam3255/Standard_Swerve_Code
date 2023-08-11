@@ -34,10 +34,9 @@ public class SwerveModule extends SubsystemBase {
 
   public int moduleNumber;
 
-  // Used when stopping the module (see: setModuleState)
+  // Used when stopping the module (see: setModuleState();)
   private double lastAngleDegrees;
 
-  /** Creates a new SwerveModule. */
   public SwerveModule(int moduleNumber, int driveMotorID, int steerMotorID, int absoluteEncoderID,
       double absoluteEncoderOffset) {
     this.moduleNumber = moduleNumber;
@@ -57,7 +56,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void configure() {
-    // TODO: Current Limiting on both motors ?
+    // TODO: Current Limiting on both motors? Tayler didnt even know we had current
+    // limiting in the code so maybe it never worked 🤷‍♀️
 
     // -✨- Drive Motor Config -✨-
     driveMotor.configFactoryDefault();
@@ -67,23 +67,22 @@ public class SwerveModule extends SubsystemBase {
     driveConfiguration.slot0.kI = prefDrivetrain.driveI.getValue();
     driveConfiguration.slot0.kD = prefDrivetrain.driveD.getValue();
 
-    driveMotor.configAllSettings(driveConfiguration);
-
     driveMotor.setNeutralMode(constDrivetrain.DRIVE_NEUTRAL_MODE);
     driveMotor.setInverted(constDrivetrain.DRIVE_MOTOR_INVERT);
 
-    // -✨- Steer Motor Config -✨-
+    driveMotor.configAllSettings(driveConfiguration);
 
+    // -✨- Steer Motor Config -✨-
     steerMotor.configFactoryDefault();
 
     steerConfiguration.slot0.kP = prefDrivetrain.steerP.getValue();
     steerConfiguration.slot0.kI = prefDrivetrain.steerI.getValue();
     steerConfiguration.slot0.kD = prefDrivetrain.steerD.getValue();
 
-    steerMotor.configAllSettings(steerConfiguration);
-
     steerMotor.setNeutralMode(constDrivetrain.STEER_NEUTRAL_MODE);
     steerMotor.setInverted(constDrivetrain.STEER_MOTOR_INVERT);
+
+    steerMotor.configAllSettings(steerConfiguration);
 
     // -✨- Absolute Encoder Config -✨-
     absoluteEncoder.configFactoryDefault();
@@ -93,7 +92,7 @@ public class SwerveModule extends SubsystemBase {
 
   /**
    * Get the current raw position (no offset applied) of the module's absolute
-   * encoder.
+   * encoder. This value will NOT match the physical angle of the wheel.
    * 
    * @return Position in degrees
    */
@@ -101,21 +100,23 @@ public class SwerveModule extends SubsystemBase {
     return absoluteEncoder.getAbsolutePosition();
   }
 
+  // TODO; SEE IF CONVERTING TO DEGREES BREAKS EVERYTHING
   /**
    * Get the current position, with the offset applied, of the module's absolute
-   * encoder.
+   * encoder. This value should match the physical angle of the module's wheel.
    * 
-   * @return Position in radians, with the module's offset
+   * @return Position in degrees, with the module's offset
    */
   public double getAbsoluteEncoder() {
-    double radians = Units.degreesToRadians(getRawAbsoluteEncoder());
+    double degrees = getRawAbsoluteEncoder();
 
     // "This could make the value negative but it doesn't matter." - Ian 2023
     // I dont know why it doesnt matter but it probably has to do with it being a
     // continuous circle
-    radians -= Units.degreesToRadians(absoluteEncoderOffset);
+    // TODO: figure that out
+    degrees -= absoluteEncoderOffset;
 
-    return radians;
+    return degrees;
   }
 
   /**
@@ -125,7 +126,7 @@ public class SwerveModule extends SubsystemBase {
    */
   public void resetSteerMotorToAbsolute() {
     double absoluteEncoderCount = SN_Math.degreesToFalcon(
-        Units.radiansToDegrees(getAbsoluteEncoder()),
+        getAbsoluteEncoder(),
         constDrivetrain.STEER_GEAR_RATIO);
 
     steerMotor.setSelectedSensorPosition(absoluteEncoderCount);
@@ -141,7 +142,7 @@ public class SwerveModule extends SubsystemBase {
   /**
    * Get the current state of the module. This includes it's velocity and angle.
    * 
-   * @return Module's SwerveModuleState
+   * @return Module's SwerveModuleState (velocity, angle)
    */
   public SwerveModuleState getModuleState() {
 
@@ -160,10 +161,9 @@ public class SwerveModule extends SubsystemBase {
 
   /**
    * Get the current position of the module. This includes it's distance traveled
-   * in meters
-   * and angle.
+   * in meters and angle.
    * 
-   * @return Module's SwerveModulePosition
+   * @return Module's SwerveModulePosition (distance, angle)
    */
   public SwerveModulePosition getModulePosition() {
     double distance = SN_Math.falconToMeters(
@@ -186,9 +186,8 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.neutralOutput();
   }
 
-  // set desired state (position and velocity)
   /**
-   * Set the current state (position and velocity) of the module. Given values
+   * Set the current state (velocity and position) of the module. Given values
    * are optimized so that the module can travel the least distance to achieve
    * the desired value.
    * 

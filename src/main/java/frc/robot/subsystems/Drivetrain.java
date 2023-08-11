@@ -4,7 +4,14 @@
 
 package frc.robot.subsystems;
 
+import java.util.HashMap;
+
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
@@ -29,15 +36,15 @@ public class Drivetrain extends SubsystemBase {
   private SwerveModule[] modules;
   private SwerveDrivePoseEstimator swervePoseEstimator;
   private SwerveDriveKinematics swerveKinematics;
+  public SwerveAutoBuilder swerveAutoBuilder;
   private AHRS navX;
   private boolean isFieldRelative;
+
+  public PathPlannerTrajectory exampleAuto;
 
   public Drivetrain() {
     isFieldRelative = true;
 
-    // to make this shorter you could do what Ian did but im lazy rn so im not gonna
-    // do that.
-    // TODO: DO THAT?
     modules = new SwerveModule[] {
         new SwerveModule(0, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
             mapDrivetrain.FRONT_LEFT_ABSOLUTE_ENCODER_CAN, constDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET),
@@ -70,6 +77,26 @@ public class Drivetrain extends SubsystemBase {
             Units.feetToMeters(prefVision.measurementStdDevsFeet.getValue()),
             Units.feetToMeters(prefVision.measurementStdDevsFeet.getValue()),
             Units.degreesToRadians(prefVision.measurementStdDevsDegrees.getValue())));
+
+    swerveAutoBuilder = new SwerveAutoBuilder(
+        this::getPose,
+        this::resetPoseToPose,
+        swerveKinematics,
+        new PIDConstants(prefDrivetrain.autoDriveP.getValue(),
+            prefDrivetrain.autoDriveI.getValue(),
+            prefDrivetrain.autoDriveD.getValue()),
+        new PIDConstants(prefDrivetrain.autoSteerP.getValue(),
+            prefDrivetrain.autoSteerI.getValue(),
+            prefDrivetrain.autoSteerD.getValue()),
+        this::setModuleStatesAuto,
+        new HashMap<>(),
+        constDrivetrain.AUTO_USE_ALLIANCE_COLOR,
+        this);
+
+    exampleAuto = PathPlanner.loadPath("exampleAuto", new PathConstraints(
+        Units.feetToMeters(prefDrivetrain.autoMaxSpeedFeet.getValue()),
+        Units.feetToMeters(prefDrivetrain.autoMaxAccelFeet.getValue())));
+
     configure();
   }
 
@@ -84,6 +111,9 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
+  /**
+   * Reset all of the steer motors to the absolute encoder values.
+   */
   public void resetModulesToAbsolute() {
     for (SwerveModule mod : modules) {
       mod.resetSteerMotorToAbsolute();
@@ -119,8 +149,7 @@ public class Drivetrain extends SubsystemBase {
    * 
    * @param desiredModuleStates Desired states to set the modules to
    * @param isOpenLoop          Are the modules being set based on open loop or
-   *                            closed loop
-   *                            control
+   *                            closed loop control
    * 
    */
   public void setModuleStates(SwerveModuleState[] desiredModuleStates, boolean isOpenLoop) {
@@ -133,13 +162,23 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * Set the state of the modules in autonomous. Always set with open-loop
+   * control.
+   * 
+   * @param desiredModuleStates Desired states to set the modules to
+   * 
+   */
+  private void setModuleStatesAuto(SwerveModuleState[] desiredModuleStates) {
+    setModuleStates(desiredModuleStates, false);
+  }
+
+  /**
    * Drive the drivetrain
    * 
    * @param translation Desired translational velocity in meters per second
    * @param rotation    Desired rotational velocity in radians per second
    * @param isOpenLoop  Are the modules being set based on open loop or closed
-   *                    loop
-   *                    control
+   *                    loop control
    * 
    */
   public void drive(Translation2d translation, double rotation, boolean isOpenLoop) {
@@ -163,7 +202,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Sets all modules to neutrual output
+   * Sets all modules to neutral output
    */
   public void neutralDriveOutputs() {
     for (SwerveModule mod : modules) {
@@ -189,6 +228,35 @@ public class Drivetrain extends SubsystemBase {
    */
   public void resetYaw() {
     navX.reset();
+  }
+
+  // TODO: TEST if this method is actually required
+  /**
+   * Sets the Yaw of the NavX to it's current value plus an adjustment value. Used
+   * at the start of auto to match the setup of the robot.
+   * 
+   * @param adjustment Value to add to the current yaw
+   */
+  public void setNavXAngleAdjustment(double adjustment) {
+    navX.setAngleAdjustment(adjustment);
+  }
+
+  /**
+   * Return the current estimated pose from the pose estimator.
+   * 
+   * @return The current estimated pose
+   */
+  public Pose2d getPose() {
+    return swervePoseEstimator.getEstimatedPosition();
+  }
+
+  /**
+   * Reset the pose estimator's pose to a given pose.
+   * 
+   * @param pose The pose you would like to reset the pose estimator to
+   */
+  public void resetPoseToPose(Pose2d pose) {
+    swervePoseEstimator.resetPosition(navX.getRotation2d(), getModulePositions(), pose);
   }
 
   @Override
