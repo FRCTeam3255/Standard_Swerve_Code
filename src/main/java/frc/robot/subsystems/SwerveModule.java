@@ -33,9 +33,6 @@ public class SwerveModule extends SubsystemBase {
 
   public int moduleNumber;
 
-  // Used when stopping the module (see: setModuleState();)
-  private double lastAngleDegrees;
-
   public SwerveModule(int moduleNumber, int driveMotorID, int steerMotorID, int absoluteEncoderID,
       double absoluteEncoderOffset) {
     this.moduleNumber = moduleNumber;
@@ -48,8 +45,6 @@ public class SwerveModule extends SubsystemBase {
 
     driveConfiguration = new TalonFXConfiguration();
     steerConfiguration = new TalonFXConfiguration();
-
-    lastAngleDegrees = 0;
 
     configure();
   }
@@ -82,8 +77,6 @@ public class SwerveModule extends SubsystemBase {
 
     // -✨- Absolute Encoder Config -✨-
     absoluteEncoder.configFactoryDefault();
-
-    lastAngleDegrees = getModuleState().angle.getDegrees();
   }
 
   /**
@@ -107,7 +100,6 @@ public class SwerveModule extends SubsystemBase {
 
     // "This could make the value negative but it doesn't matter." - Ian 2023
     // Not 100% sure why but it's probably because it's a continuous circle
-
     degrees -= absoluteEncoderOffset;
 
     return degrees;
@@ -191,8 +183,8 @@ public class SwerveModule extends SubsystemBase {
    * 
    */
   public void setModuleState(SwerveModuleState desiredState, boolean isOpenLoop) {
+    // Optimize explaination: https://youtu.be/0Xi9yb1IMyA?t=226
     SwerveModuleState state = CTREModuleState.optimize(desiredState, getModuleState().angle);
-
     // -✨- Setting the Drive Motor -✨-
 
     if (isOpenLoop) {
@@ -202,7 +194,6 @@ public class SwerveModule extends SubsystemBase {
       driveMotor.set(ControlMode.PercentOutput, percentOutput);
 
     } else {
-      // Convert velocity to Falcon encoder counts
       double velocity = SN_Math.MPSToFalcon(state.speedMetersPerSecond,
           constDrivetrain.WHEEL_CIRCUMFERENCE,
           constDrivetrain.DRIVE_GEAR_RATIO);
@@ -212,22 +203,16 @@ public class SwerveModule extends SubsystemBase {
 
     // -✨- Setting the Steer Motor -✨-
 
-    // Convert angle to Falcon encoder counts
     double angle = SN_Math.degreesToFalcon(
         state.angle.getDegrees(),
         constDrivetrain.STEER_GEAR_RATIO);
 
-    // If the requested speed is lower than a relevant steering speed (ex.
-    // jittering),
+    // If the requested speed is lower than a relevant steering speed,
     // don't turn the motor. Set it to whatever it's previous angle was.
     if (Math.abs(state.speedMetersPerSecond) < (prefDrivetrain.minimumSteerSpeedPercent.getValue()
         * constDrivetrain.MAX_MODULE_SPEED)) {
-      angle = lastAngleDegrees;
       return;
     }
-
     steerMotor.set(ControlMode.Position, angle);
-
-    lastAngleDegrees = angle;
   }
 }

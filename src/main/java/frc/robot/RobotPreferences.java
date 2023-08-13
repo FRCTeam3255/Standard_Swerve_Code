@@ -41,7 +41,6 @@ public class RobotPreferences {
         "autoMaxAccelFeet", 1);
 
     // Pose estimator standard deviations for encoder & gyro data
-    // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-pose-estimators.html#tuning-pose-estimators
     public static final SN_DoublePreference measurementStdDevsFeet = new SN_DoublePreference(
         "measurementStdDevsFeet", Units.metersToFeet(0.1));
     public static final SN_DoublePreference measurementStdDevsDegrees = new SN_DoublePreference(
@@ -50,7 +49,6 @@ public class RobotPreferences {
 
   public static final class prefVision {
     // Pose estimator standard deviations for vision data
-    // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-pose-estimators.html#tuning-pose-estimators
     public static final SN_DoublePreference measurementStdDevsFeet = new SN_DoublePreference(
         "measurementStdDevsFeet", Units.metersToFeet(0.9));
     public static final SN_DoublePreference measurementStdDevsDegrees = new SN_DoublePreference(

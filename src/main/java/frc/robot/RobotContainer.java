@@ -31,9 +31,6 @@ public class RobotContainer {
 
     configureBindings();
 
-    Timer.delay(2.5);
-    // NOTE: Not quite sure if this delay is needed. I added a delay in Drivetrain
-    // TODO: figure that out
     subDrivetrain.resetModulesToAbsolute();
   }
 
