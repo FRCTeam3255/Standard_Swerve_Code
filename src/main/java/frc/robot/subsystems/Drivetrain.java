@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.HashMap;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -37,7 +37,7 @@ public class Drivetrain extends SubsystemBase {
   private SwerveDrivePoseEstimator swervePoseEstimator;
   private SwerveDriveKinematics swerveKinematics;
   public SwerveAutoBuilder swerveAutoBuilder;
-  private AHRS navX;
+  private Pigeon2 pigeon;
   private boolean isFieldRelative;
 
   public PathPlannerTrajectory exampleAuto;
@@ -57,11 +57,10 @@ public class Drivetrain extends SubsystemBase {
     };
     swerveKinematics = constDrivetrain.SWERVE_KINEMATICS;
 
-    navX = new AHRS();
+    pigeon = new Pigeon2(mapDrivetrain.PIGEON_CAN, mapDrivetrain.CAN_BUS_NAME);
 
-    // Both the NavX and the absolute encoders need time to initialize
+    // The absolute encoders need time to initialize
     Timer.delay(2.5);
-    navX.reset();
     resetModulesToAbsolute();
     configure();
   }
@@ -72,7 +71,7 @@ public class Drivetrain extends SubsystemBase {
     }
     swervePoseEstimator = new SwerveDrivePoseEstimator(
         swerveKinematics,
-        navX.getRotation2d(),
+        getRotation(),
         getModulePositions(),
         new Pose2d(),
         VecBuilder.fill(
@@ -112,15 +111,6 @@ public class Drivetrain extends SubsystemBase {
     for (SwerveModule mod : modules) {
       mod.resetSteerMotorToAbsolute();
     }
-  }
-
-  /**
-   * Get the rotation of the drivetrain using the NavX.
-   * 
-   * @return Rotation of drivetrain in radians
-   */
-  public Rotation2d getRotation() {
-    return Rotation2d.fromRadians(MathUtil.angleModulus(navX.getRotation2d().getRadians()));
   }
 
   /**
@@ -191,8 +181,40 @@ public class Drivetrain extends SubsystemBase {
           rotation);
     }
 
-    SwerveModuleState[] desiredModuleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveModuleState[] desiredModuleStates = swerveKinematics.toSwerveModuleStates(discretize(chassisSpeeds));
     setModuleStates(desiredModuleStates, isOpenLoop);
+  }
+
+  /**
+   * This is the most theoretical thing that is in the code.
+   * It takes our current position and then adds an offset to it, knowing that the
+   * robot's estimated position
+   * is not following the exact position of the robot.
+   * 
+   * @param speeds the speeds about to be inputted into the robot.
+   * @return the same thing as we input.
+   *         Think of this method as an interceptor,
+   *         not changing the parameter but using it for calculations.
+   */
+  /**
+   * Credit: WPIlib 2024 and 4738
+   * Discretizes a continuous-time chassis speed.
+   *
+   * @param vx    Forward velocity.
+   * @param vy    Sideways velocity.
+   * @param omega Angular velocity.
+   */
+  public ChassisSpeeds discretize(ChassisSpeeds speeds) {
+    double dt = 0.02;
+
+    var desiredDeltaPose = new Pose2d(
+        speeds.vxMetersPerSecond * dt,
+        speeds.vyMetersPerSecond * dt,
+        new Rotation2d(speeds.omegaRadiansPerSecond * dt * 4));
+
+    var twist = new Pose2d().log(desiredDeltaPose);
+
+    return new ChassisSpeeds((twist.dx / dt), (twist.dy / dt), (speeds.omegaRadiansPerSecond));
   }
 
   /**
@@ -227,7 +249,7 @@ public class Drivetrain extends SubsystemBase {
   public void updatePoseEstimator() {
     swervePoseEstimator.updateWithTime(
         Timer.getFPGATimestamp(),
-        navX.getRotation2d(),
+        getRotation(),
         getModulePositions());
   }
 
@@ -246,42 +268,49 @@ public class Drivetrain extends SubsystemBase {
    * @param pose The pose you would like to reset the pose estimator to
    */
   public void resetPoseToPose(Pose2d pose) {
-    swervePoseEstimator.resetPosition(navX.getRotation2d(), getModulePositions(), pose);
+    swervePoseEstimator.resetPosition(getRotation(), getModulePositions(), pose);
   }
 
   /**
-   * Resets the Yaw of the NavX, along with the angle adjustment of the NavX.
+   * Get the rotation of the drivetrain using the Pigeon.
+   * 
+   * @return Rotation of drivetrain, stored as Radians
+   */
+  public Rotation2d getRotation() {
+    return Rotation2d.fromRadians(MathUtil.angleModulus(Units.degreesToRadians(pigeon.getYaw())));
+  }
+
+  /**
+   * Resets the Yaw of the Pigeon to 0
    */
   public void resetYaw() {
-    navX.setAngleAdjustment(0);
-    navX.reset();
+    pigeon.setYaw(0);
   }
 
   /**
-   * Sets value of the NavX's adjustment value, which is a constant added to the
-   * NavX value. Used at the start of auto to match the setup of the robot, as
-   * drive(); reads the NavX yaw to figure out it's angle.
+   * Resets the Yaw of the Pigeon to the given value
    * 
-   * @param adjustment Value to add to the current yaw
+   * @param yaw The yaw (in degrees) to reset the Pigeon to
    */
-  public void setNavXAngleAdjustment(double adjustment) {
-    navX.setAngleAdjustment(adjustment);
+  public void resetYaw(double yaw) {
+    pigeon.setYaw(yaw);
   }
 
   @Override
   public void periodic() {
     updatePoseEstimator();
-    SmartDashboard.putBoolean("Is Drivetrain Field Relative", isFieldRelative);
+    SmartDashboard.putNumber("Drivetrain/Yaw Degrees", getRotation().getDegrees());
+    SmartDashboard.putBoolean("Drivetrain/Is Field Relative", isFieldRelative);
     for (SwerveModule mod : modules) {
-      SmartDashboard.putNumber("Module " + mod.moduleNumber + " Speed",
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Speed",
           Units.metersToFeet(mod.getModuleState().speedMetersPerSecond));
-      SmartDashboard.putNumber("Module " + mod.moduleNumber + " Distance",
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Distance",
           Units.metersToFeet(mod.getModulePosition().distanceMeters));
-      SmartDashboard.putNumber("Module " + mod.moduleNumber + " Angle",
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Angle",
           mod.getModuleState().angle.getDegrees());
-      SmartDashboard.putNumber("Module " + mod.moduleNumber + " Absolute Encoder Angle (WITH OFFSET)",
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Absolute Encoder Angle (WITH OFFSET)",
           mod.getAbsoluteEncoder());
-      SmartDashboard.putNumber("Module " + mod.moduleNumber + " Absolute Encoder Raw Value",
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Absolute Encoder Raw Value",
           mod.getRawAbsoluteEncoder());
     }
   }

@@ -37,10 +37,10 @@ public class SwerveModule extends SubsystemBase {
       double absoluteEncoderOffset) {
     this.moduleNumber = moduleNumber;
 
-    driveMotor = new TalonFX(driveMotorID, mapDrivetrain.CAN_BUS);
-    steerMotor = new TalonFX(steerMotorID, mapDrivetrain.CAN_BUS);
+    driveMotor = new TalonFX(driveMotorID, mapDrivetrain.CAN_BUS_NAME);
+    steerMotor = new TalonFX(steerMotorID, mapDrivetrain.CAN_BUS_NAME);
 
-    absoluteEncoder = new CANCoder(absoluteEncoderID, mapDrivetrain.CAN_BUS);
+    absoluteEncoder = new CANCoder(absoluteEncoderID, mapDrivetrain.CAN_BUS_NAME);
     this.absoluteEncoderOffset = absoluteEncoderOffset;
 
     driveConfiguration = new TalonFXConfiguration();

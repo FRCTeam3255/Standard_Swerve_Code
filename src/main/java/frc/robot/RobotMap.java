@@ -8,7 +8,8 @@ public class RobotMap {
     }
 
     public static class mapDrivetrain {
-        public static final String CAN_BUS = "Swerve";
+        public static final String CAN_BUS_NAME = "Swerve";
+        public static final int PIGEON_CAN = 0;
 
         // Module 0
         public static final int FRONT_LEFT_DRIVE_CAN = 0;
