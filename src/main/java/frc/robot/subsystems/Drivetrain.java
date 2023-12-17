@@ -35,7 +35,7 @@ public class Drivetrain extends SuperSwerve {
 
   public Drivetrain() {
     super(
-        SwerveConstants.MK4I_L2,
+        SwerveConstants.MK4I_L3,
         modules,
         constDrivetrain.WHEELBASE,
         constDrivetrain.TRACK_WIDTH,

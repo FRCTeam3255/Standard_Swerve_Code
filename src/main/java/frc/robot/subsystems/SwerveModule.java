@@ -47,7 +47,7 @@ public class SwerveModule extends SubsystemBase {
   public static double driveGearRatio = SwerveConstants.MK4I_L2.driveGearRatio;
   public static double steerGearRatio = SwerveConstants.MK4I_L2.steerGearRatio;
   public static double wheelCircumference = SwerveConstants.MK4I_L2.wheelCircumference;
-  public static double maxModuleSpeed = SwerveConstants.MK4I_L2.maxSpeed;
+  public static double maxModuleSpeedMeters = SwerveConstants.MK4I_L2.maxSpeedMeters;
 
   // -✨- Sim -✨-
   private SwerveModuleState lastDesiredSwerveModuleState = new SwerveModuleState(0, new Rotation2d(0));
@@ -219,7 +219,7 @@ public class SwerveModule extends SubsystemBase {
     if (isOpenLoop) {
       // Setting the motor to PercentOutput uses a percent of the motors max output.
       // So, the requested speed divided by it's max speed.
-      double percentOutput = state.speedMetersPerSecond / maxModuleSpeed;
+      double percentOutput = state.speedMetersPerSecond / maxModuleSpeedMeters;
       driveMotor.set(ControlMode.PercentOutput, percentOutput);
 
     } else {
@@ -239,7 +239,7 @@ public class SwerveModule extends SubsystemBase {
     // If the requested speed is lower than a relevant steering speed,
     // don't turn the motor. Set it to whatever it's previous angle was.
     if (Math.abs(state.speedMetersPerSecond) < (minimumSteerSpeedPercent
-        * maxModuleSpeed)) {
+        * maxModuleSpeedMeters)) {
       return;
     }
     steerMotor.set(ControlMode.Position, angle);

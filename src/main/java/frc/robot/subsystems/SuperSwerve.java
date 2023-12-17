@@ -12,7 +12,6 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -72,7 +71,7 @@ public class SuperSwerve extends SubsystemBase {
    * @param steerConfig               - The configuration for every steer motor.
    *                                  <br>
    *                                  <b>IMPORTANT: Configure PID!</b>
-   * @param modules
+   * @param modules                   An array of your SwerveModules.
    * @param wheelbase                 Physically measured distance between Left &
    *                                  Right Wheels
    * @param trackWidth                Physically measured distance between Front &
@@ -80,7 +79,8 @@ public class SuperSwerve extends SubsystemBase {
    * @param CANBusName
    * @param pigeonCANId               The pigeon MUST be on the same CANBus as the
    *                                  modules
-   * @param minimumSteerPercent
+   * @param minimumSteerPercent       The minimum PercentOutput required to make
+   *                                  the steer motor move
    * @param isDriveInverted
    * @param isSteerInverted
    * @param driveNeutralMode          The behavior of the drive motor when set to
@@ -99,7 +99,8 @@ public class SuperSwerve extends SubsystemBase {
    *                                  the vision pose measurement less.
    * @param autoDrivePID
    * @param autoSteerPID
-   * @param autoFlipWithAllianceColor
+   * @param autoFlipWithAllianceColor Whether the PathPlanner auto builder flips
+   *                                  paths based on alliance color.
    */
   public SuperSwerve(
       SwerveConstants swerveConstants,
@@ -139,20 +140,19 @@ public class SuperSwerve extends SubsystemBase {
     this.autoDrivePID = autoDrivePID;
     this.autoSteerPID = autoSteerPID;
 
+    SwerveModule.wheelCircumference = swerveConstants.wheelCircumference;
+    SwerveModule.maxModuleSpeedMeters = swerveConstants.maxSpeedMeters;
     SwerveModule.driveGearRatio = swerveConstants.driveGearRatio;
+    SwerveModule.steerGearRatio = swerveConstants.steerGearRatio;
 
     SwerveModule.CANBusName = CANBusName;
     SwerveModule.minimumSteerSpeedPercent = minimumSteerPercent;
-    SwerveModule.wheelCircumference = swerveConstants.wheelCircumference;
-    SwerveModule.maxModuleSpeed = swerveConstants.maxSpeed;
 
     SwerveModule.isDriveInverted = isDriveInverted;
     SwerveModule.driveNeutralMode = driveNeutralMode;
-    SwerveModule.driveGearRatio = swerveConstants.driveGearRatio;
 
     SwerveModule.isSteerInverted = isSteerInverted;
     SwerveModule.steerNeutralMode = steerNeutralMode;
-    SwerveModule.steerGearRatio = swerveConstants.steerGearRatio;
 
     pigeon = new Pigeon2(pigeonCANId, CANBusName);
 
@@ -163,10 +163,10 @@ public class SuperSwerve extends SubsystemBase {
   }
 
   public void configure() {
-
     for (SwerveModule mod : modules) {
       mod.configure();
     }
+
     swervePoseEstimator = new SwerveDrivePoseEstimator(
         swerveKinematics,
         getRotation(),
@@ -221,10 +221,8 @@ public class SuperSwerve extends SubsystemBase {
    * 
    */
   public void setModuleStates(SwerveModuleState[] desiredModuleStates, boolean isOpenLoop) {
-    lastDesiredStates = desiredModuleStates;
-
     // Lowers the speeds so that they are actually achievable
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredModuleStates, swerveConstants.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredModuleStates, swerveConstants.maxSpeedMeters);
 
     for (SwerveModule mod : modules) {
       mod.setModuleState(desiredModuleStates[mod.moduleNumber], isOpenLoop);
@@ -369,7 +367,7 @@ public class SuperSwerve extends SubsystemBase {
       simAngle += swerveKinematics.toChassisSpeeds(lastDesiredStates).omegaRadiansPerSecond * timeFromLastUpdate;
       return new Rotation2d(simAngle);
     }
-    return Rotation2d.fromRadians(MathUtil.angleModulus(Units.degreesToRadians(pigeon.getYaw())));
+    return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
   /**

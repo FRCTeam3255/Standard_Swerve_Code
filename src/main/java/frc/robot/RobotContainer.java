@@ -34,7 +34,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetrain.resetModulesToAbsolute()));
-    conDriver.btn_A.onTrue(Commands.runOnce(() -> subDrivetrain.resetYaw()));
+    conDriver.btn_Back.onTrue(Commands.runOnce(() -> subDrivetrain.resetYaw()));
 
     // Defaults to Field-Relative, is Robot-Relative while held
     conDriver.btn_LeftBumper
