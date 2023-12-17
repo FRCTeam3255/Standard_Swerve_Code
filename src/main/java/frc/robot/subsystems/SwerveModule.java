@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -14,64 +15,82 @@ import com.frcteam3255.utils.SN_Math;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotMap.mapDrivetrain;
-import frc.robot.RobotPreferences.prefDrivetrain;
-import frc.robot.Constants.constDrivetrain;
+import frc.robot.Robot;
+import frc.robot.SwerveConstants;
 
 // This subsystem represents 1 Swerve Module. The Drivetrain subsystem will reference 4 of these.
 public class SwerveModule extends SubsystemBase {
 
+  // -✨- Module-Specific -✨-
   private TalonFX driveMotor;
   private TalonFX steerMotor;
-
-  private TalonFXConfiguration driveConfiguration;
-  private TalonFXConfiguration steerConfiguration;
 
   private CANCoder absoluteEncoder;
   private double absoluteEncoderOffset;
 
   public int moduleNumber;
 
+  // -✨- Static Motor Config -✨-
+  public static TalonFXConfiguration driveConfiguration;
+  public static TalonFXConfiguration steerConfiguration;
+  public static boolean isDriveInverted = false;
+  public static NeutralMode driveNeutralMode = NeutralMode.Brake;
+  public static boolean isSteerInverted = true;
+  public static NeutralMode steerNeutralMode = NeutralMode.Coast;
+  public static String CANBusName = "Swerve";
+  public static double minimumSteerSpeedPercent = 0.01;
+
+  // -✨- Static Physical Constants -✨-
+  // These default to L2s, but should be overridden
+  public static double driveGearRatio = SwerveConstants.MK4I_L2.driveGearRatio;
+  public static double steerGearRatio = SwerveConstants.MK4I_L2.steerGearRatio;
+  public static double wheelCircumference = SwerveConstants.MK4I_L2.wheelCircumference;
+  public static double maxModuleSpeed = SwerveConstants.MK4I_L2.maxSpeed;
+
+  // -✨- Sim -✨-
+  private SwerveModuleState lastDesiredSwerveModuleState = new SwerveModuleState(0, new Rotation2d(0));
+  private double desiredDrivePosition;
+  private double timeFromLastUpdate;
+  private double lastSimTime;
+  private Timer simTimer;
+
   public SwerveModule(int moduleNumber, int driveMotorID, int steerMotorID, int absoluteEncoderID,
       double absoluteEncoderOffset) {
+    if (Robot.isSimulation()) {
+      simTimer = new Timer();
+      simTimer.start();
+      lastSimTime = simTimer.get();
+      timeFromLastUpdate = 0;
+    }
+
     this.moduleNumber = moduleNumber;
 
-    driveMotor = new TalonFX(driveMotorID, mapDrivetrain.CAN_BUS_NAME);
-    steerMotor = new TalonFX(steerMotorID, mapDrivetrain.CAN_BUS_NAME);
+    driveMotor = new TalonFX(driveMotorID, CANBusName);
+    steerMotor = new TalonFX(steerMotorID, CANBusName);
 
-    absoluteEncoder = new CANCoder(absoluteEncoderID, mapDrivetrain.CAN_BUS_NAME);
+    absoluteEncoder = new CANCoder(absoluteEncoderID, CANBusName);
     this.absoluteEncoderOffset = absoluteEncoderOffset;
 
     driveConfiguration = new TalonFXConfiguration();
     steerConfiguration = new TalonFXConfiguration();
-
-    configure();
   }
 
   public void configure() {
     // -✨- Drive Motor Config -✨-
     driveMotor.configFactoryDefault();
 
-    driveConfiguration.slot0.kF = prefDrivetrain.driveF.getValue();
-    driveConfiguration.slot0.kP = prefDrivetrain.driveP.getValue();
-    driveConfiguration.slot0.kI = prefDrivetrain.driveI.getValue();
-    driveConfiguration.slot0.kD = prefDrivetrain.driveD.getValue();
-
-    driveMotor.setNeutralMode(constDrivetrain.DRIVE_NEUTRAL_MODE);
-    driveMotor.setInverted(constDrivetrain.DRIVE_MOTOR_INVERT);
+    driveMotor.setNeutralMode(driveNeutralMode);
+    driveMotor.setInverted(isDriveInverted);
 
     driveMotor.configAllSettings(driveConfiguration);
 
     // -✨- Steer Motor Config -✨-
     steerMotor.configFactoryDefault();
 
-    steerConfiguration.slot0.kP = prefDrivetrain.steerP.getValue();
-    steerConfiguration.slot0.kI = prefDrivetrain.steerI.getValue();
-    steerConfiguration.slot0.kD = prefDrivetrain.steerD.getValue();
-
-    steerMotor.setNeutralMode(constDrivetrain.STEER_NEUTRAL_MODE);
-    steerMotor.setInverted(constDrivetrain.STEER_MOTOR_INVERT);
+    steerMotor.setNeutralMode(steerNeutralMode);
+    steerMotor.setInverted(isSteerInverted);
 
     steerMotor.configAllSettings(steerConfiguration);
 
@@ -113,7 +132,7 @@ public class SwerveModule extends SubsystemBase {
   public void resetSteerMotorToAbsolute() {
     double absoluteEncoderCount = SN_Math.degreesToFalcon(
         getAbsoluteEncoder(),
-        constDrivetrain.STEER_GEAR_RATIO);
+        steerGearRatio);
 
     steerMotor.setSelectedSensorPosition(absoluteEncoderCount);
   }
@@ -134,13 +153,13 @@ public class SwerveModule extends SubsystemBase {
 
     double velocity = SN_Math.falconToMPS(
         driveMotor.getSelectedSensorVelocity(),
-        constDrivetrain.WHEEL_CIRCUMFERENCE,
-        constDrivetrain.DRIVE_GEAR_RATIO);
+        wheelCircumference,
+        driveGearRatio);
 
     Rotation2d angle = Rotation2d.fromDegrees(
         SN_Math.falconToDegrees(
             steerMotor.getSelectedSensorPosition(),
-            constDrivetrain.STEER_GEAR_RATIO));
+            steerGearRatio));
 
     return new SwerveModuleState(velocity, angle);
   }
@@ -152,15 +171,23 @@ public class SwerveModule extends SubsystemBase {
    * @return Module's SwerveModulePosition (distance, angle)
    */
   public SwerveModulePosition getModulePosition() {
+    if (Robot.isSimulation()) {
+      timeFromLastUpdate = simTimer.get() - lastSimTime;
+      lastSimTime = simTimer.get();
+      desiredDrivePosition += (lastDesiredSwerveModuleState.speedMetersPerSecond * timeFromLastUpdate);
+
+      return new SwerveModulePosition(desiredDrivePosition, lastDesiredSwerveModuleState.angle);
+    }
+
     double distance = SN_Math.falconToMeters(
         driveMotor.getSelectedSensorPosition(),
-        constDrivetrain.WHEEL_CIRCUMFERENCE,
-        constDrivetrain.DRIVE_GEAR_RATIO);
+        wheelCircumference,
+        driveGearRatio);
 
     Rotation2d angle = Rotation2d.fromDegrees(
         SN_Math.falconToDegrees(
             steerMotor.getSelectedSensorPosition(),
-            constDrivetrain.STEER_GEAR_RATIO));
+            steerGearRatio));
 
     return new SwerveModulePosition(distance, angle);
   }
@@ -183,20 +210,22 @@ public class SwerveModule extends SubsystemBase {
    * 
    */
   public void setModuleState(SwerveModuleState desiredState, boolean isOpenLoop) {
-    // Optimize explaination: https://youtu.be/0Xi9yb1IMyA?t=226
+    lastDesiredSwerveModuleState = desiredState;
+
+    // Optimize explanation: https://youtu.be/0Xi9yb1IMyA?t=226
     SwerveModuleState state = CTREModuleState.optimize(desiredState, getModuleState().angle);
     // -✨- Setting the Drive Motor -✨-
 
     if (isOpenLoop) {
       // Setting the motor to PercentOutput uses a percent of the motors max output.
       // So, the requested speed divided by it's max speed.
-      double percentOutput = state.speedMetersPerSecond / constDrivetrain.MAX_MODULE_SPEED;
+      double percentOutput = state.speedMetersPerSecond / maxModuleSpeed;
       driveMotor.set(ControlMode.PercentOutput, percentOutput);
 
     } else {
       double velocity = SN_Math.MPSToFalcon(state.speedMetersPerSecond,
-          constDrivetrain.WHEEL_CIRCUMFERENCE,
-          constDrivetrain.DRIVE_GEAR_RATIO);
+          wheelCircumference,
+          driveGearRatio);
 
       driveMotor.set(ControlMode.Velocity, velocity);
     }
@@ -205,12 +234,12 @@ public class SwerveModule extends SubsystemBase {
 
     double angle = SN_Math.degreesToFalcon(
         state.angle.getDegrees(),
-        constDrivetrain.STEER_GEAR_RATIO);
+        steerGearRatio);
 
     // If the requested speed is lower than a relevant steering speed,
     // don't turn the motor. Set it to whatever it's previous angle was.
-    if (Math.abs(state.speedMetersPerSecond) < (prefDrivetrain.minimumSteerSpeedPercent.getValue()
-        * constDrivetrain.MAX_MODULE_SPEED)) {
+    if (Math.abs(state.speedMetersPerSecond) < (minimumSteerSpeedPercent
+        * maxModuleSpeed)) {
       return;
     }
     steerMotor.set(ControlMode.Position, angle);

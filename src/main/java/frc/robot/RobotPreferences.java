@@ -16,6 +16,7 @@ public class RobotPreferences {
         public static final SN_DoublePreference steerI = new SN_DoublePreference("steerI", 0.0);
         public static final SN_DoublePreference steerD = new SN_DoublePreference("steerD", 6.0);
 
+        // This PID is implemented on the Drivetrain subsystem
         public static final SN_DoublePreference autoDriveP = new SN_DoublePreference("autoDriveP", 2);
         public static final SN_DoublePreference autoDriveI = new SN_DoublePreference("autoDriveI", 0);
         public static final SN_DoublePreference autoDriveD = new SN_DoublePreference("autoDriveD", 0);
