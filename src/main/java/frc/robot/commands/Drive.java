@@ -17,7 +17,8 @@ public class Drive extends CommandBase {
   DoubleSupplier xAxis, yAxis, rotationAxis;
   boolean isOpenLoop;
 
-  public Drive(Drivetrain subDrivetrain, DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier rotationAxis) {
+  public Drive(Drivetrain subDrivetrain, DoubleSupplier xAxis, DoubleSupplier yAxis,
+      DoubleSupplier rotationAxis) {
     this.subDrivetrain = subDrivetrain;
     this.xAxis = xAxis;
     this.yAxis = yAxis;

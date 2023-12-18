@@ -5,9 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -35,19 +32,12 @@ public final class Constants {
     // Taken from the online listing
     public static final double DRIVE_GEAR_RATIO = 6.75;
     public static final double STEER_GEAR_RATIO = 150.0 / 7.0;
-    public static final double MAX_MODULE_SPEED = Units.feetToMeters(16.3);
+    public static final double MAX_MODULE_SPEED = Units.feetToMeters(16.5);
 
     // Physically measured from center to center of the wheels
     public static final double TRACK_WIDTH = Units.inchesToMeters(23.75); // Distance between Left & Right Wheels
     public static final double WHEELBASE = Units.inchesToMeters(23.75); // Distance between Front & Back Wheels
 
-    // Location of all modules in the WPILib robot coordinate system
-    public static final SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
-        new Translation2d(WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
-        new Translation2d(WHEELBASE / 2.0, -TRACK_WIDTH / 2.0),
-        new Translation2d(-WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
-        new Translation2d(-WHEELBASE / 2.0, -TRACK_WIDTH / 2.0));
-
-    public static final boolean AUTO_USE_ALLIANCE_COLOR = true;
+    public static final boolean AUTO_FLIP_WITH_ALLIANCE_COLOR = true;
   }
 }
