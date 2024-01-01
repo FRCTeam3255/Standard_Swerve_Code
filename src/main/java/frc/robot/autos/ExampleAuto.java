@@ -4,7 +4,6 @@
 
 package frc.robot.autos;
 
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drivetrain;
 
@@ -15,10 +14,7 @@ public class ExampleAuto extends SequentialCommandGroup {
     this.subDrivetrain = subDrivetrain;
 
     addCommands(
-        Commands.runOnce(() -> subDrivetrain
-            .resetYaw(subDrivetrain.exampleAuto.getInitialHolonomicPose().getRotation().getDegrees())),
 
-        subDrivetrain.swerveAutoBuilder.fullAuto(subDrivetrain.exampleAuto)
-            .withTimeout(subDrivetrain.exampleAuto.getTotalTimeSeconds()));
+    );
   }
 }
