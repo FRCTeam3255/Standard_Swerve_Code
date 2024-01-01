@@ -5,11 +5,14 @@
 package frc.robot;
 
 import com.frcteam3255.joystick.SN_XboxController;
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.constControllers;
 import frc.robot.RobotMap.mapControllers;
-import frc.robot.autos.ExampleAuto;
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.Drivetrain;
 
@@ -18,6 +21,7 @@ public class RobotContainer {
   private final SN_XboxController conDriver = new SN_XboxController(mapControllers.DRIVER_USB);
 
   private final Drivetrain subDrivetrain = new Drivetrain();
+  private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
@@ -30,6 +34,9 @@ public class RobotContainer {
     configureBindings();
 
     subDrivetrain.resetModulesToAbsolute();
+
+    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    SmartDashboard.putData("Auto Mode", autoChooser);
   }
 
   private void configureBindings() {
@@ -43,6 +50,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new ExampleAuto(subDrivetrain);
+    return autoChooser.getSelected();
   }
 }
