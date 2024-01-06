@@ -1,7 +1,7 @@
 # SuperSwerve23
-Code created for FRC 3255's swerve drive that is planned to be adapted into [SuperCORE](https://github.com/FRCTeam3255/SuperCORE) 
+Originally the repository for creating FRC 3255's swerve drive classes in [SuperCORE](https://github.com/FRCTeam3255/SuperCORE), this repository now holds the example implementation of our SN_SuperSwerve class.
 
-## Important Things to Know/Understand:
+## Important Things to Understand:
 [Intro to Swerve - Software Overview](https://docs.google.com/presentation/d/1TPgX1LmMHTN7iIq1K4172TEAYrTftHnFnPqoAa06ExA/edit?usp=sharing) - *A presentation created to explain this code to 3255 members. Speaker notes contain what was generally spoken.*
 - Generally, how a Swerve Drive works. I personally learned the most from my team & from SeanSun6814's (FRC 0 to Autonomous) [video](https://www.youtube.com/watch?v=0Xi9yb1IMyA)
 - Optimization of swerve angles - Learn more [here](https://youtu.be/0Xi9yb1IMyA?t=226)
