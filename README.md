@@ -1,4 +1,4 @@
-# SuperSwerve23
+# Standard_Swerve_Code
 Originally the repository for creating FRC 3255's swerve drive classes in [SuperCORE](https://github.com/FRCTeam3255/SuperCORE), this repository now holds the example implementation of our SN_SuperSwerve class.
 
 ## Important Things to Understand:
