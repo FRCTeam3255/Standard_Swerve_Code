@@ -4,27 +4,35 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+  /**
+   * Volts
+   */
+  public static final double MAX_VOLTAGE = 12;
+
   public static class constControllers {
     public static final double DRIVER_LEFT_STICK_DEADBAND = 0.05;
   }
 
   public static class constDrivetrain {
-    // In Degrees: Obtain by aligning all of the wheels in the correct direction and
+    // In Rotations: Obtain by aligning all of the wheels in the correct direction
+    // and
     // copy-pasting the Raw Absolute Encoder value
-    public static final double FRONT_LEFT_ABS_ENCODER_OFFSET = 116.103516;
-    public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET = 340.312500;
-    public static final double BACK_LEFT_ABS_ENCODER_OFFSET = 288.808594;
-    public static final double BACK_RIGHT_ABS_ENCODER_OFFSET = 244.687500;
+    public static final double FRONT_LEFT_ABS_ENCODER_OFFSET = 0.322754;
+    public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET = -0.045410;
+    public static final double BACK_LEFT_ABS_ENCODER_OFFSET = -0.192871;
+    public static final double BACK_RIGHT_ABS_ENCODER_OFFSET = -0.314941;
 
-    public static final boolean DRIVE_MOTOR_INVERT = false;
-    public static final boolean STEER_MOTOR_INVERT = true;
+    public static final InvertedValue DRIVE_MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue STEER_MOTOR_INVERT = InvertedValue.Clockwise_Positive;
 
-    public static final NeutralMode DRIVE_NEUTRAL_MODE = NeutralMode.Brake;
-    public static final NeutralMode STEER_NEUTRAL_MODE = NeutralMode.Coast;
+    public static final NeutralModeValue DRIVE_NEUTRAL_MODE = NeutralModeValue.Brake;
+    public static final NeutralModeValue STEER_NEUTRAL_MODE = NeutralModeValue.Coast;
 
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(3.8);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
