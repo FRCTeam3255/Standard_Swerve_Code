@@ -12,14 +12,13 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.constDrivetrain;
+import frc.robot.Constants.constField;
 import frc.robot.RobotMap.mapDrivetrain;
 import frc.robot.RobotPreferences.prefDrivetrain;
 import frc.robot.RobotPreferences.prefVision;
@@ -27,11 +26,6 @@ import frc.robot.RobotPreferences.prefVision;
 public class Drivetrain extends SN_SuperSwerve {
   private static TalonFXConfiguration driveConfiguration = new TalonFXConfiguration();
   private static TalonFXConfiguration steerConfiguration = new TalonFXConfiguration();
-  private static SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(prefDrivetrain.driveKs.getValue(),
-      prefDrivetrain.driveKa.getValue(), prefDrivetrain.driveKv.getValue());
-
-  StructArrayPublisher<SwerveModuleState> swerveDesiredStatesPublisher = NetworkTableInstance.getDefault()
-      .getStructArrayTopic("/SmartDashboard/Drivetrain/SwerveDesiredStates", SwerveModuleState.struct).publish();
 
   private static SN_SwerveModule[] modules = new SN_SwerveModule[] {
       new SN_SwerveModule(0, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
@@ -46,7 +40,7 @@ public class Drivetrain extends SN_SuperSwerve {
 
   public Drivetrain() {
     super(
-        SN_SwerveConstants.MK4I_L3,
+        constDrivetrain.SWERVE_CONSTANTS,
         modules,
         constDrivetrain.WHEELBASE,
         constDrivetrain.TRACK_WIDTH,
@@ -55,24 +49,25 @@ public class Drivetrain extends SN_SuperSwerve {
         prefDrivetrain.minimumSteerSpeedPercent.getValue(),
         constDrivetrain.DRIVE_MOTOR_INVERT,
         constDrivetrain.STEER_MOTOR_INVERT,
+        constDrivetrain.CANCODER_INVERT,
         constDrivetrain.DRIVE_NEUTRAL_MODE,
         constDrivetrain.STEER_NEUTRAL_MODE,
         VecBuilder.fill(
-            Units.feetToMeters(prefDrivetrain.measurementStdDevsFeet.getValue()),
-            Units.feetToMeters(prefDrivetrain.measurementStdDevsFeet.getValue()),
-            Units.degreesToRadians(prefDrivetrain.measurementStdDevsDegrees.getValue())),
+            prefDrivetrain.measurementStdDevsPosition.getValue(),
+            prefDrivetrain.measurementStdDevsPosition.getValue(),
+            prefDrivetrain.measurementStdDevsHeading.getValue()),
         VecBuilder.fill(
-            Units.feetToMeters(prefVision.measurementStdDevsFeet.getValue()),
-            Units.feetToMeters(prefVision.measurementStdDevsFeet.getValue()),
-            Units.degreesToRadians(prefVision.measurementStdDevsDegrees.getValue())),
+            prefVision.multiTagStdDevsPosition.getValue(),
+            prefVision.multiTagStdDevsPosition.getValue(),
+            prefVision.multiTagStdDevsHeading.getValue()),
         new PIDConstants(prefDrivetrain.autoDriveP.getValue(),
             prefDrivetrain.autoDriveI.getValue(),
             prefDrivetrain.autoDriveD.getValue()),
         new PIDConstants(prefDrivetrain.autoSteerP.getValue(),
             prefDrivetrain.autoSteerI.getValue(),
             prefDrivetrain.autoSteerD.getValue()),
-        new ReplanningConfig(),
-        constDrivetrain.AUTO_FLIP_WITH_ALLIANCE_COLOR,
+        new ReplanningConfig(false, true),
+        () -> constField.isRedAlliance(),
         Robot.isSimulation());
 
   }
@@ -89,7 +84,6 @@ public class Drivetrain extends SN_SuperSwerve {
 
     SN_SwerveModule.driveConfiguration = driveConfiguration;
     SN_SwerveModule.steerConfiguration = steerConfiguration;
-    SN_SwerveModule.driveFeedForward = driveFeedForward;
     super.configure();
   }
 
@@ -101,6 +95,25 @@ public class Drivetrain extends SN_SuperSwerve {
   public void periodic() {
     super.periodic();
 
-    swerveDesiredStatesPublisher.set(super.lastDesiredStates);
+    for (SN_SwerveModule mod : modules) {
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Desired Speed (FPS)",
+          Units.metersToFeet(Math.abs(getDesiredModuleStates()[mod.moduleNumber].speedMetersPerSecond)));
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Actual Speed (FPS)",
+          Units.metersToFeet(Math.abs(getActualModuleStates()[mod.moduleNumber].speedMetersPerSecond)));
+
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Desired Angle (Degrees)",
+          Math.abs(Units.metersToFeet(getDesiredModuleStates()[mod.moduleNumber].angle.getDegrees())));
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Actual Angle (Degrees)",
+          Math.abs(Units.metersToFeet(getActualModuleStates()[mod.moduleNumber].angle.getDegrees())));
+
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Offset Absolute Encoder Angle (Rotations)",
+          mod.getAbsoluteEncoder());
+      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Absolute Encoder Raw Value (Rotations)",
+          mod.getRawAbsoluteEncoder());
+    }
+
+    field.setRobotPose(getPose());
+    SmartDashboard.putData(field);
+    SmartDashboard.putNumber("Drivetrain Rotation", getRotation().getDegrees());
   }
 }

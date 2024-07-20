@@ -21,8 +21,6 @@ public class RobotContainer {
   public RobotContainer() {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
 
-    // The Left Y and X Axes are swapped because from behind the glass, the X Axis
-    // is actually in front of you
     subDrivetrain
         .setDefaultCommand(new Drive(subDrivetrain, conDriver.axis_LeftY, conDriver.axis_LeftX, conDriver.axis_RightX));
 
