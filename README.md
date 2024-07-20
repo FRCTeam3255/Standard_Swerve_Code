@@ -12,5 +12,5 @@ Originally the repository for creating FRC 3255's swerve drive classes in [Super
 
 ## References:
 - https://github.com/FRCTeam3255/Robot2023
-- https://github.com/FRCTeam360/364BaseFalconSwerve
+- https://github.com/dirtbikerxz/BaseTalonFXSwerve
 - https://github.com/SeanSun6814/FRC0ToAutonomous and his [video](https://www.youtube.com/watch?v=0Xi9yb1IMyA)
