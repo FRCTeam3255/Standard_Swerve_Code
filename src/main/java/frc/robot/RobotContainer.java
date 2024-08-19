@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.constControllers;
 import frc.robot.RobotMap.mapControllers;
-import frc.robot.commands.Drive;
+import frc.robot.commands.DriveManual;
+import frc.robot.commands.ExampleAuto;
 import frc.robot.subsystems.Drivetrain;
 
 public class RobotContainer {
@@ -22,7 +23,8 @@ public class RobotContainer {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
 
     subDrivetrain
-        .setDefaultCommand(new Drive(subDrivetrain, conDriver.axis_LeftY, conDriver.axis_LeftX, conDriver.axis_RightX));
+        .setDefaultCommand(
+            new DriveManual(subDrivetrain, conDriver.axis_LeftY, conDriver.axis_LeftX, conDriver.axis_RightX));
 
     configureBindings();
 
@@ -40,6 +42,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new ExampleAuto(subDrivetrain);
   }
 }

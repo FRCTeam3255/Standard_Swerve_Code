@@ -11,7 +11,11 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.frcteam3255.components.swerve.SN_SwerveConstants;
 
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -42,7 +46,7 @@ public final class Constants {
     public static final NeutralModeValue DRIVE_NEUTRAL_MODE = NeutralModeValue.Brake;
     public static final NeutralModeValue STEER_NEUTRAL_MODE = NeutralModeValue.Coast;
 
-    public static final double WHEEL_DIAMETER = Units.inchesToMeters(3.8);
+    public static final double WHEEL_DIAMETER = 0.09779;
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
     // Taken from the online listing
@@ -58,29 +62,34 @@ public final class Constants {
      */
     public static final double THEORETICAL_MAX_DRIVE_SPEED = SN_SwerveConstants.MK4I.KRAKEN.L3.maxSpeedMeters;
 
-     /**
+    /**
      * <p>
      * Observed maximum translational speed while manually driving on the
      * Competition Robot.
      * </p>
-     * <b>Units:</b> Meters Per Second
      */
-    public static final double DRIVE_SPEED = Units.feetToMeters(15.1);
+    public static final Measure<Velocity<Distance>> DRIVE_SPEED = Units.FeetPerSecond.of(15.1);
     // Physically measured from center to center of the wheels
-    public static final double TRACK_WIDTH = Units.inchesToMeters(23.75); // Distance between Left & Right Wheels
-    public static final double WHEELBASE = Units.inchesToMeters(23.75); // Distance between Front & Back Wheels
+    // Distance between Left & Right Wheels
+    public static final double TRACK_WIDTH = Units.Meters.convertFrom(23.75, Units.Inches);
+    // Distance between Front & Back Wheels
+    public static final double WHEELBASE = Units.Meters.convertFrom(23.75, Units.Inches);
 
     public static final SN_SwerveConstants SWERVE_CONSTANTS = new SN_SwerveConstants(
         SN_SwerveConstants.MK4I.KRAKEN.L3.steerGearRatio,
         0.09779 * Math.PI,
         SN_SwerveConstants.MK4I.KRAKEN.L3.driveGearRatio,
         SN_SwerveConstants.MK4I.KRAKEN.L3.maxSpeedMeters);
+
+    public static final double AT_ROTATION_TOLERANCE = 0.1;
+    public static final Measure<Distance> AT_POINT_TOLERANCE = Units.Meters.of(0.1);
+
   }
 
   public static class constField {
     public static Optional<Alliance> ALLIANCE = Optional.empty();
-    
-     /**
+
+    /**
      * Boolean that controls when the path will be mirrored for the red
      * alliance. This will flip the path being followed to the red side of the
      * field.
