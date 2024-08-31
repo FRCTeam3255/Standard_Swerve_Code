@@ -36,10 +36,10 @@ public final class Constants {
     // In Rotations: Obtain by aligning all of the wheels in the correct direction
     // and
     // copy-pasting the Raw Absolute Encoder value
-    public static final double FRONT_LEFT_ABS_ENCODER_OFFSET = 0.322754;
-    public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET = -0.045410;
-    public static final double BACK_LEFT_ABS_ENCODER_OFFSET = -0.192871;
-    public static final double BACK_RIGHT_ABS_ENCODER_OFFSET = -0.314941;
+    public static final double FRONT_LEFT_ABS_ENCODER_OFFSET = -0.079834;
+    public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET = 0.249268;
+    public static final double BACK_LEFT_ABS_ENCODER_OFFSET = -0.240479;
+    public static final double BACK_RIGHT_ABS_ENCODER_OFFSET = 0.210449;
 
     public static final InvertedValue DRIVE_MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue STEER_MOTOR_INVERT = InvertedValue.Clockwise_Positive;
@@ -62,7 +62,7 @@ public final class Constants {
      * </p>
      * <b>Units:</b> Meters Per Second
      */
-    public static final double THEORETICAL_MAX_DRIVE_SPEED = SN_SwerveConstants.MK4I.KRAKEN.L3.maxSpeedMeters;
+    public static final double THEORETICAL_MAX_DRIVE_SPEED = SN_SwerveConstants.MK4I.FALCON.L3.maxSpeedMeters;
 
     /**
      * <p>
@@ -78,10 +78,10 @@ public final class Constants {
     public static final double WHEELBASE = Units.Meters.convertFrom(23.75, Units.Inches);
 
     public static final SN_SwerveConstants SWERVE_CONSTANTS = new SN_SwerveConstants(
-        SN_SwerveConstants.MK4I.KRAKEN.L3.steerGearRatio,
+        SN_SwerveConstants.MK4I.FALCON.L3.steerGearRatio,
         0.09779 * Math.PI,
-        SN_SwerveConstants.MK4I.KRAKEN.L3.driveGearRatio,
-        SN_SwerveConstants.MK4I.KRAKEN.L3.maxSpeedMeters);
+        SN_SwerveConstants.MK4I.FALCON.L3.driveGearRatio,
+        SN_SwerveConstants.MK4I.FALCON.L3.maxSpeedMeters);
 
     public static final double AT_ROTATION_TOLERANCE = 0.1;
     public static final Measure<Distance> AT_POINT_TOLERANCE = Units.Meters.of(0.1);
@@ -108,6 +108,6 @@ public final class Constants {
       return false;
     };
 
-    public static final Pose2d WORKSHOP_STARTING_POSE = new Pose2d(0, 1, new Rotation2d());
+    public static final Pose2d WORKSHOP_STARTING_POSE = new Pose2d(0, 0, new Rotation2d());
   }
 }
