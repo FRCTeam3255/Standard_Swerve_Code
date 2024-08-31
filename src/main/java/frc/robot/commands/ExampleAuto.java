@@ -41,10 +41,15 @@ public class ExampleAuto extends SequentialCommandGroup {
      */
 
     addCommands(
-        new Translate(subDrivetrain, Units.Meters.of(1), Units.Degrees.of(45), Units.Percent.of(1)),
+        new Translate(subDrivetrain, Units.Meters.of(1.08), Units.Degrees.of(-50), Units.Percent.of(1)),
         Commands.waitSeconds(0.5),
-        new RotateInPlace(subDrivetrain, Units.Degrees.of(45)),
+        new Translate(subDrivetrain, Units.Meters.of(0.38), Units.Degrees.of(45), Units.Percent.of(1)),
         Commands.waitSeconds(0.5),
-        new Translate(subDrivetrain, Units.Meters.of(2), Units.Degrees.of(-45), Units.Percent.of(0.5)));
+        new Translate(subDrivetrain, Units.Meters.of(0.85), Units.Degrees.of(90), Units.Percent.of(0.5)),
+        Commands.waitSeconds(0.5),
+        new Translate(subDrivetrain, Units.Meters.of(0.38), Units.Degrees.of(135), Units.Percent.of(1)),
+        Commands.waitSeconds(0.5),
+        new Translate(subDrivetrain, Units.Meters.of(1.08), Units.Degrees.of(220), Units.Percent.of(1)),
+        new RotateInPlace(subDrivetrain, Units.Degrees.of(180)));
   }
 }
