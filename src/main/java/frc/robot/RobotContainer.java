@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.frcteam3255.joystick.SN_XboxController;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.constControllers;
@@ -34,7 +36,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetrain.resetModulesToAbsolute()));
-    conDriver.btn_Back.onTrue(Commands.runOnce(() -> subDrivetrain.resetYaw()));
+    conDriver.btn_Back
+        .onTrue(Commands.runOnce(() -> subDrivetrain.resetPoseToPose(new Pose2d(0, 0, new Rotation2d()))));
 
     // Defaults to Field-Relative, is Robot-Relative while held
     conDriver.btn_LeftBumper

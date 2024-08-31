@@ -42,9 +42,9 @@ public class ExampleAuto extends SequentialCommandGroup {
 
     addCommands(
         new Translate(subDrivetrain, Units.Meters.of(1), Units.Degrees.of(45), Units.Percent.of(1)),
-        Commands.waitSeconds(2),
+        Commands.waitSeconds(0.5),
         new RotateInPlace(subDrivetrain, Units.Degrees.of(45)),
-        Commands.waitSeconds(2),
+        Commands.waitSeconds(0.5),
         new Translate(subDrivetrain, Units.Meters.of(2), Units.Degrees.of(-45), Units.Percent.of(0.5)));
   }
 }

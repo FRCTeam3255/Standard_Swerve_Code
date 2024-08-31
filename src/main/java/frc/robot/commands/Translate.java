@@ -63,8 +63,8 @@ public class Translate extends Command {
   @Override
   public void initialize() {
     // Calculate the desired velocities without regard for distance
-    xVelocity = Units.MetersPerSecond.of(Math.cos(desiredAngle.in(Units.Radians)) * percentSpeed.in(Units.Percent));
-    yVelocity = Units.MetersPerSecond.of(Math.sin(desiredAngle.in(Units.Radians)) * percentSpeed.in(Units.Percent));
+    xVelocity = Units.MetersPerSecond.of(Math.cos(desiredAngle.in(Units.Radians)) * percentSpeed.in(Units.Percent) * 2);
+    yVelocity = Units.MetersPerSecond.of(Math.sin(desiredAngle.in(Units.Radians)) * percentSpeed.in(Units.Percent) * 2);
 
     // Calculate our final pose
     currentPose = new Pose2d(subDrivetrain.getPose().getTranslation(), new Rotation2d());
