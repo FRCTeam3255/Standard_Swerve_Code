@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Dimensionless;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
@@ -29,12 +30,32 @@ public class Translate extends Command {
   Measure<Velocity<Distance>> xVelocity;
   Measure<Velocity<Distance>> yVelocity;
 
-  /** Creates a new Translate. */
-  public Translate(Drivetrain subDrivetrain, Measure<Distance> desiredDistance, Measure<Angle> desiredAngle) {
+  Measure<Dimensionless> percentSpeed;
+
+  /**
+   * Automatically translate the robot for a given distance, at a specified angle
+   * in the Field Coordinate System, and at a percentage of our max speed.
+   * 
+   * @param subDrivetrain   The instance of the subsystem we are making run this
+   *                        command
+   * @param desiredDistance The desired distance you would like to travel in that
+   *                        direction
+   * @param desiredAngle    The desired angle you would like to travel in
+   *                        (Field-Relative Angle)
+   * @param percentSpeed    The percent of our predefined max speed to go at (± 1
+   *                        meter per second)
+   * 
+   * @see <a href=
+   *      "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html">Field
+   *      Coordinate System</a>
+   */
+  public Translate(Drivetrain subDrivetrain, Measure<Distance> desiredDistance, Measure<Angle> desiredAngle,
+      Measure<Dimensionless> percentSpeed) {
     this.subDrivetrain = subDrivetrain;
     this.desiredDistance = desiredDistance;
     this.desiredAngle = desiredAngle;
-    // Use addRequirements() here to declare subsystem dependencies.
+    this.percentSpeed = percentSpeed;
+
     addRequirements(subDrivetrain);
   }
 
@@ -42,13 +63,11 @@ public class Translate extends Command {
   @Override
   public void initialize() {
     // Calculate the desired velocities without regard for distance
-    xVelocity = Units.MetersPerSecond.of(Math.cos(desiredAngle.in(Units.Radians)));
-    yVelocity = Units.MetersPerSecond.of(Math.sin(desiredAngle.in(Units.Radians)));
+    xVelocity = Units.MetersPerSecond.of(Math.cos(desiredAngle.in(Units.Radians)) * percentSpeed.in(Units.Percent));
+    yVelocity = Units.MetersPerSecond.of(Math.sin(desiredAngle.in(Units.Radians)) * percentSpeed.in(Units.Percent));
 
     // Calculate our final pose
-    // this is where im losing it because it hangs itself if desiredAngle isnt 0
-    // TODO: STOP LOSING IT
-    currentPose = subDrivetrain.getPose();
+    currentPose = new Pose2d(subDrivetrain.getPose().getTranslation(), new Rotation2d());
     Translation2d translation = new Translation2d(desiredDistance.in(Units.Meters), new Rotation2d(desiredAngle));
     Transform2d transform = new Transform2d(translation, new Rotation2d());
     finalPose = currentPose.transformBy(transform);

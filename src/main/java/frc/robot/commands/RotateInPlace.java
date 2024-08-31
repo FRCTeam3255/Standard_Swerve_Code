@@ -9,7 +9,6 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.constDrivetrain;
 import frc.robot.subsystems.Drivetrain;
@@ -20,7 +19,19 @@ public class RotateInPlace extends Command {
   Measure<Velocity<Angle>> rVelocity;
   final boolean isOpenLoop = false;
 
-  /** Creates a new rotateInPlace. */
+  /**
+   * Rotates the robot in place to face a given Field-Relative rotation.
+   * 
+   * @param subDrivetrain   The instance of the subsystem we are making run this
+   *                        command
+   * @param desiredRotation The desired angle you would like to rotate towards
+   *                        (Field-Relative Angle)
+   * 
+   * @see <a href=
+   *      "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html">Field
+   *      Coordinate System</a>
+   * 
+   */
   public RotateInPlace(Drivetrain subDrivetrain, Measure<Angle> desiredRotation) {
     this.subDrivetrain = subDrivetrain;
     this.desiredRotation = desiredRotation;

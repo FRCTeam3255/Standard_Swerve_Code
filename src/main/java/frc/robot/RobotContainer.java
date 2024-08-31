@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.frcteam3255.joystick.SN_XboxController;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.constControllers;
@@ -42,6 +43,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new ExampleAuto(subDrivetrain);
+    return Commands.runOnce(() -> subDrivetrain.resetPoseToPose(Constants.constField.WORKSHOP_STARTING_POSE))
+        .andThen(new ExampleAuto(subDrivetrain));
   }
 }

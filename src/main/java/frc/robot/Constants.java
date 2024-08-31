@@ -11,6 +11,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.frcteam3255.components.swerve.SN_SwerveConstants;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -105,5 +107,7 @@ public final class Constants {
       }
       return false;
     };
+
+    public static final Pose2d WORKSHOP_STARTING_POSE = new Pose2d(0, 1, new Rotation2d());
   }
 }
