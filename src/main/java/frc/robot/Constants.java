@@ -108,6 +108,6 @@ public final class Constants {
       return false;
     };
 
-    public static final Pose2d WORKSHOP_STARTING_POSE = new Pose2d(0, 0, new Rotation2d(0));
+    public static final Pose2d WORKSHOP_STARTING_POSE = new Pose2d(5.98, 2.60, new Rotation2d(0));
   }
 }
