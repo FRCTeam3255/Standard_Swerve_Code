@@ -22,6 +22,7 @@ public class ExampleAuto extends SequentialCommandGroup {
      *  a. RotateInPlace
      *  b. Translate
      *  c. Commands.waitSeconds
+     * TIP: You can hover over the names of these methods to view what inputs they need
      * An example is already done for you below, but feel free to remove it and get creative!
      *
      * 2. View a simulation of your robot driving!
@@ -30,6 +31,13 @@ public class ExampleAuto extends SequentialCommandGroup {
      *  c. Once the code is done building, select "SIM GUI" from the pop-up window.
      *  d. Use Field2d or AdvantageScope to view your robot
      *  e. Run the autonomous by selecting "Autonomous" from Glass
+     *  f. You can re-run the autonomous by selecting "Disable" and then hitting "Autonomous" again.
+     * 
+     * 2.5 Edit your simulation and run it again (if applicable)
+     *  a. End the previous simulation by closing the SIM GUI window (red X in the top right)
+     *      OR by returning to VSCode (here!) and hitting the Red Square at the top of your screen.
+     *  b. Make your code changes
+     *  b. Re-run the simulation by repeating the steps in part 2
      * 
      * 3. Run your path on the real robot
      *  a. Place the robot in our specified starting location
@@ -41,15 +49,27 @@ public class ExampleAuto extends SequentialCommandGroup {
      */
 
     addCommands(
-        new Translate(subDrivetrain, Units.Meters.of(1.08), Units.Degrees.of(-50), Units.Percent.of(1)),
+        // -- Add your commands between these lines! --
+
+        new Translate(
+            subDrivetrain,
+            Units.Meters.of(1.08),
+            Units.Degrees.of(50),
+            -0.5),
+
         Commands.waitSeconds(0.5),
-        new Translate(subDrivetrain, Units.Meters.of(0.38), Units.Degrees.of(45), Units.Percent.of(1)),
-        Commands.waitSeconds(0.5),
-        new Translate(subDrivetrain, Units.Meters.of(0.85), Units.Degrees.of(90), Units.Percent.of(0.5)),
-        Commands.waitSeconds(0.5),
-        new Translate(subDrivetrain, Units.Meters.of(0.38), Units.Degrees.of(135), Units.Percent.of(1)),
-        Commands.waitSeconds(0.5),
-        new Translate(subDrivetrain, Units.Meters.of(1.08), Units.Degrees.of(220), Units.Percent.of(1)),
-        new RotateInPlace(subDrivetrain, Units.Degrees.of(180)));
+
+        new RotateInPlace(
+            subDrivetrain,
+            Units.Degrees.of(270)),
+
+        new Translate(
+            subDrivetrain,
+            Units.Meters.of(1.08),
+            Units.Degrees.of(180 + 50),
+            0.3)
+
+    // -- Add your commands between these lines! --
+    );
   }
 }
