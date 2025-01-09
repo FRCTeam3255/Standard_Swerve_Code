@@ -8,12 +8,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Dimensionless;
-import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Dimensionless;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.constDrivetrain;
@@ -23,14 +24,14 @@ public class Translate extends Command {
   Drivetrain subDrivetrain;
   Pose2d currentPose;
   Pose2d finalPose;
-  Measure<Distance> desiredDistance;
-  Measure<Angle> desiredAngle;
+  Distance desiredDistance;
+  Angle desiredAngle;
   final boolean isOpenLoop = false;
 
-  Measure<Velocity<Distance>> xVelocity;
-  Measure<Velocity<Distance>> yVelocity;
+  LinearVelocity xVelocity;
+  LinearVelocity yVelocity;
 
-  Measure<Dimensionless> percentSpeed;
+  Dimensionless percentSpeed;
 
   /**
    * Automatically translate the robot for a given distance, at a specified angle
@@ -49,8 +50,8 @@ public class Translate extends Command {
    *      "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html">Field
    *      Coordinate System</a>
    */
-  public Translate(Drivetrain subDrivetrain, Measure<Distance> desiredDistance, Measure<Angle> desiredAngle,
-      Measure<Dimensionless> percentSpeed) {
+  public Translate(Drivetrain subDrivetrain, Distance desiredDistance, Angle desiredAngle,
+      Dimensionless percentSpeed) {
     this.subDrivetrain = subDrivetrain;
     this.desiredDistance = desiredDistance;
     this.desiredAngle = desiredAngle;

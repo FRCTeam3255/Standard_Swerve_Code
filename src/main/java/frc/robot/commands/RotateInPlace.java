@@ -5,10 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.constDrivetrain;
@@ -16,8 +17,8 @@ import frc.robot.subsystems.Drivetrain;
 
 public class RotateInPlace extends Command {
   Drivetrain subDrivetrain;
-  Measure<Angle> desiredRotation;
-  Measure<Velocity<Angle>> rVelocity;
+  Angle desiredRotation;
+  AngularVelocity rVelocity;
   final boolean isOpenLoop = false;
 
   /**
@@ -33,7 +34,7 @@ public class RotateInPlace extends Command {
    *      Coordinate System</a>
    * 
    */
-  public RotateInPlace(Drivetrain subDrivetrain, Measure<Angle> desiredRotation) {
+  public RotateInPlace(Drivetrain subDrivetrain, Angle desiredRotation) {
     this.subDrivetrain = subDrivetrain;
     this.desiredRotation = desiredRotation;
 
