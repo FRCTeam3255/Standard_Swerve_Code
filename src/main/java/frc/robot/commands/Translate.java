@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import java.util.InputMismatchException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -15,6 +16,8 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.constDrivetrain;
@@ -33,6 +36,7 @@ public class Translate extends Command {
 
   Dimensionless percentSpeed;
 
+
   /**
    * Automatically translate the robot for a given distance, at a specified angle
    * in the Field Coordinate System, and at a percentage of our max speed.
@@ -40,22 +44,26 @@ public class Translate extends Command {
    * @param subDrivetrain   The instance of the subsystem we are making run this
    *                        command
    * @param desiredDistance The desired distance you would like to travel in that
-   *                        direction
+   *                        direction (Positives Only)
    * @param desiredAngle    The desired angle you would like to travel in
    *                        (Field-Relative Angle)
-   * @param percentSpeed    The percent of our predefined max speed to go at (± 1
-   *                        meter per second)
+   * @param percentSpeed    The percent of our predefined max speed to go at as a
+   *                        decimal (Positives Only)
    * 
    * @see <a href=
    *      "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html">Field
    *      Coordinate System</a>
    */
+
   public Translate(Drivetrain subDrivetrain, Distance desiredDistance, Angle desiredAngle,
-      Dimensionless percentSpeed) {
+      Dimensionless percentSpeed) throws InputMismatchException {
+
     this.subDrivetrain = subDrivetrain;
     this.desiredDistance = desiredDistance;
     this.desiredAngle = desiredAngle;
     this.percentSpeed = percentSpeed;
+
+    checkParamValidity();
 
     addRequirements(subDrivetrain);
   }
@@ -64,8 +72,8 @@ public class Translate extends Command {
   @Override
   public void initialize() {
     // Calculate the desired velocities without regard for distance
-    xVelocity = Units.MetersPerSecond.of(Math.cos(desiredAngle.in(Units.Radians)) * percentSpeed.in(Units.Percent) * 2);
-    yVelocity = Units.MetersPerSecond.of(Math.sin(desiredAngle.in(Units.Radians)) * percentSpeed.in(Units.Percent) * 2);
+    xVelocity = Units.MetersPerSecond.of(Math.cos(desiredAngle.in(Units.Radians)) * percentSpeed * 2);
+    yVelocity = Units.MetersPerSecond.of(Math.sin(desiredAngle.in(Units.Radians)) * percentSpeed * 2);
 
     // Calculate our final pose
     currentPose = new Pose2d(subDrivetrain.getPose().getTranslation(), new Rotation2d());
@@ -98,5 +106,20 @@ public class Translate extends Command {
         Math.pow((currentPose.getX() - finalPose.getX()), 2) + Math.pow((currentPose.getY() - finalPose.getY()), 2));
     SmartDashboard.putNumber("DISTANCE", distance);
     return distance < constDrivetrain.AT_POINT_TOLERANCE.in(Units.Meters);
+  }
+
+  /**
+   * Checks if the user has provided valid parameters. Throws an exception if any
+   * of the parameters are invalid.
+   */
+  public void checkParamValidity() {
+    if (desiredDistance.magnitude() < 0) {
+      DriverStation.reportError("Invalid Distance Provided: Please provide a positive distance", true);
+      throw new InputMismatchException();
+    }
+    if (percentSpeed <= 0 || percentSpeed > 1) {
+      DriverStation.reportError("Invalid Percent Provided: Please provide a positive percent as a decimal", true);
+      throw new InputMismatchException();
+    }
   }
 }

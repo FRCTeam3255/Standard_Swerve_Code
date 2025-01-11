@@ -124,7 +124,7 @@ public class Drivetrain extends SN_SuperSwerve {
   public AngularVelocity getVelocityToRotate(Angle desiredYaw) {
     return getVelocityToRotate(Rotation2d.fromDegrees(desiredYaw.in(Units.Degrees)));
   }
-
+  
   public Angle getRotationMeasure() {
     return Units.Degrees.of(getRotation().getDegrees());
   }
@@ -157,6 +157,6 @@ public class Drivetrain extends SN_SuperSwerve {
     robotPosePublisher.set(getPose());
 
     SmartDashboard.putData(field);
-    SmartDashboard.putNumber("Drivetrain/Rotation", getRotation().getDegrees());
+    SmartDashboard.putNumber("Drivetrain/Rotation", getRotationMeasure().in(Units.Degrees));
   }
 }
