@@ -185,7 +185,11 @@ public final class Constants {
           DRIVE_MOTOR,
           DRIVE_CURRENT_LIMIT, 1);
 
-      public static final Translation2d[] MODULE_OFFSETS = {};
+      public static final Translation2d[] MODULE_OFFSETS = {
+          new Translation2d(WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
+          new Translation2d(WHEELBASE / 2.0, -TRACK_WIDTH / 2.0),
+          new Translation2d(-WHEELBASE / 2.0, TRACK_WIDTH / 2.0),
+          new Translation2d(-WHEELBASE / 2.0, -TRACK_WIDTH / 2.0) };
 
       public static final RobotConfig ROBOT_CONFIG = new RobotConfig(MASS, MOI, MODULE_CONFIG, MODULE_OFFSETS);
     }
