@@ -55,7 +55,7 @@ public class ExampleAuto extends SequentialCommandGroup {
             subDrivetrain,
             Units.Meters.of(1.08),
             Units.Degrees.of(50),
-            -0.5),
+            0.5),
 
         Commands.waitSeconds(0.5),
 
