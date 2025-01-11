@@ -10,12 +10,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,8 +31,7 @@ public class Translate extends Command {
   LinearVelocity xVelocity;
   LinearVelocity yVelocity;
 
-  Dimensionless percentSpeed;
-
+  double percentSpeed;
 
   /**
    * Automatically translate the robot for a given distance, at a specified angle
@@ -56,7 +52,7 @@ public class Translate extends Command {
    */
 
   public Translate(Drivetrain subDrivetrain, Distance desiredDistance, Angle desiredAngle,
-      Dimensionless percentSpeed) throws InputMismatchException {
+      double percentSpeed) throws InputMismatchException {
 
     this.subDrivetrain = subDrivetrain;
     this.desiredDistance = desiredDistance;
