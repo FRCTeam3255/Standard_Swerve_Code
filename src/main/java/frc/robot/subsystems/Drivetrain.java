@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.frcteam3255.components.swerve.SN_SuperSwerve;
-import com.frcteam3255.components.swerve.SN_SwerveConstants;
 import com.frcteam3255.components.swerve.SN_SwerveModule;
 import com.pathplanner.lib.config.PIDConstants;
 
@@ -19,21 +18,16 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.Constants.constDrivetrain;
 import frc.robot.Constants.constField;
+import frc.robot.Constants.constVision;
 import frc.robot.RobotMap.mapDrivetrain;
-import frc.robot.RobotPreferences.prefDrivetrain;
-import frc.robot.RobotPreferences.prefVision;
 
 public class Drivetrain extends SN_SuperSwerve {
-  private static TalonFXConfiguration driveConfiguration = new TalonFXConfiguration();
-  private static TalonFXConfiguration steerConfiguration = new TalonFXConfiguration();
   private static PIDController yawSnappingController;
 
   StructPublisher<Pose2d> robotPosePublisher = NetworkTableInstance.getDefault()
@@ -58,49 +52,42 @@ public class Drivetrain extends SN_SuperSwerve {
         constDrivetrain.TRACK_WIDTH,
         mapDrivetrain.CAN_BUS_NAME,
         mapDrivetrain.PIGEON_CAN,
-        prefDrivetrain.minimumSteerSpeedPercent,
+        constDrivetrain.MIN_STEER_PERCENT,
         constDrivetrain.DRIVE_MOTOR_INVERT,
         constDrivetrain.STEER_MOTOR_INVERT,
         constDrivetrain.CANCODER_INVERT,
         constDrivetrain.DRIVE_NEUTRAL_MODE,
         constDrivetrain.STEER_NEUTRAL_MODE,
         VecBuilder.fill(
-            prefDrivetrain.measurementStdDevsPosition,
-            prefDrivetrain.measurementStdDevsPosition,
-            prefDrivetrain.measurementStdDevsHeading),
+            constDrivetrain.MEASUREMENT_STD_DEVS_POS,
+            constDrivetrain.MEASUREMENT_STD_DEVS_POS,
+            constDrivetrain.MEASUREMENT_STD_DEV_HEADING),
         VecBuilder.fill(
-            prefVision.multiTagStdDevsPosition,
-            prefVision.multiTagStdDevsPosition,
-            prefVision.multiTagStdDevsHeading),
-        new PIDConstants(prefDrivetrain.autoDriveP,
-            prefDrivetrain.autoDriveI,
-            prefDrivetrain.autoDriveD),
-        new PIDConstants(prefDrivetrain.autoSteerP,
-            prefDrivetrain.autoSteerI,
-            prefDrivetrain.autoSteerD),
-        new ReplanningConfig(false, true),
+            constVision.STD_DEVS_POS,
+            constVision.STD_DEVS_POS,
+            constVision.STD_DEVS_HEADING),
+        new PIDConstants(constDrivetrain.AUTO.AUTO_DRIVE_P,
+            constDrivetrain.AUTO.AUTO_DRIVE_I,
+            constDrivetrain.AUTO.AUTO_DRIVE_D),
+        new PIDConstants(constDrivetrain.AUTO.AUTO_STEER_P,
+            constDrivetrain.AUTO.AUTO_STEER_I,
+            constDrivetrain.AUTO.AUTO_STEER_D),
+        constDrivetrain.AUTO.ROBOT_CONFIG,
         () -> constField.isRedAlliance(),
         Robot.isSimulation());
 
     yawSnappingController = new PIDController(
-        prefDrivetrain.yawSnapP,
-        prefDrivetrain.yawSnapI,
-        prefDrivetrain.yawSnapD);
+        constDrivetrain.YAW_SNAP_P,
+        constDrivetrain.YAW_SNAP_I,
+        constDrivetrain.YAW_SNAP_D);
     yawSnappingController.enableContinuousInput(0, 360);
   }
 
   @Override
   public void configure() {
-    driveConfiguration.Slot0.kP = prefDrivetrain.driveP;
-    driveConfiguration.Slot0.kI = prefDrivetrain.driveI;
-    driveConfiguration.Slot0.kD = prefDrivetrain.driveD;
-
-    steerConfiguration.Slot0.kP = prefDrivetrain.steerP;
-    steerConfiguration.Slot0.kI = prefDrivetrain.steerI;
-    steerConfiguration.Slot0.kD = prefDrivetrain.steerD;
-
-    SN_SwerveModule.driveConfiguration = driveConfiguration;
-    SN_SwerveModule.steerConfiguration = steerConfiguration;
+    SN_SwerveModule.driveConfiguration = constDrivetrain.DRIVE_CONFIG;
+    SN_SwerveModule.steerConfiguration = constDrivetrain.STEER_CONFIG;
+    SN_SwerveModule.cancoderConfiguration = constDrivetrain.CANCODER_CONFIG;
     super.configure();
   }
 
@@ -120,8 +107,8 @@ public class Drivetrain extends SN_SuperSwerve {
     double yawSetpoint = yawSnappingController.calculate(getRotation().getDegrees(), desiredYaw.getDegrees());
 
     // limit the PID output to our maximum rotational speed
-    yawSetpoint = MathUtil.clamp(yawSetpoint, -prefDrivetrain.turnSpeed,
-        prefDrivetrain.turnSpeed);
+    yawSetpoint = MathUtil.clamp(yawSetpoint, -constDrivetrain.TURN_SPEED.in(Units.DegreesPerSecond),
+        constDrivetrain.TURN_SPEED.in(Units.DegreesPerSecond));
 
     return Units.DegreesPerSecond.of(yawSetpoint);
   }

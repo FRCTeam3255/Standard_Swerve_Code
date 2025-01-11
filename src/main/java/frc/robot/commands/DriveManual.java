@@ -7,9 +7,9 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotPreferences.prefDrivetrain;
+import frc.robot.Constants.constDrivetrain;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveManual extends Command {
@@ -36,9 +36,9 @@ public class DriveManual extends Command {
   @Override
   public void execute() {
     // Get Joystick inputs
-    double xVelocity = xAxis.getAsDouble() * Units.feetToMeters(prefDrivetrain.driveSpeed.getValue());
-    double yVelocity = -yAxis.getAsDouble() * Units.feetToMeters(prefDrivetrain.driveSpeed.getValue());
-    double rVelocity = -rotationAxis.getAsDouble() * Units.degreesToRadians(prefDrivetrain.turnSpeed.getValue());
+    double xVelocity = xAxis.getAsDouble() * constDrivetrain.DRIVE_SPEED.in(Units.MetersPerSecond);
+    double yVelocity = -yAxis.getAsDouble() * constDrivetrain.DRIVE_SPEED.in(Units.MetersPerSecond);
+    double rVelocity = -rotationAxis.getAsDouble() * constDrivetrain.TURN_SPEED.in(Units.RadiansPerSecond);
 
     subDrivetrain.drive(new Translation2d(xVelocity, yVelocity), rVelocity, isOpenLoop);
   }
