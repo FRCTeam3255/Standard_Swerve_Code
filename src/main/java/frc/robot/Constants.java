@@ -49,21 +49,17 @@ public final class Constants {
     public static final double BACK_LEFT_ABS_ENCODER_OFFSET = 0.258789;
     public static final double BACK_RIGHT_ABS_ENCODER_OFFSET = -0.290039;
 
-    public static final double WHEEL_DIAMETER = 0.09779;
+    public static final SN_SwerveConstants SWERVE_CONSTANTS = new SN_SwerveConstants(
+        SN_SwerveConstants.MK4I.FALCON.L3.steerGearRatio,
+        0.09779 * Math.PI,
+        SN_SwerveConstants.MK4I.FALCON.L3.driveGearRatio,
+        SN_SwerveConstants.MK4I.FALCON.L3.maxSpeedMeters);
+
+    public static final double DRIVE_GEAR_RATIO = SWERVE_CONSTANTS.driveGearRatio;
+    public static final double STEER_GEAR_RATIO = SWERVE_CONSTANTS.steerGearRatio;
+    public static final double WHEEL_CIRCUMFERENCE = SWERVE_CONSTANTS.wheelCircumference;
+    public static final double WHEEL_DIAMETER = WHEEL_CIRCUMFERENCE / Math.PI;
     public static final Distance WHEEL_RADIUS = Units.Meters.of(WHEEL_DIAMETER / 2);
-    public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
-
-    // Taken from the online listing
-    public static final double DRIVE_GEAR_RATIO = 6.75;
-    public static final double STEER_GEAR_RATIO = 150.0 / 7.0;
-
-    /**
-     * <p>
-     * Theoretical maximum translational speed while manually driving on the
-     * Competition Robot.
-     * </p>
-     * <b>Units:</b> Meters Per Second
-     */
     public static final double THEORETICAL_MAX_DRIVE_SPEED = SN_SwerveConstants.MK4I.FALCON.L3.maxSpeedMeters;
 
     /**
@@ -78,12 +74,6 @@ public final class Constants {
     public static final double TRACK_WIDTH = Units.Meters.convertFrom(23.75, Units.Inches);
     // Distance between Front & Back Wheels
     public static final double WHEELBASE = Units.Meters.convertFrom(23.75, Units.Inches);
-
-    public static final SN_SwerveConstants SWERVE_CONSTANTS = new SN_SwerveConstants(
-        SN_SwerveConstants.MK4I.FALCON.L3.steerGearRatio,
-        0.09779 * Math.PI,
-        SN_SwerveConstants.MK4I.FALCON.L3.driveGearRatio,
-        SN_SwerveConstants.MK4I.FALCON.L3.maxSpeedMeters);
 
     public static final double AT_ROTATION_TOLERANCE = 0.1;
     public static final Distance AT_POINT_TOLERANCE = Units.Meters.of(0.1);
