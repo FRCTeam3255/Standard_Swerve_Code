@@ -56,10 +56,10 @@ public class ExampleAuto extends SequentialCommandGroup {
 
     this.subDrivetrain = subDrivetrain;
     addCommands(
-        rotationalAlign(Rotation2d.fromDegrees(0)),
-        // TODO: FIGURE OUT WHY WE NEED TO RUN THIS FIRST :<
+        Commands.print("Running your Autonomous! :)"), // DO NOT REMOVE THIS LINE
 
         // -- Add your commands between these lines! --
+        rotationalAlign(Rotation2d.fromDegrees(90)),
 
         autoAlign(new Pose2d(2, 2, Rotation2d.fromDegrees(90))),
 
