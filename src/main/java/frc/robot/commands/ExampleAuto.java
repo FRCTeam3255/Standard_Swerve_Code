@@ -4,9 +4,15 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.units.Units;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.constDrivetrain;
 import frc.robot.subsystems.Drivetrain;
 
 public class ExampleAuto extends SequentialCommandGroup {
@@ -19,7 +25,7 @@ public class ExampleAuto extends SequentialCommandGroup {
      * 
      * Self-Driving Robot Workshop Usage:
      * 1. Build your self-driving robot command using the following commands:
-     *  a. RotateInPlace
+     *  a. autoDrive
      *  b. Translate
      *  c. Commands.waitSeconds
      * TIP: You can hover over the names of these methods to view what inputs they need
@@ -48,28 +54,44 @@ public class ExampleAuto extends SequentialCommandGroup {
      * @formatter:on
      */
 
+    this.subDrivetrain = subDrivetrain;
     addCommands(
+        Commands.print("Running your Autonomous! :)"), // DO NOT REMOVE THIS LINE
+
         // -- Add your commands between these lines! --
+        rotationalAlign(Rotation2d.fromDegrees(90)),
 
-        new Translate(
-            subDrivetrain,
-            Units.Meters.of(1.08),
-            Units.Degrees.of(50),
-            0.5),
+        autoAlign(new Pose2d(2, 2, Rotation2d.fromDegrees(90))),
 
-        Commands.waitSeconds(0.5),
+        Commands.waitSeconds(1),
 
-        new RotateInPlace(
-            subDrivetrain,
-            Units.Degrees.of(270)),
-
-        new Translate(
-            subDrivetrain,
-            Units.Meters.of(1.08),
-            Units.Degrees.of(180 + 50),
-            0.3)
+        rotationalAlign(Rotation2d.fromDegrees(0))
 
     // -- Add your commands between these lines! --
     );
+  }
+
+  // Simplified commands for auto drive & auto align methods :3
+  Command autoAlign(Pose2d desiredTarget) {
+    return Commands
+        .runOnce(
+            () -> subDrivetrain.autoAlign(false, desiredTarget, MetersPerSecond.zero(),
+                MetersPerSecond.zero(), true,
+                false, false))
+        .repeatedly().asProxy()
+        .until(() -> subDrivetrain.isAtPosition(desiredTarget,
+            constDrivetrain.TELEOP_AUTO_ALIGN.AT_POINT_TOLERANCE)
+            && subDrivetrain.isAtRotation(desiredTarget.getRotation(),
+                constDrivetrain.TELEOP_AUTO_ALIGN.AT_ROTATION_TOLERANCE));
+  }
+
+  Command rotationalAlign(Rotation2d desiredTarget) {
+    return Commands
+        .runOnce(
+            () -> subDrivetrain.rotationalAlign(false, new Pose2d(Translation2d.kZero, desiredTarget),
+                MetersPerSecond.zero(), MetersPerSecond.zero(), true))
+        .repeatedly().asProxy()
+        .until(
+            () -> subDrivetrain.isAtRotation(desiredTarget, constDrivetrain.TELEOP_AUTO_ALIGN.AT_ROTATION_TOLERANCE));
   }
 }
