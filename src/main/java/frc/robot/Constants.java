@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Kilograms;
 
 import java.util.Optional;
-import java.util.stream.DoubleStream.DoubleMapMultiConsumer;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -140,9 +139,9 @@ public final class Constants {
 
     public static class AUTO {
       // This PID is implemented on the Drivetrain subsystem
-      public static final PIDConstants AUTO_DRIVE_PID = new PIDConstants(8, 0.0, 0.0);
+      public static final PIDConstants AUTO_DRIVE_PID = new PIDConstants(9, 0.0, 0.0);
 
-      public static final PIDConstants AUTO_STEER_PID = new PIDConstants(2.5, 0.0, 0.0);
+      public static final PIDConstants AUTO_STEER_PID = new PIDConstants(5.6, 0.0, 0.0);
 
       // Feet
       public static final double AUTO_MAX_SPEED = 8;
