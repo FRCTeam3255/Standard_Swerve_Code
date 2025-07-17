@@ -24,18 +24,17 @@ public class DriveManual extends Command {
   double redAllianceMultiplier = 1;
   StateMachine subStateMachine;
 
-  public DriveManual(Drivetrain subDrivetrain, DoubleSupplier xAxis, DoubleSupplier yAxis,
+  public DriveManual(Drivetrain subDrivetrain, StateMachine subStateMachine, DoubleSupplier xAxis, DoubleSupplier yAxis,
       DoubleSupplier rotationAxis) {
     this.subDrivetrain = subDrivetrain;
+    this.subStateMachine = subStateMachine;
     this.xAxis = xAxis;
     this.yAxis = yAxis;
     this.rotationAxis = rotationAxis;
-    this.subStateMachine = subStateMachine;
 
     isOpenLoop = true;
 
     addRequirements(this.subDrivetrain);
-    addRequirements(this.subStateMachine);
   }
 
   @Override
@@ -54,7 +53,6 @@ public class DriveManual extends Command {
 
     subStateMachine.setDriverState(StateMachine.DriverState.MANUAL);
 
-    subDrivetrain.drive(new Translation2d(xVelocity, yVelocity), rVelocity, isOpenLoop);
   }
 
   @Override
