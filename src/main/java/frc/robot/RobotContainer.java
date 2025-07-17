@@ -15,12 +15,19 @@ import frc.robot.RobotMap.mapControllers;
 import frc.robot.commands.DriveManual;
 import frc.robot.commands.ExampleAuto;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.StateMachine.RobotState;
 
 public class RobotContainer {
 
   private final SN_XboxController conDriver = new SN_XboxController(mapControllers.DRIVER_USB);
 
   private final Drivetrain subDrivetrain = new Drivetrain();
+
+  private final StateMachine subStateMachine = new StateMachine();
+
+  Command TRY_NONE = Commands.deferredProxy(
+      () -> subStateMachine.tryState(RobotState.NONE));
 
   public RobotContainer() {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
