@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import frc.robot.subsystems.*;
+
+import java.lang.Thread.State;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,12 +15,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.constDrivetrain;
 import frc.robot.Constants.constField;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.StateMachine.DriverState;
 
 public class DriveManual extends Command {
   Drivetrain subDrivetrain;
   DoubleSupplier xAxis, yAxis, rotationAxis;
   boolean isOpenLoop;
   double redAllianceMultiplier = 1;
+  StateMachine subStateMachine;
 
   public DriveManual(Drivetrain subDrivetrain, DoubleSupplier xAxis, DoubleSupplier yAxis,
       DoubleSupplier rotationAxis) {
@@ -25,10 +30,12 @@ public class DriveManual extends Command {
     this.xAxis = xAxis;
     this.yAxis = yAxis;
     this.rotationAxis = rotationAxis;
+    this.subStateMachine = subStateMachine;
 
     isOpenLoop = true;
 
     addRequirements(this.subDrivetrain);
+    addRequirements(this.subStateMachine);
   }
 
   @Override
@@ -44,6 +51,8 @@ public class DriveManual extends Command {
     double yVelocity = -yAxis.getAsDouble() * constDrivetrain.REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
         * redAllianceMultiplier;
     double rVelocity = -rotationAxis.getAsDouble() * constDrivetrain.TURN_SPEED.in(Units.RadiansPerSecond);
+
+    subStateMachine.setDriverState(StateMachine.DriverState.MANUAL);
 
     subDrivetrain.drive(new Translation2d(xVelocity, yVelocity), rVelocity, isOpenLoop);
   }

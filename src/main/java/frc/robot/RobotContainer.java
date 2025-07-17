@@ -12,10 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.constControllers;
 import frc.robot.RobotMap.mapControllers;
-import frc.robot.commands.DriveManual;
-import frc.robot.commands.ExampleAuto;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.StateMachine;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.subsystems.StateMachine.RobotState;
 
 public class RobotContainer {
@@ -24,7 +22,7 @@ public class RobotContainer {
 
   private final Drivetrain subDrivetrain = new Drivetrain();
 
-  private final StateMachine subStateMachine = new StateMachine();
+  private final StateMachine subStateMachine = new StateMachine(subDrivetrain);
 
   Command TRY_NONE = Commands.deferredProxy(
       () -> subStateMachine.tryState(RobotState.NONE));

@@ -6,15 +6,24 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.*;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.states.*;
+import frc.robot.subsystems.*;
 
 public class StateMachine extends SubsystemBase {
   public static DriverState currentDriverState;
   public static RobotState currentRobotState;
+  Drivetrain subDrivetrain;
+  StateMachine subStateMachine = this;
 
   /** Creates a new StateMachine. */
-  public StateMachine() {
+  public StateMachine(Drivetrain subDrivetrain) {
+    currentRobotState = RobotState.NONE;
+    currentDriverState = DriverState.MANUAL;
+
+    this.subDrivetrain = subDrivetrain;
   }
 
   public void setRobotState(RobotState robotState) {
@@ -38,7 +47,7 @@ public class StateMachine extends SubsystemBase {
       case NONE:
         switch (currentRobotState) {
           case NONE:
-            // TODO: return Commands
+            return new None();
         }
         break;
     }
@@ -48,7 +57,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   public enum DriverState {
-    NONE
+    MANUAL
   }
 
   public enum RobotState {
