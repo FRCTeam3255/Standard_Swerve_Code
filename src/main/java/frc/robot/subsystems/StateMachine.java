@@ -47,7 +47,7 @@ public class StateMachine extends SubsystemBase {
       case NONE:
         switch (currentRobotState) {
           case NONE:
-            return new None();
+            return new None(subStateMachine);
         }
         break;
     }

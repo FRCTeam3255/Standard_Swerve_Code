@@ -35,6 +35,7 @@ public class DriveManual extends Command {
     isOpenLoop = true;
 
     addRequirements(this.subDrivetrain);
+    addRequirements(this.subStateMachine);
   }
 
   @Override

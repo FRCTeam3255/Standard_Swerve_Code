@@ -13,8 +13,9 @@ public class None extends Command {
 
   StateMachine globalStateMachine;
 
-  public None() {
+  public None(StateMachine globalStateMachine) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.globalStateMachine = globalStateMachine;
     addRequirements(globalStateMachine);
   }
 
