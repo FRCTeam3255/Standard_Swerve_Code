@@ -14,3 +14,25 @@ Originally the repository for creating FRC 3255's swerve drive classes in [Super
 - https://github.com/FRCTeam3255/Robot2023
 - https://github.com/dirtbikerxz/BaseTalonFXSwerve
 - https://github.com/SeanSun6814/FRC0ToAutonomous and his [video](https://www.youtube.com/watch?v=0Xi9yb1IMyA)
+
+# README Template
+
+# XXXX_Robot_Code - FRC Team 3255's XXXX Robot
+Jump into the code [`here!`](src/main/java/frc/robot)
+
+## This robot will compete at the following competitions: 
+
+## View Our Robots in Action!
+- [Instagram](https://www.instagram.com/frcteam3255/) 
+- [YouTube (Primary)](https://www.youtube.com/@FRC3255)
+- [YouTube (Clips)](https://www.youtube.com/@FRC3255Clips)
+- [Build Thread (Chief Delphi)]()
+- [Website](https://supernurds.com)
+
+## What is "The Game"
+
+## Software Features
+
+## Field Calibration
+
+## Checklists
