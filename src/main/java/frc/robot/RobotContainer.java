@@ -16,6 +16,10 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.StateMachine.RobotState;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+
+@Logged
 public class RobotContainer {
 
   private final SN_XboxController conDriver = new SN_XboxController(mapControllers.DRIVER_USB);
