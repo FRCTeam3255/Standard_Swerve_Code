@@ -35,12 +35,13 @@ public class RobotContainer {
             new DriveManual(subDrivetrain, subStateMachine, conDriver.axis_LeftY, conDriver.axis_LeftX,
                 conDriver.axis_RightX));
 
-    configureBindings();
+    configDriverBindings();
+    configOperatorBindings();
 
     subDrivetrain.resetModulesToAbsolute();
   }
 
-  private void configureBindings() {
+  private void configDriverBindings() {
     conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetrain.resetModulesToAbsolute()));
     conDriver.btn_Back
         .onTrue(Commands.runOnce(() -> subDrivetrain.resetPoseToPose(new Pose2d(0, 0, new Rotation2d()))));
@@ -54,5 +55,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return Commands.runOnce(() -> subDrivetrain.resetPoseToPose(Constants.constField.WORKSHOP_STARTING_POSE))
         .andThen(new ExampleAuto(subDrivetrain));
+  }
+
+  private void configOperatorBindings() {
+    // Add operator bindings here if needed
+  }
+
+  public RobotState getRobotState() {
+    return subStateMachine.getRobotState();
   }
 }
