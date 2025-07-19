@@ -4,12 +4,15 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class RobotPoses extends SubsystemBase {
   /** Creates a new RobotPoses. */
 
   Drivetrain subDrivetrain;
+
+  Pose3d comp0Drivetrain = Pose3d.kZero;
 
   public RobotPoses(Drivetrain subDrivetrain) {
     this.subDrivetrain = subDrivetrain;
@@ -18,5 +21,9 @@ public class RobotPoses extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    // Robot Positions
+    comp0Drivetrain = new Pose3d(subDrivetrain.getPose());
+
   }
 }
