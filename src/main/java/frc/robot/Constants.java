@@ -77,15 +77,14 @@ public final class Constants {
     public static final LinearVelocity REAL_DRIVE_SPEED = Units.FeetPerSecond.of(15.1);
     // Physically measured from center to center of the wheels
     // Distance between Left & Right Wheels for 25 by 25 frame
-    // TODO: Replace with a measurement of the actual robot
-    public static final double TRACK_WIDTH_25 = Units.Meters.convertFrom(0, Units.Inches);
+    public static final double TRACK_WIDTH_25 = Units.Meters.convertFrom(19.75, Units.Inches);
     // Distance between Front & Back Wheels for 25 by 25 frame
-    public static final double WHEELBASE_25 = Units.Meters.convertFrom(0, Units.Inches);
+    public static final double WHEELBASE_25 = Units.Meters.convertFrom(19.75, Units.Inches);
 
     // Distance between Left & Right Wheels for 29 by 29 frame
-    public static final double TRACK_WIDTH_29 = Units.Meters.convertFrom(0, Units.Inches);
+    public static final double TRACK_WIDTH_29 = Units.Meters.convertFrom(23.75, Units.Inches);
     // Distance between Front & Back Wheels for 29 by 29 frame
-    public static final double WHEELBASE_29 = Units.Meters.convertFrom(0, Units.Inches);
+    public static final double WHEELBASE_29 = Units.Meters.convertFrom(23.75, Units.Inches);
 
     // Distance between Left & Right Wheels
     public static final double TRACK_WIDTH = TRACK_WIDTH_29; // TODO: Replace with actual measurement
