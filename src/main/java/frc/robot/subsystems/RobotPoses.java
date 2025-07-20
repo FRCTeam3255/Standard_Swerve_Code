@@ -4,13 +4,17 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+@Logged
 public class RobotPoses extends SubsystemBase {
   /** Creates a new RobotPoses. */
 
+  @NotLogged
   Drivetrain subDrivetrain;
 
   Pose3d comp0Drivetrain = Pose3d.kZero;
