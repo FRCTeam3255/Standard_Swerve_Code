@@ -23,6 +23,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -32,6 +34,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -41,6 +44,9 @@ public final class Constants {
    * Volts
    */
   public static final double MAX_VOLTAGE = 12;
+
+  public static final Transform3d ROBOT_TO_BUMPERS = new Transform3d(0, 0, Units.Meters.convertFrom(5, Units.Inches),
+      Rotation3d.kZero); // TODO: Replace with actual measurement
 
   public static class constControllers {
     public static final double DRIVER_LEFT_STICK_DEADBAND = 0.05;
@@ -52,6 +58,8 @@ public final class Constants {
 
     // In Rotations: Obtain by aligning all of the wheels in the correct direction
     // and copy-pasting the Raw Absolute Encoder value
+
+    // TODO: Swoffsets
     public static final double FRONT_LEFT_ABS_ENCODER_OFFSET = 0.417236;
     public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET = -0.254395;
     public static final double BACK_LEFT_ABS_ENCODER_OFFSET = 0.258789;
@@ -74,10 +82,20 @@ public final class Constants {
      */
     public static final LinearVelocity REAL_DRIVE_SPEED = Units.FeetPerSecond.of(15.1);
     // Physically measured from center to center of the wheels
+    // Distance between Left & Right Wheels for 25 by 25 frame
+    public static final double TRACK_WIDTH_25 = Units.Meters.convertFrom(19.75, Units.Inches);
+    // Distance between Front & Back Wheels for 25 by 25 frame
+    public static final double WHEELBASE_25 = Units.Meters.convertFrom(19.75, Units.Inches);
+
+    // Distance between Left & Right Wheels for 29 by 29 frame
+    public static final double TRACK_WIDTH_29 = Units.Meters.convertFrom(23.75, Units.Inches);
+    // Distance between Front & Back Wheels for 29 by 29 frame
+    public static final double WHEELBASE_29 = Units.Meters.convertFrom(23.75, Units.Inches);
+
     // Distance between Left & Right Wheels
-    public static final double TRACK_WIDTH = Units.Meters.convertFrom(23.75, Units.Inches);
+    public static final double TRACK_WIDTH = TRACK_WIDTH_29; // TODO: Replace with actual measurement
     // Distance between Front & Back Wheels
-    public static final double WHEELBASE = Units.Meters.convertFrom(23.75, Units.Inches);
+    public static final double WHEELBASE = WHEELBASE_29; // TODO: Replace with actual measurement
 
     // -- Pose Estimation --
     /**
@@ -112,6 +130,7 @@ public final class Constants {
     // -- Motor Configurations --
     static {
       // This PID is implemented on each module, not the Drivetrain subsystem.
+      // TODO: PID
       DRIVE_CONFIG.Slot0.kP = 0.18;
       DRIVE_CONFIG.Slot0.kI = 0.0;
       DRIVE_CONFIG.Slot0.kD = 0.0;
@@ -139,6 +158,7 @@ public final class Constants {
 
     public static class AUTO {
       // This PID is implemented on the Drivetrain subsystem
+      // TODO: AUTO PID
       public static final PIDConstants AUTO_DRIVE_PID = new PIDConstants(9, 0.0, 0.0);
 
       public static final PIDConstants AUTO_STEER_PID = new PIDConstants(5.6, 0.0, 0.0);

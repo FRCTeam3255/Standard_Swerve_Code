@@ -63,10 +63,12 @@ public class StateMachine extends SubsystemBase {
 
   public enum DriverState {
     MANUAL
+    // TODO: Add other driver states as needed
   }
 
   public enum RobotState {
     NONE
+    // TODO: Add other robot states as needed
   }
 
   @Override
