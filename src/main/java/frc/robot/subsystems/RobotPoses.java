@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class RobotPoses extends SubsystemBase {
   /** Creates a new RobotPoses. */
@@ -13,6 +14,7 @@ public class RobotPoses extends SubsystemBase {
   Drivetrain subDrivetrain;
 
   Pose3d comp0Drivetrain = Pose3d.kZero;
+  Pose3d comp1Bumpers = Pose3d.kZero.plus(Constants.ROBOT_TO_BUMPERS);
 
   public RobotPoses(Drivetrain subDrivetrain) {
     this.subDrivetrain = subDrivetrain;
@@ -24,6 +26,5 @@ public class RobotPoses extends SubsystemBase {
 
     // Robot Positions
     comp0Drivetrain = new Pose3d(subDrivetrain.getPose());
-
   }
 }
