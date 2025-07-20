@@ -23,6 +23,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -32,6 +34,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -41,6 +44,9 @@ public final class Constants {
    * Volts
    */
   public static final double MAX_VOLTAGE = 12;
+
+  public static final Transform3d ROBOT_TO_BUMPERS = new Transform3d(0, 0, Units.Meters.convertFrom(5, Units.Inches),
+      Rotation3d.kZero); // TODO: Replace with actual measurement
 
   public static class constControllers {
     public static final double DRIVER_LEFT_STICK_DEADBAND = 0.05;
@@ -90,6 +96,7 @@ public final class Constants {
     public static final double TRACK_WIDTH = TRACK_WIDTH_29; // TODO: Replace with actual measurement
     // Distance between Front & Back Wheels
     public static final double WHEELBASE = WHEELBASE_29; // TODO: Replace with actual measurement
+
     // -- Pose Estimation --
     /**
      * <p>
