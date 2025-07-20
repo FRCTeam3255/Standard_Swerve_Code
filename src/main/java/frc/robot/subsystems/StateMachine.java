@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.*;
@@ -12,10 +14,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.states.*;
 import frc.robot.subsystems.*;
 
+@Logged
 public class StateMachine extends SubsystemBase {
   public static DriverState currentDriverState;
   public static RobotState currentRobotState;
+  @NotLogged
   Drivetrain subDrivetrain;
+  @NotLogged
   StateMachine subStateMachine = this;
 
   /** Creates a new StateMachine. */

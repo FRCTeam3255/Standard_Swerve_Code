@@ -4,15 +4,24 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.net.WebServer;
+import edu.wpi.first.units.measure.MutCurrent;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.constField;
+import edu.wpi.first.cameraserver.CameraServer;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -22,11 +31,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+    Epilogue.bind(this);
     m_robotContainer = new RobotContainer();
 
     // Set out log file to be in its own folder
     if (Robot.isSimulation()) {
-      DataLogManager.start("src/main");
+      DataLogManager.start("logs");
     } else {
       DataLogManager.start();
     }
