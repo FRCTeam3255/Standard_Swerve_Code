@@ -45,7 +45,7 @@ public final class Constants {
    */
   public static final double MAX_VOLTAGE = 12;
 
-  public static final Transform3d ROBOT_TO_BUMPERS = new Transform3d(0, 0, Units.Meters.convertFrom(0, Units.Inches),
+  public static final Transform3d ROBOT_TO_BUMPERS = new Transform3d(0, 0, Units.Meters.convertFrom(5, Units.Inches),
       Rotation3d.kZero); // TODO: Replace with actual measurement
 
   public static class constControllers {
