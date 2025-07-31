@@ -14,7 +14,6 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.constDrivetrain;
 import frc.robot.Constants.constField;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.StateMachine.DriverState;
 
 public class DriveManual extends Command {
@@ -51,6 +50,9 @@ public class DriveManual extends Command {
     double yVelocity = -yAxis.getAsDouble() * constDrivetrain.REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
         * redAllianceMultiplier;
     double rVelocity = -rotationAxis.getAsDouble() * constDrivetrain.TURN_SPEED.in(Units.RadiansPerSecond);
+
+    subDrivetrain.drive(
+        new Translation2d(xVelocity, yVelocity), rVelocity, isOpenLoop);
 
     subStateMachine.setDriverState(StateMachine.DriverState.MANUAL);
 
