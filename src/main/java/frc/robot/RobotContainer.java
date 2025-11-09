@@ -44,8 +44,21 @@ public class RobotContainer {
       () -> subStateMachine.tryState(RobotState.NONE));
 
   Command MANUAL = new DeferredCommand(
-      subDriverStateMachine.tryState(DriverStateMachine.DriverState.MANUAL, conDriver.axis_LeftY,
-          conDriver.axis_LeftX, conDriver.axis_RightX, conDriver.btn_RightBumper),
+      subDriverStateMachine.tryState(
+          DriverStateMachine.DriverState.MANUAL,
+          conDriver.axis_LeftY,
+          conDriver.axis_LeftX,
+          conDriver.axis_RightX,
+          conDriver.btn_RightBumper),
+      Set.of(subDriverStateMachine));
+
+  Command EXAMPLE_POSE_DRIVE = new DeferredCommand(
+      subDriverStateMachine.tryState(
+          DriverStateMachine.DriverState.EXAMPLE_POSE_DRIVE,
+          conDriver.axis_LeftY,
+          conDriver.axis_LeftX,
+          conDriver.axis_RightX,
+          conDriver.btn_RightBumper),
       Set.of(subDriverStateMachine));
 
   public RobotContainer() {
@@ -69,6 +82,11 @@ public class RobotContainer {
     conDriver.btn_LeftBumper
         .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative()))
         .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
+
+    // Example Pose Drive
+    conDriver.btn_X
+        .whileTrue(EXAMPLE_POSE_DRIVE)
+        .onFalse(Commands.runOnce(() -> subDriverStateMachine.setDriverState(DriverState.MANUAL)));
   }
 
   public void configAutonomous() {

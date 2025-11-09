@@ -15,22 +15,30 @@ import frc.robot.constant.ConstField;
 import frc.robot.constant.ConstPoseDrive.PoseDriveGroup;
 import frc.robot.subsystems.DriverStateMachine;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.StateMachine;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PoseDrive extends Command {
   /** Creates a new PoseDrive. */
   Drivetrain subDrivetrain;
   DriverStateMachine subDriverStateMachine;
-  StateMachine subStateMachine;
   DoubleSupplier xAxis, yAxis, rotationAxis;
   BooleanSupplier slowMode;
   PoseDriveGroup poseGroup;
   Pose2d closestPose;
   public boolean isPoseAligned = false;
 
-  public PoseDrive() {
+  public PoseDrive(Drivetrain subDrivetrain, DriverStateMachine subDriverStateMachine,
+      DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier rotationAxis, BooleanSupplier slowMode,
+      PoseDriveGroup poseGroup) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.subDrivetrain = subDrivetrain;
+    this.subDriverStateMachine = subDriverStateMachine;
+    this.xAxis = xAxis;
+    this.yAxis = yAxis;
+    this.rotationAxis = rotationAxis;
+    this.poseGroup = poseGroup;
+    this.slowMode = slowMode;
+    addRequirements(this.subDriverStateMachine);
   }
 
   // Called when the command is initially scheduled.
@@ -44,7 +52,6 @@ public class PoseDrive extends Command {
     closestPose = subDrivetrain.getPose().nearest(poseGroup.targetPoseGroup);
     subDrivetrain.lastDesiredPoseGroup = poseGroup;
 
-    // TODO: add real velocities
     ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
         xAxis,
         yAxis,

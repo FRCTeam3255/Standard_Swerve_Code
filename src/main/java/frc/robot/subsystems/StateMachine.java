@@ -13,7 +13,6 @@ import frc.robot.commands.states.*;
 
 @Logged
 public class StateMachine extends SubsystemBase {
-  public static DriverState currentDriverState;
   public static RobotState currentRobotState;
   @NotLogged
   Drivetrain subDrivetrain;
@@ -23,7 +22,6 @@ public class StateMachine extends SubsystemBase {
   /** Creates a new StateMachine. */
   public StateMachine(Drivetrain subDrivetrain) {
     currentRobotState = RobotState.NONE;
-    currentDriverState = DriverState.MANUAL;
 
     this.subDrivetrain = subDrivetrain;
   }
@@ -34,14 +32,6 @@ public class StateMachine extends SubsystemBase {
 
   public RobotState getRobotState() {
     return currentRobotState;
-  }
-
-  public DriverState getDriverState() {
-    return currentDriverState;
-  }
-
-  public void setDriverState(DriverState driverState) {
-    currentDriverState = driverState;
   }
 
   public Command tryState(RobotState desiredState) {
@@ -56,11 +46,6 @@ public class StateMachine extends SubsystemBase {
     return Commands
         .print("ITS SO OVER D: Invalid State Provided, Blame Eli. Attempted to go to: " + desiredState.toString()
             + " while at " + currentRobotState.toString());
-  }
-
-  public enum DriverState {
-    MANUAL
-    // TODO: Add other driver states as needed
   }
 
   public enum RobotState {

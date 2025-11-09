@@ -8,13 +8,16 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DriveManual;
-import frc.robot.subsystems.StateMachine.DriverState;
+import frc.robot.commands.PoseDrive;
+import frc.robot.constant.ConstPoseDrive;
 
+@Logged
 public class DriverStateMachine extends SubsystemBase {
   /** Creates a new DriverStateMachine. */
   public static DriverState currentDriverState = DriverState.MANUAL;
@@ -39,6 +42,8 @@ public class DriverStateMachine extends SubsystemBase {
 
   public enum DriverState {
     MANUAL,
+    EXAMPLE_POSE_DRIVE,
+    EXAMPLE_ROTATION_SNAP,
     CHOREO
   }
 
@@ -52,6 +57,8 @@ public class DriverStateMachine extends SubsystemBase {
       case MANUAL:
         switch (currentDriverState) {
           case MANUAL:
+          case EXAMPLE_POSE_DRIVE:
+          case CHOREO:
             return () -> new DriveManual(
                 subDrivetrain,
                 xAxis,
@@ -59,6 +66,37 @@ public class DriverStateMachine extends SubsystemBase {
                 rotationAxis,
                 subDriverStateMachine,
                 slowMode);
+        }
+        break;
+
+      case EXAMPLE_POSE_DRIVE:
+        switch (currentDriverState) {
+          case MANUAL:
+          case EXAMPLE_POSE_DRIVE:
+            return () -> new PoseDrive(
+                subDrivetrain,
+                subDriverStateMachine,
+                xAxis,
+                yAxis,
+                rotationAxis,
+                slowMode,
+                ConstPoseDrive.EXAMPLE_POSE_DRIVE_GROUP);
+        }
+        break;
+
+      case EXAMPLE_ROTATION_SNAP:
+        switch (currentDriverState) {
+          case EXAMPLE_POSE_DRIVE:
+          case EXAMPLE_ROTATION_SNAP:
+          case MANUAL:
+            return () -> new PoseDrive(
+                subDrivetrain,
+                subDriverStateMachine,
+                xAxis,
+                yAxis,
+                rotationAxis,
+                slowMode,
+                ConstPoseDrive.EXAMPLE_POSE_DRIVE_GROUP);
         }
 
         break;
