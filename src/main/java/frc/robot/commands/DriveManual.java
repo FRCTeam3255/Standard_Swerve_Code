@@ -6,56 +6,64 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.*;
 
-import java.lang.Thread.State;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.constDrivetrain;
-import frc.robot.Constants.constField;
-import frc.robot.subsystems.StateMachine.DriverState;
+import frc.robot.constant.ConstDrivetrain;
+import frc.robot.constant.ConstField;
 
 public class DriveManual extends Command {
   Drivetrain subDrivetrain;
   DoubleSupplier xAxis, yAxis, rotationAxis;
   boolean isOpenLoop;
   double redAllianceMultiplier = 1;
+  double slowModeMultiplier = 1;
   StateMachine subStateMachine;
+  DriverStateMachine subDriverStateMachine;
+  BooleanSupplier slowMode;
 
-  public DriveManual(Drivetrain subDrivetrain, StateMachine subStateMachine, DoubleSupplier xAxis, DoubleSupplier yAxis,
-      DoubleSupplier rotationAxis) {
+  public DriveManual(Drivetrain subDrivetrain, DoubleSupplier xAxis, DoubleSupplier yAxis,
+      DoubleSupplier rotationAxis, DriverStateMachine subDriverStateMachine, BooleanSupplier slowMode) {
     this.subDrivetrain = subDrivetrain;
-    this.subStateMachine = subStateMachine;
+    this.subDriverStateMachine = subDriverStateMachine;
     this.xAxis = xAxis;
     this.yAxis = yAxis;
     this.rotationAxis = rotationAxis;
+    this.slowMode = slowMode;
 
     isOpenLoop = true;
 
     addRequirements(this.subDrivetrain);
-    addRequirements(this.subStateMachine);
   }
 
   @Override
   public void initialize() {
-    redAllianceMultiplier = constField.isRedAlliance() ? -1 : 1;
+    redAllianceMultiplier = ConstField.isRedAlliance() ? -1 : 1;
+    slowModeMultiplier = slowMode.getAsBoolean() ? ConstDrivetrain.SLOW_MODE_MULTIPLIER : 1;
   }
 
   @Override
   public void execute() {
-    // Get Joystick inputs
-    double xVelocity = xAxis.getAsDouble() * constDrivetrain.REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
-        * redAllianceMultiplier;
-    double yVelocity = -yAxis.getAsDouble() * constDrivetrain.REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
-        * redAllianceMultiplier;
-    double rVelocity = -rotationAxis.getAsDouble() * constDrivetrain.TURN_SPEED.in(Units.RadiansPerSecond);
+    ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
+        xAxis,
+        yAxis,
+        rotationAxis,
+        slowMode,
+        ConstField.isRedAlliance(),
+        ConstDrivetrain.SLOW_MODE_MULTIPLIER,
+        ConstDrivetrain.REAL_DRIVE_SPEED,
+        ConstDrivetrain.TURN_SPEED);
+
+    subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
 
     subDrivetrain.drive(
-        new Translation2d(xVelocity, yVelocity), rVelocity, isOpenLoop);
-
-    subStateMachine.setDriverState(StateMachine.DriverState.MANUAL);
-
+        new Translation2d(velocities.vxMetersPerSecond, velocities.vyMetersPerSecond),
+        velocities.omegaRadiansPerSecond,
+        isOpenLoop);
   }
 
   @Override

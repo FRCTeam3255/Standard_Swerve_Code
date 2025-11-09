@@ -4,16 +4,23 @@
 
 package frc.robot;
 
+import java.util.Set;
+
 import com.frcteam3255.joystick.SN_XboxController;
 
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.constControllers;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.robot.RobotMap.mapControllers;
 import frc.robot.commands.*;
+import frc.robot.constant.ConstField;
+import frc.robot.constant.Constants.constControllers;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.DriverStateMachine.DriverState;
 import frc.robot.subsystems.StateMachine.RobotState;
 
 import edu.wpi.first.epilogue.Logged;
@@ -21,23 +28,31 @@ import edu.wpi.first.epilogue.NotLogged;
 
 @Logged
 public class RobotContainer {
+  @NotLogged
+  SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+  private AutoFactory autoFactory;
 
   private final SN_XboxController conDriver = new SN_XboxController(mapControllers.DRIVER_USB);
 
   private final Drivetrain subDrivetrain = new Drivetrain();
+  private final DriverStateMachine subDriverStateMachine = new DriverStateMachine(subDrivetrain);
   private final StateMachine subStateMachine = new StateMachine(subDrivetrain);
   private final RobotPoses robotPose = new RobotPoses(subDrivetrain);
 
   Command TRY_NONE = Commands.deferredProxy(
       () -> subStateMachine.tryState(RobotState.NONE));
 
+  Command MANUAL = new DeferredCommand(
+      subDriverStateMachine.tryState(DriverStateMachine.DriverState.MANUAL, conDriver.axis_LeftY,
+          conDriver.axis_LeftX, conDriver.axis_RightX, conDriver.btn_RightBumper),
+      Set.of(subDriverStateMachine));
+
   public RobotContainer() {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
 
-    subDrivetrain
-        .setDefaultCommand(
-            new DriveManual(subDrivetrain, subStateMachine, conDriver.axis_LeftY, conDriver.axis_LeftX,
-                conDriver.axis_RightX));
+    subDriverStateMachine
+        .setDefaultCommand(MANUAL);
 
     configDriverBindings();
     configOperatorBindings();
@@ -56,9 +71,23 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
   }
 
+  public void configAutonomous() {
+    autoFactory = new AutoFactory(
+        subDrivetrain::getPose, // A function that returns the current robot pose
+        subDrivetrain::resetPoseToPose, // A function that resets the current robot pose to the provided Pose2d
+        subDrivetrain::followTrajectory, // The drive subsystem trajectory follower
+        true, // If alliance flipping should be enabled
+        subDriverStateMachine // The drive subsystem
+    );
+  }
+
+  public Command runPath(String pathName) {
+    return autoFactory.trajectoryCmd(pathName).asProxy()
+        .alongWith(Commands.runOnce(() -> subDriverStateMachine.setDriverState(DriverState.CHOREO)));
+  }
+
   public Command getAutonomousCommand() {
-    return Commands.runOnce(() -> subDrivetrain.resetPoseToPose(Constants.constField.WORKSHOP_STARTING_POSE))
-        .andThen(new ExampleAuto(subDrivetrain));
+    return autoChooser.getSelected();
   }
 
   private void configOperatorBindings() {
