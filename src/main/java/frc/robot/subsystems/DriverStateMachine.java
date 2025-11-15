@@ -28,7 +28,6 @@ public class DriverStateMachine extends SubsystemBase {
   DriverStateMachine subDriverStateMachine = this;
 
   public DriverStateMachine(Drivetrain subDrivetrain) {
-    currentDriverState = DriverState.MANUAL;
     this.subDrivetrain = subDrivetrain;
   }
 
