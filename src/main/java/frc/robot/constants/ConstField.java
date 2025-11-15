@@ -88,7 +88,7 @@ public class ConstField {
     }
   }
 
-  public static final Distance FIELD_LENGTH = Units.Feet.of(57).plus(Units.Inches.of(6 + 7 / 8));
+  public static final Distance FIELD_LENGTH = Units.Feet.of(57).plus(Units.Inches.of(6.875));
   public static final Distance FIELD_WIDTH = Units.Feet.of(26).plus(Units.Inches.of(5));
 
   /**
