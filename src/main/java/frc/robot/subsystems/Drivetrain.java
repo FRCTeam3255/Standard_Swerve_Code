@@ -32,7 +32,7 @@ public class Drivetrain extends SN_SuperSwerve {
       .getStructTopic("/SmartDashboard/Drivetrain/Robot Pose", Pose2d.struct).publish();
 
   public PoseDriveGroup lastDesiredPoseGroup;
-  private Pose2d lastDesiredTarget;
+  public Pose2d lastDesiredTarget;
 
   private static SN_SwerveModule[] modules = new SN_SwerveModule[] {
       new SN_SwerveModule(0, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
