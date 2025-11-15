@@ -20,8 +20,6 @@ public class DriveManual extends Command {
   Drivetrain subDrivetrain;
   DoubleSupplier xAxis, yAxis, rotationAxis;
   boolean isOpenLoop;
-  double redAllianceMultiplier = 1;
-  double slowModeMultiplier = 1;
   StateMachine subStateMachine;
   DriverStateMachine subDriverStateMachine;
   BooleanSupplier slowMode;
@@ -42,8 +40,6 @@ public class DriveManual extends Command {
 
   @Override
   public void initialize() {
-    redAllianceMultiplier = ConstField.isRedAlliance() ? -1 : 1;
-    slowModeMultiplier = slowMode.getAsBoolean() ? ConstDrivetrain.SLOW_MODE_MULTIPLIER : 1;
   }
 
   @Override
