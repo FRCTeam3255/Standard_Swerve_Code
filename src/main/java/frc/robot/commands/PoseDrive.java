@@ -51,6 +51,7 @@ public class PoseDrive extends Command {
   public void execute() {
     closestPose = subDrivetrain.getPose().nearest(poseGroup.targetPoseGroup);
     subDrivetrain.lastDesiredPoseGroup = poseGroup;
+    subDrivetrain.lastDesiredTarget = closestPose;
 
     ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
         xAxis,
