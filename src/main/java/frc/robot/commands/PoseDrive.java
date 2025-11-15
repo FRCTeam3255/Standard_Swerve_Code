@@ -97,6 +97,7 @@ public class PoseDrive extends Command {
     if (closestPose == null) {
       return false;
     }
+    isPoseAligned = subDrivetrain.isAtPosition(closestPose, poseGroup.distanceTolerance) &&
         subDrivetrain.isAtRotation(closestPose.getRotation(), poseGroup.rotationTolerance);
     return isPoseAligned;
   }
