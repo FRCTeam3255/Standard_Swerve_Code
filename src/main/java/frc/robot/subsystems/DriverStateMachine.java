@@ -96,7 +96,7 @@ public class DriverStateMachine extends SubsystemBase {
                 yAxis,
                 rotationAxis,
                 slowMode,
-                ConstPoseDrive.EXAMPLE_ROTATION_SNAP_GROUP);
+                ConstPoseDrive.EXAMPLE_POSE_DRIVE_GROUP);
         }
 
         break;
