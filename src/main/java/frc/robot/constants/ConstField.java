@@ -14,7 +14,19 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
-/** Add your docs here. */
+/**
+ * Provides constants and utilities for field dimensions and alliance-specific pose management.
+ * <p>
+ * This class defines the field size and contains logic for handling poses that need to be mirrored
+ * between the blue and red alliances. The {@link Pose2dAllianceSet} inner class allows you to define
+ * a set of poses for the blue alliance and automatically generates the corresponding mirrored poses
+ * for the red alliance, as well as a combined set for both alliances.
+ * <p>
+ * The field mirroring functionality is essential for autonomous routines and path planning, ensuring
+ * that robot positions and trajectories can be easily adapted for both sides of the field. The
+ * {@link #isRedAlliance()} method can be used to determine the current alliance and select the
+ * appropriate pose set.
+ */
 public class ConstField {
   public static Optional<Alliance> ALLIANCE = Optional.empty();
 
