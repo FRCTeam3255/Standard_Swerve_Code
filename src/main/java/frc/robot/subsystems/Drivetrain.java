@@ -7,74 +7,147 @@ package frc.robot.subsystems;
 import com.frcteam3255.components.swerve.SN_SuperSwerve;
 import com.frcteam3255.components.swerve.SN_SwerveModule;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
-import frc.robot.Constants.constDrivetrain;
-import frc.robot.Constants.constField;
-import frc.robot.Constants.constVision;
 import frc.robot.RobotMap.mapDrivetrain;
+import frc.robot.constants.ConstDrivetrain;
+import frc.robot.constants.ConstField;
+import frc.robot.constants.ConstVision;
+import frc.robot.constants.ConstPoseDrive.PoseDriveGroup;
 
 @Logged
 public class Drivetrain extends SN_SuperSwerve {
   StructPublisher<Pose2d> robotPosePublisher = NetworkTableInstance.getDefault()
       .getStructTopic("/SmartDashboard/Drivetrain/Robot Pose", Pose2d.struct).publish();
 
+  public PoseDriveGroup lastDesiredPoseGroup;
+  public Pose2d lastDesiredTarget;
+
   private static SN_SwerveModule[] modules = new SN_SwerveModule[] {
       new SN_SwerveModule(0, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
-          mapDrivetrain.FRONT_LEFT_ABSOLUTE_ENCODER_CAN, constDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
+          mapDrivetrain.FRONT_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
           mapDrivetrain.CAN_BUS_NAME),
       new SN_SwerveModule(1, mapDrivetrain.FRONT_RIGHT_DRIVE_CAN, mapDrivetrain.FRONT_RIGHT_STEER_CAN,
-          mapDrivetrain.FRONT_RIGHT_ABSOLUTE_ENCODER_CAN, constDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
+          mapDrivetrain.FRONT_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
           mapDrivetrain.CAN_BUS_NAME),
       new SN_SwerveModule(2, mapDrivetrain.BACK_LEFT_DRIVE_CAN, mapDrivetrain.BACK_LEFT_STEER_CAN,
-          mapDrivetrain.BACK_LEFT_ABSOLUTE_ENCODER_CAN, constDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
+          mapDrivetrain.BACK_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
           mapDrivetrain.CAN_BUS_NAME),
       new SN_SwerveModule(3, mapDrivetrain.BACK_RIGHT_DRIVE_CAN, mapDrivetrain.BACK_RIGHT_STEER_CAN,
-          mapDrivetrain.BACK_RIGHT_ABSOLUTE_ENCODER_CAN, constDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
+          mapDrivetrain.BACK_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
           mapDrivetrain.CAN_BUS_NAME),
   };
 
   public Drivetrain() {
     super(
-        constDrivetrain.SWERVE_CONSTANTS,
+        ConstDrivetrain.SWERVE_CONSTANTS,
         modules,
-        constDrivetrain.WHEELBASE,
-        constDrivetrain.TRACK_WIDTH,
+        ConstDrivetrain.WHEELBASE,
+        ConstDrivetrain.TRACK_WIDTH,
         mapDrivetrain.CAN_BUS_NAME,
         mapDrivetrain.PIGEON_CAN,
-        constDrivetrain.MIN_STEER_PERCENT,
-        constDrivetrain.DRIVE_CONFIG,
-        constDrivetrain.STEER_CONFIG,
-        constDrivetrain.CANCODER_CONFIG,
+        ConstDrivetrain.MIN_STEER_PERCENT,
+        ConstDrivetrain.DRIVE_CONFIG,
+        ConstDrivetrain.STEER_CONFIG,
+        ConstDrivetrain.CANCODER_CONFIG,
         VecBuilder.fill(
-            constDrivetrain.MEASUREMENT_STD_DEVS_POS,
-            constDrivetrain.MEASUREMENT_STD_DEVS_POS,
-            constDrivetrain.MEASUREMENT_STD_DEV_HEADING),
+            ConstDrivetrain.MEASUREMENT_STD_DEVS_POS,
+            ConstDrivetrain.MEASUREMENT_STD_DEVS_POS,
+            ConstDrivetrain.MEASUREMENT_STD_DEV_HEADING),
         VecBuilder.fill(
-            constVision.STD_DEVS_POS,
-            constVision.STD_DEVS_POS,
-            constVision.STD_DEVS_HEADING),
-        constDrivetrain.AUTO.AUTO_DRIVE_PID,
-        constDrivetrain.AUTO.AUTO_STEER_PID,
-        constDrivetrain.TELEOP_AUTO_ALIGN.TELEOP_AUTO_ALIGN_CONTROLLER,
-        constDrivetrain.TURN_SPEED,
-        constDrivetrain.AUTO.ROBOT_CONFIG,
-        () -> constField.isRedAlliance(),
+            ConstVision.STD_DEVS_POS,
+            ConstVision.STD_DEVS_POS,
+            ConstVision.STD_DEVS_HEADING),
+        ConstDrivetrain.AUTO.AUTO_DRIVE_PID,
+        ConstDrivetrain.AUTO.AUTO_STEER_PID,
+        ConstDrivetrain.AUTO_ALIGN.POSE_AUTO_ALIGN_CONTROLLER,
+        ConstDrivetrain.TURN_SPEED,
+        ConstDrivetrain.AUTO.ROBOT_CONFIG,
+        () -> ConstField.isRedAlliance(),
         Robot.isSimulation());
+  }
+
+  /**
+   * Determines whether the robot is within the specified auto-drive zone based on
+   * the distance
+   * to a target pose.
+   *
+   * @param autoDriveMaxDistance The maximum allowable distance for the auto-drive
+   *                             zone. If null,
+   *                             the method will return false.
+   * @param target               The target pose to calculate the distance from
+   *                             the robot's current pose.
+   * @return True if the robot's current pose is within the specified maximum
+   *         distance from the target pose,
+   *         false otherwise.
+   */
+  public boolean isInAutoDriveZone(Distance autoDriveMaxDistance, Pose2d target) {
+    if (autoDriveMaxDistance == null) {
+      return false;
+    }
+    Distance distanceFromPose = Units.Meters
+        .of(getPose().getTranslation().getDistance(target.getTranslation()));
+    return distanceFromPose.lt(autoDriveMaxDistance);
+  }
+
+  /**
+   * Checks if the drivetrain is at the last desired field position.
+   * 
+   * This method verifies whether the drivetrain has reached the last desired
+   * target position and orientation within the specified tolerances. If no
+   * target or pose group has been set, it will return false.
+   * 
+   * @return {@code true} if the drivetrain is at the last desired target position
+   *         and orientation within the defined tolerances, {@code false}
+   *         otherwise.
+   */
+  public boolean atLastDesiredFieldPosition() {
+    if (lastDesiredTarget == null || lastDesiredPoseGroup == null) {
+      return false;
+    }
+    return isAtPosition(lastDesiredTarget, lastDesiredPoseGroup.distanceTolerance)
+        && isAtRotation(lastDesiredTarget.getRotation(), lastDesiredPoseGroup.rotationTolerance);
+  }
+
+  /**
+   * Follows a trajectory by calculating the desired chassis speeds based on the
+   * current pose
+   * of the robot and the target pose provided in the trajectory sample.
+   *
+   * @param sample The trajectory sample containing the desired target pose and
+   *               other relevant data.
+   *               This is used to determine the robot's next movement.
+   */
+  public void followTrajectory(SwerveSample sample) {
+    // Get the current pose of the robot
+    Pose2d desiredTarget = sample.getPose();
+    ChassisSpeeds automatedDTVelocity = ConstDrivetrain.AUTO_ALIGN.PATH_AUTO_ALIGN_CONTROLLER.calculate(getPose(),
+        desiredTarget, 0,
+        desiredTarget.getRotation());
+
+    // Apply the generated speeds
+    if (ConstDrivetrain.INVERT_ROTATION) {
+      automatedDTVelocity.omegaRadiansPerSecond = -automatedDTVelocity.omegaRadiansPerSecond;
+    }
+    drive(automatedDTVelocity, true);
   }
 
   @Override
   public void configure() {
-    SN_SwerveModule.driveConfiguration = constDrivetrain.DRIVE_CONFIG;
-    SN_SwerveModule.steerConfiguration = constDrivetrain.STEER_CONFIG;
-    SN_SwerveModule.cancoderConfiguration = constDrivetrain.CANCODER_CONFIG;
+    SN_SwerveModule.driveConfiguration = ConstDrivetrain.DRIVE_CONFIG;
+    SN_SwerveModule.steerConfiguration = ConstDrivetrain.STEER_CONFIG;
+    SN_SwerveModule.cancoderConfiguration = ConstDrivetrain.CANCODER_CONFIG;
     super.configure();
   }
 

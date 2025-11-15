@@ -20,7 +20,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.constField;
+import frc.robot.constants.ConstField;
+import frc.robot.constants.ConstSystem;
 import edu.wpi.first.cameraserver.CameraServer;
 
 @Logged
@@ -45,7 +46,7 @@ public class Robot extends TimedRobot {
     DataLogManager.logNetworkTables(true);
     // Log the DS data and joysticks
     DriverStation.startDataLog(DataLogManager.getLog(), true);
-    DriverStation.silenceJoystickConnectionWarning(Constants.constControllers.SILENCE_JOYSTICK_WARNINGS);
+    DriverStation.silenceJoystickConnectionWarning(ConstSystem.constControllers.SILENCE_JOYSTICK_WARNINGS);
   }
 
   @Override
@@ -59,8 +60,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    constField.ALLIANCE = DriverStation.getAlliance();
-    SmartDashboard.putString("ALLIANCE", constField.ALLIANCE.toString());
+    ConstField.ALLIANCE = DriverStation.getAlliance();
+    SmartDashboard.putString("ALLIANCE", ConstField.ALLIANCE.toString());
   }
 
   @Override
