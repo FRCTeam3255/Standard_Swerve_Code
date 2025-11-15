@@ -78,6 +78,20 @@ public class Drivetrain extends SN_SuperSwerve {
         Robot.isSimulation());
   }
 
+  /**
+   * Determines whether the robot is within the specified auto-drive zone based on
+   * the distance
+   * to a target pose.
+   *
+   * @param autoDriveMaxDistance The maximum allowable distance for the auto-drive
+   *                             zone. If null,
+   *                             the method will return false.
+   * @param target               The target pose to calculate the distance from
+   *                             the robot's current pose.
+   * @return True if the robot's current pose is within the specified maximum
+   *         distance from the target pose,
+   *         false otherwise.
+   */
   public boolean isInAutoDriveZone(Distance autoDriveMaxDistance, Pose2d target) {
     if (autoDriveMaxDistance == null) {
       return false;
@@ -87,6 +101,17 @@ public class Drivetrain extends SN_SuperSwerve {
     return distanceFromPose.lt(autoDriveMaxDistance);
   }
 
+  /**
+   * Checks if the drivetrain is at the last desired field position.
+   * 
+   * This method verifies whether the drivetrain has reached the last desired
+   * target position and orientation within the specified tolerances. If no
+   * target or pose group has been set, it will return false.
+   * 
+   * @return {@code true} if the drivetrain is at the last desired target position
+   *         and orientation within the defined tolerances, {@code false}
+   *         otherwise.
+   */
   public boolean atLastDesiredFieldPosition() {
     if (lastDesiredTarget == null || lastDesiredPoseGroup == null) {
       return false;
@@ -95,6 +120,15 @@ public class Drivetrain extends SN_SuperSwerve {
         && isAtRotation(lastDesiredTarget.getRotation(), lastDesiredPoseGroup.rotationTolerance);
   }
 
+  /**
+   * Follows a trajectory by calculating the desired chassis speeds based on the
+   * current pose
+   * of the robot and the target pose provided in the trajectory sample.
+   *
+   * @param sample The trajectory sample containing the desired target pose and
+   *               other relevant data.
+   *               This is used to determine the robot's next movement.
+   */
   public void followTrajectory(SwerveSample sample) {
     // Get the current pose of the robot
     Pose2d desiredTarget = sample.getPose();
