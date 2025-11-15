@@ -46,7 +46,7 @@ public class DriveManual extends Command {
     ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
         xAxis,
         yAxis,
-        rotationAxis,
+        () -> -rotationAxis.getAsDouble(),
         slowMode,
         ConstField.isRedAlliance(),
         ConstDrivetrain.SLOW_MODE_MULTIPLIER,
