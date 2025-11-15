@@ -5,4 +5,5 @@
 package frc.robot.constants;
 
 /** Add your docs here. */
-public class constMotion {}
+public class ConstMotion {
+}
