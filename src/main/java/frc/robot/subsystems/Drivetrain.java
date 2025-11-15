@@ -88,7 +88,7 @@ public class Drivetrain extends SN_SuperSwerve {
   }
 
   public boolean atLastDesiredFieldPosition() {
-    if (lastDesiredTarget == null) {
+    if (lastDesiredTarget == null || lastDesiredPoseGroup == null) {
       return false;
     }
     return isAtPosition(lastDesiredTarget, lastDesiredPoseGroup.distanceTolerance)

@@ -42,8 +42,6 @@ public class DriveManual extends Command {
 
   @Override
   public void initialize() {
-    redAllianceMultiplier = ConstField.isRedAlliance() ? -1 : 1;
-    slowModeMultiplier = slowMode.getAsBoolean() ? ConstDrivetrain.SLOW_MODE_MULTIPLIER : 1;
   }
 
   @Override
