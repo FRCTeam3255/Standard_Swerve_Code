@@ -31,6 +31,16 @@ public class ConstField {
   public static Optional<Alliance> ALLIANCE = Optional.empty();
 
   // Wrapper for blue-side Pose2d arrays with helpers for red/all
+  /**
+   * Represents a set of {@link Pose2d} objects for alliance-specific field positions.
+   * <p>
+   * This class stores a list of blue-side poses and automatically computes the corresponding
+   * red-side poses by mirroring them across the field. It provides access to the blue, red,
+   * and combined lists of poses, allowing code to easily retrieve poses for the current alliance.
+   * <p>
+   * The transformation to red-side poses is performed by reflecting the blue-side pose
+   * across the field's length and width, and rotating the heading by 180 degrees.
+   */
   public static final class Pose2dAllianceSet {
     private final List<Pose2d> blue;
     private final List<Pose2d> red;

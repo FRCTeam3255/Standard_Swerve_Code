@@ -4,7 +4,12 @@
 
 package frc.robot.constants;
 
-/** Add your docs here. */
+/**
+ * Contains constants related to vision processing for the robot.
+ * <p>
+ * This class provides standard deviation values used by the pose estimator
+ * for vision data, including position (in meters) and heading (in radians).
+ */
 public class ConstVision {
   /**
    * <p>

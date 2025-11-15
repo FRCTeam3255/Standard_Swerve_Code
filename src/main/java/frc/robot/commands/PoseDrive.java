@@ -94,7 +94,9 @@ public class PoseDrive extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    isPoseAligned = subDrivetrain.isAtPosition(closestPose, poseGroup.distanceTolerance) &&
+    if (closestPose == null) {
+      return false;
+    }
         subDrivetrain.isAtRotation(closestPose.getRotation(), poseGroup.rotationTolerance);
     return isPoseAligned;
   }
