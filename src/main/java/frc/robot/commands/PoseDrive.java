@@ -10,9 +10,9 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constant.ConstDrivetrain;
-import frc.robot.constant.ConstField;
-import frc.robot.constant.ConstPoseDrive.PoseDriveGroup;
+import frc.robot.constants.ConstDrivetrain;
+import frc.robot.constants.ConstField;
+import frc.robot.constants.ConstPoseDrive.PoseDriveGroup;
 import frc.robot.subsystems.DriverStateMachine;
 import frc.robot.subsystems.Drivetrain;
 

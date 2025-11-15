@@ -8,7 +8,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constant.Constants;
+import frc.robot.constants.ConstSystem;
 
 @Logged
 public class RobotPoses extends SubsystemBase {
@@ -18,7 +18,7 @@ public class RobotPoses extends SubsystemBase {
   Drivetrain subDrivetrain;
 
   Pose3d comp0Drivetrain = Pose3d.kZero;
-  Pose3d comp1Bumpers = Pose3d.kZero.plus(Constants.ROBOT_TO_BUMPERS);
+  Pose3d comp1Bumpers = Pose3d.kZero.plus(ConstSystem.ROBOT_TO_BUMPERS);
 
   public RobotPoses(Drivetrain subDrivetrain) {
     this.subDrivetrain = subDrivetrain;

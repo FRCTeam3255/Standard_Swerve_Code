@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DriveManual;
 import frc.robot.commands.PoseDrive;
-import frc.robot.constant.ConstPoseDrive;
+import frc.robot.constants.ConstPoseDrive;
 
 @Logged
 public class DriverStateMachine extends SubsystemBase {

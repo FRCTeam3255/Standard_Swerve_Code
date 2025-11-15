@@ -21,10 +21,10 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap.mapDrivetrain;
-import frc.robot.constant.ConstDrivetrain;
-import frc.robot.constant.ConstField;
-import frc.robot.constant.ConstPoseDrive.PoseDriveGroup;
-import frc.robot.constant.ConstVision;
+import frc.robot.constants.ConstDrivetrain;
+import frc.robot.constants.ConstField;
+import frc.robot.constants.ConstVision;
+import frc.robot.constants.ConstPoseDrive.PoseDriveGroup;
 
 @Logged
 public class Drivetrain extends SN_SuperSwerve {
