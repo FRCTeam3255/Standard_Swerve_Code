@@ -69,6 +69,7 @@ public class RobotContainer {
 
     configDriverBindings();
     configOperatorBindings();
+    configAutonomous();
 
     subDrivetrain.resetModulesToAbsolute();
   }
