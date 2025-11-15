@@ -20,7 +20,6 @@ public class DriveManual extends Command {
   Drivetrain subDrivetrain;
   DoubleSupplier xAxis, yAxis, rotationAxis;
   boolean isOpenLoop;
-  StateMachine subStateMachine;
   DriverStateMachine subDriverStateMachine;
   BooleanSupplier slowMode;
 
