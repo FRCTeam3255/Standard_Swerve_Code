@@ -31,7 +31,21 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import frc.robot.Robot;
 
-/** Add your docs here. */
+/**
+ * The {@code ConstDrivetrain} class serves as a centralized repository for all
+ * configuration constants related to the robot's drivetrain subsystem.
+ * <p>
+ * This class contains static final fields for hardware configuration (such as
+ * absolute encoder offsets, gear ratios, wheel dimensions), control parameters
+ * (such as speed multipliers, inversion flags), and physical measurements
+ * (such as track width and wheelbase). These constants are used throughout the
+ * robot code to ensure consistent and maintainable configuration of the
+ * drivetrain.
+ * <p>
+ * Usage: Reference these constants statically wherever drivetrain configuration
+ * values are required. This approach helps avoid magic numbers and makes it
+ * easier to update configuration values in a single location.
+ */
 public class ConstDrivetrain {
   // TODO: Convert all applicable fields to MEASUREs
 
