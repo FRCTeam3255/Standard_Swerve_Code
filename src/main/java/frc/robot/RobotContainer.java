@@ -40,6 +40,7 @@ public class RobotContainer {
   private final DriverStateMachine subDriverStateMachine = new DriverStateMachine(subDrivetrain);
   private final StateMachine subStateMachine = new StateMachine(subDrivetrain);
   private final RobotPoses robotPose = new RobotPoses(subDrivetrain);
+  private final Vision subVision = new Vision();
 
   Command TRY_NONE = Commands.deferredProxy(
       () -> subStateMachine.tryState(RobotState.NONE));
@@ -124,5 +125,10 @@ public class RobotContainer {
 
   public RobotState getRobotState() {
     return subStateMachine.getRobotState();
+  }
+
+  public Command addVisionMeasurement() {
+    return new AddVisionMeasurement(subDrivetrain, subVision)
+        .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
   }
 }
