@@ -159,20 +159,25 @@ public class Vision extends SubsystemBase {
     if (!newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate && !newBackLeftEstimate) {
       return Optional.empty();
 
-    } else if (newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate) {
-      // One valid pose estimate (right)
+    } else if (newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate && !newBackLeftEstimate) {
+      // One valid pose estimate (FR)
       newFrontRightEstimate = false;
       return Optional.of(lastEstimateFrontRight);
 
-    } else if (!newFrontRightEstimate && newFrontLeftEstimate && !newBackRightEstimate) {
-      // One valid pose estimate (left)
+    } else if (!newFrontRightEstimate && newFrontLeftEstimate && !newBackRightEstimate && !newBackLeftEstimate) {
+      // One valid pose estimate (FL)
       newFrontLeftEstimate = false;
       return Optional.of(lastEstimateFrontLeft);
 
-    } else if (!newFrontRightEstimate && !newFrontLeftEstimate && newBackRightEstimate) {
-      // One valid pose estimate (back)
+    } else if (!newFrontRightEstimate && !newFrontLeftEstimate && newBackRightEstimate && !newBackLeftEstimate) {
+      // One valid pose estimate (BR)
       newFrontLeftEstimate = false;
       return Optional.of(lastEstimateBackRight);
+
+    } else if (!newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate && newBackLeftEstimate) {
+      // One valid pose estimate (BL)
+      newBackLeftEstimate = false;
+      return Optional.of(lastEstimateBackLeft);
 
     } else if (newFrontRightEstimate && newFrontLeftEstimate && !newBackRightEstimate) {
       // Two valid pose estimates (right and left), average them
