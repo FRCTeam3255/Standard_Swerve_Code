@@ -156,7 +156,7 @@ public class Vision extends SubsystemBase {
     setCurrentEstimates(gyroRate);
 
     // No valid pose estimates :(
-    if (!newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate) {
+    if (!newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate && !newBackLeftEstimate) {
       return Optional.empty();
 
     } else if (newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate) {
