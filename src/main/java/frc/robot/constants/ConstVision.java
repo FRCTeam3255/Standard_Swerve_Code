@@ -16,8 +16,11 @@ import edu.wpi.first.units.measure.Distance;
  * for vision data, including position (in meters) and heading (in radians).
  */
 public class ConstVision {
-  public static final String[] LIMELIGHT_NAMES = new String[] { "limelight-front-right", "limelight-front-left",
-      "limelight-back-right", "limelight-back-left" };
+
+  public static final String LIMELIGHT_FRONT_RIGHT_NAME = "limelight-front-right";
+  public static final String LIMELIGHT_FRONT_LEFT_NAME = "limelight-front-left";
+  public static final String LIMELIGHT_BACK_RIGHT_NAME = "limelight-back-right";
+  public static final String LIMELIGHT_BACK_LEFT_NAME = "limelight-back-left";
 
   /**
    * <p>

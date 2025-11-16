@@ -117,15 +117,19 @@ public class Vision extends SubsystemBase {
     PoseEstimate currentEstimateBackLeft = new PoseEstimate();
 
     if (useMegaTag2) {
-      currentEstimateFrontRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_NAMES[0]);
-      currentEstimateFrontLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_NAMES[1]);
-      currentEstimateBackRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_NAMES[2]);
-      currentEstimateBackLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_NAMES[3]);
+      currentEstimateFrontRight = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_FRONT_RIGHT_NAME);
+      currentEstimateFrontLeft = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_FRONT_LEFT_NAME);
+      currentEstimateBackRight = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_BACK_RIGHT_NAME);
+      currentEstimateBackLeft = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_BACK_LEFT_NAME);
     } else {
-      currentEstimateFrontRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_NAMES[0]);
-      currentEstimateFrontLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_NAMES[1]);
-      currentEstimateBackRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_NAMES[2]);
-      currentEstimateBackLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_NAMES[3]);
+      currentEstimateFrontRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_FRONT_RIGHT_NAME);
+      currentEstimateFrontLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_FRONT_LEFT_NAME);
+      currentEstimateBackRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_BACK_RIGHT_NAME);
+      currentEstimateBackLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_BACK_LEFT_NAME);
     }
 
     if (currentEstimateFrontRight != null
