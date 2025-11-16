@@ -89,14 +89,16 @@ public class Vision extends SubsystemBase {
   }
 
   /**
-   * Updates the current pose estimates for the front-right, front-left, back-right,
+   * Updates the current pose estimates for the front-right, front-left,
+   * back-right,
    * and back-left of the robot using data from four Limelight cameras.
    *
    * @param gyroRate The current angular velocity of the robot, used to validate
    *                 the pose estimates.
    *
    *                 This method retrieves pose estimates from four Limelight
-   *                 cameras (front-right, front-left, back-right, back-left) and updates the
+   *                 cameras (front-right, front-left, back-right, back-left) and
+   *                 updates the
    *                 corresponding pose estimates if they are valid. The method
    *                 supports two modes of operation:
    *                 one using MegaTag2 and one without. The appropriate pose
@@ -171,7 +173,7 @@ public class Vision extends SubsystemBase {
 
     } else if (!newFrontRightEstimate && !newFrontLeftEstimate && newBackRightEstimate && !newBackLeftEstimate) {
       // One valid pose estimate (BR)
-      newFrontLeftEstimate = false;
+      newBackRightEstimate = false;
       return Optional.of(lastEstimateBackRight);
 
     } else if (!newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate && newBackLeftEstimate) {
