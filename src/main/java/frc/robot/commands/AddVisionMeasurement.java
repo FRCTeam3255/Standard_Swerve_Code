@@ -20,7 +20,6 @@ public class AddVisionMeasurement extends Command {
   Vision subVision;
 
   Optional<PoseEstimate> estimatedPose;
-  double drivetrainRotation = 0;
 
   public AddVisionMeasurement(Drivetrain subDrivetrain, Vision subVision) {
     this.subDrivetrain = subDrivetrain;
