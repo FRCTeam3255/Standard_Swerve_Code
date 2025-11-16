@@ -17,10 +17,9 @@ import edu.wpi.first.units.measure.Distance;
  */
 public class ConstVision {
 
-  public static final String LIMELIGHT_FRONT_RIGHT_NAME = "limelight-front-right";
-  public static final String LIMELIGHT_FRONT_LEFT_NAME = "limelight-front-left";
-  public static final String LIMELIGHT_BACK_RIGHT_NAME = "limelight-back-right";
-  public static final String LIMELIGHT_BACK_LEFT_NAME = "limelight-back-left";
+  public static final String LIMELIGHT_RIGHT_NAME = "limelight-right";
+  public static final String LIMELIGHT_LEFT_NAME = "limelight-left";
+  public static final String LIMELIGHT_BACK_NAME = "limelight-back";
 
   /**
    * <p>
@@ -63,7 +62,7 @@ public class ConstVision {
   public static final double AREA_THRESHOLD_BACK = 0.05;
 
   // The below values are accounted for in the limelight interface, NOT in code
-  public static class LIMELIGHT_RIGHT {
+  public static class LimelightRight {
     public static final Distance LL_FORWARD = Units.Meters.of(0.269494);
     public static final Distance LL_RIGHT = Units.Meters.of(0.307594);
     public static final Distance LL_UP = Units.Meters.of(0.211328);
@@ -73,7 +72,7 @@ public class ConstVision {
     public static final Angle LL_YAW = Units.Degrees.of(51.25);
   }
 
-  public static class LIMELIGHT_LEFT {
+  public static class LimelightLeft {
     public static final Distance LL_FORWARD = Units.Meters.of(0.269494);
     public static final Distance LL_RIGHT = Units.Meters.of(-0.307594);
     public static final Distance LL_UP = Units.Meters.of(0.211328);
@@ -84,7 +83,7 @@ public class ConstVision {
 
   }
 
-  public static class LIMELIGHT_BACK {
+  public static class LimelightBack {
     public static final Distance LL_FORWARD = Units.Meters.of(0.3429);
     public static final Distance LL_RIGHT = Units.Meters.of(0);
     public static final Distance LL_UP = Units.Meters.of(0.2921);

@@ -14,29 +14,25 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.*;
+import frc.robot.constants.ConstVision;
 
 @Logged
 public class Vision extends SubsystemBase {
-  PoseEstimate lastEstimateFrontRight = new PoseEstimate();
-  PoseEstimate lastEstimateFrontLeft = new PoseEstimate();
-  PoseEstimate lastEstimateBackRight = new PoseEstimate();
-  PoseEstimate lastEstimateBackLeft = new PoseEstimate();
+  PoseEstimate lastEstimateRight = new PoseEstimate();
+  PoseEstimate lastEstimateLeft = new PoseEstimate();
+  PoseEstimate lastEstimateBack = new PoseEstimate();
 
   // Not logged, as they turn to false immediately after being read
   @NotLogged
-  boolean newFrontRightEstimate = false;
+  boolean newRightEstimate = false;
   @NotLogged
-  boolean newFrontLeftEstimate = false;
+  boolean newLeftEstimate = false;
   @NotLogged
-  boolean newBackRightEstimate = false;
-  @NotLogged
-  boolean newBackLeftEstimate = false;
+  boolean newBackEstimate = false;
 
-  Pose2d frontRightPose = new Pose2d();
-  Pose2d frontLeftPose = new Pose2d();
-  Pose2d backRightPose = new Pose2d();
-  Pose2d backLeftPose = new Pose2d();
+  Pose2d rightPose = new Pose2d();
+  Pose2d leftPose = new Pose2d();
+  Pose2d backPose = new Pose2d();
 
   private boolean useMegaTag2 = true;
 
@@ -44,12 +40,7 @@ public class Vision extends SubsystemBase {
   }
 
   public PoseEstimate[] getLastPoseEstimates() {
-    return new PoseEstimate[] {
-        lastEstimateFrontRight,
-        lastEstimateFrontLeft,
-        lastEstimateBackRight,
-        lastEstimateBackLeft
-    };
+    return new PoseEstimate[] { lastEstimateRight, lastEstimateLeft, lastEstimateBack };
   }
 
   public void setMegaTag2(boolean useMegaTag2) {
@@ -89,72 +80,56 @@ public class Vision extends SubsystemBase {
   }
 
   /**
-   * Updates the current pose estimates for the front-right, front-left,
-   * back-right,
-   * and back-left of the robot using data from four Limelight cameras.
+   * Updates the current pose estimates for the left and right of the robot using
+   * data from Limelight cameras.
    *
    * @param gyroRate The current angular velocity of the robot, used to validate
    *                 the pose estimates.
    *
-   *                 This method retrieves pose estimates from four Limelight
-   *                 cameras (front-right, front-left, back-right, back-left) and
-   *                 updates the
+   *                 This method retrieves pose estimates from two Limelight
+   *                 cameras (left and right) and updates the
    *                 corresponding pose estimates if they are valid. The method
    *                 supports two modes of operation:
    *                 one using MegaTag2 and one without. The appropriate pose
    *                 estimate retrieval method is chosen
-   *                 based on the value of the {@code useMegaTag2} flag.
+   *                 based on the value of the `useMegaTag2` flag.
    *
    *                 If the retrieved pose estimates are valid and not rejected
    *                 based on the current angular velocity,
    *                 the method updates the last known estimates and sets flags
-   *                 indicating new estimates are available for each camera.
+   *                 indicating new estimates are available.
    */
   public void setCurrentEstimates(AngularVelocity gyroRate) {
-    PoseEstimate currentEstimateFrontRight = new PoseEstimate();
-    PoseEstimate currentEstimateFrontLeft = new PoseEstimate();
-    PoseEstimate currentEstimateBackRight = new PoseEstimate();
-    PoseEstimate currentEstimateBackLeft = new PoseEstimate();
+    PoseEstimate currentEstimateRight = new PoseEstimate();
+    PoseEstimate currentEstimateLeft = new PoseEstimate();
+    PoseEstimate currentEstimateBack = new PoseEstimate();
 
     if (useMegaTag2) {
-      currentEstimateFrontRight = LimelightHelpers
-          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_FRONT_RIGHT_NAME);
-      currentEstimateFrontLeft = LimelightHelpers
-          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_FRONT_LEFT_NAME);
-      currentEstimateBackRight = LimelightHelpers
-          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_BACK_RIGHT_NAME);
-      currentEstimateBackLeft = LimelightHelpers
-          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_BACK_LEFT_NAME);
+      currentEstimateRight = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_RIGHT_NAME);
+      currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_LEFT_NAME);
+      currentEstimateBack = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_BACK_NAME);
     } else {
-      currentEstimateFrontRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_FRONT_RIGHT_NAME);
-      currentEstimateFrontLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_FRONT_LEFT_NAME);
-      currentEstimateBackRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_BACK_RIGHT_NAME);
-      currentEstimateBackLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_BACK_LEFT_NAME);
+      currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_RIGHT_NAME);
+      currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_LEFT_NAME);
+      currentEstimateBack = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_BACK_NAME);
     }
 
-    if (currentEstimateFrontRight != null
-        && !rejectUpdate(currentEstimateFrontRight, gyroRate, ConstVision.AREA_THRESHOLD_FRONT)) {
-      lastEstimateFrontRight = currentEstimateFrontRight;
-      frontRightPose = currentEstimateFrontRight.pose;
-      newFrontRightEstimate = true;
+    if (currentEstimateRight != null
+        && !rejectUpdate(currentEstimateRight, gyroRate, ConstVision.AREA_THRESHOLD_FRONT)) {
+      lastEstimateRight = currentEstimateRight;
+      rightPose = currentEstimateRight.pose;
+      newRightEstimate = true;
     }
-    if (currentEstimateFrontLeft != null
-        && !rejectUpdate(currentEstimateFrontLeft, gyroRate, ConstVision.AREA_THRESHOLD_FRONT)) {
-      lastEstimateFrontLeft = currentEstimateFrontLeft;
-      frontLeftPose = currentEstimateFrontLeft.pose;
-      newFrontLeftEstimate = true;
+    if (currentEstimateLeft != null && !rejectUpdate(currentEstimateLeft, gyroRate, ConstVision.AREA_THRESHOLD_FRONT)) {
+      lastEstimateLeft = currentEstimateLeft;
+      leftPose = currentEstimateLeft.pose;
+      newLeftEstimate = true;
     }
-    if (currentEstimateBackRight != null
-        && !rejectUpdate(currentEstimateBackRight, gyroRate, ConstVision.AREA_THRESHOLD_BACK)) {
-      lastEstimateBackRight = currentEstimateBackRight;
-      backRightPose = currentEstimateBackRight.pose;
-      newBackRightEstimate = true;
-    }
-    if (currentEstimateBackLeft != null
-        && !rejectUpdate(currentEstimateBackLeft, gyroRate, ConstVision.AREA_THRESHOLD_BACK)) {
-      lastEstimateBackLeft = currentEstimateBackLeft;
-      backLeftPose = currentEstimateBackLeft.pose;
-      newBackLeftEstimate = true;
+    if (currentEstimateBack != null && !rejectUpdate(currentEstimateBack, gyroRate, ConstVision.AREA_THRESHOLD_BACK)) {
+      lastEstimateBack = currentEstimateBack;
+      backPose = currentEstimateBack.pose;
+      newBackEstimate = true;
     }
   }
 
@@ -162,62 +137,38 @@ public class Vision extends SubsystemBase {
     setCurrentEstimates(gyroRate);
 
     // No valid pose estimates :(
-    if (!newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate && !newBackLeftEstimate) {
+    if (!newRightEstimate && !newLeftEstimate && !newBackEstimate) {
       return Optional.empty();
 
-    } else if (newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate && !newBackLeftEstimate) {
-      // One valid pose estimate (FR)
-      newFrontRightEstimate = false;
-      return Optional.of(lastEstimateFrontRight);
+    } else if (newRightEstimate && !newLeftEstimate && !newBackEstimate) {
+      // One valid pose estimate (right)
+      newRightEstimate = false;
+      return Optional.of(lastEstimateRight);
 
-    } else if (!newFrontRightEstimate && newFrontLeftEstimate && !newBackRightEstimate && !newBackLeftEstimate) {
-      // One valid pose estimate (FL)
-      newFrontLeftEstimate = false;
-      return Optional.of(lastEstimateFrontLeft);
+    } else if (!newRightEstimate && newLeftEstimate && !newBackEstimate) {
+      // One valid pose estimate (left)
+      newLeftEstimate = false;
+      return Optional.of(lastEstimateLeft);
 
-    } else if (!newFrontRightEstimate && !newFrontLeftEstimate && newBackRightEstimate && !newBackLeftEstimate) {
-      // One valid pose estimate (BR)
-      newBackRightEstimate = false;
-      return Optional.of(lastEstimateBackRight);
-
-    } else if (!newFrontRightEstimate && !newFrontLeftEstimate && !newBackRightEstimate && newBackLeftEstimate) {
-      // One valid pose estimate (BL)
-      newBackLeftEstimate = false;
-      return Optional.of(lastEstimateBackLeft);
-
-    } else if (newFrontRightEstimate && newFrontLeftEstimate && !newBackRightEstimate) {
-      // Two valid pose estimates (right and left), average them
-      newFrontRightEstimate = false;
-      newFrontLeftEstimate = false;
-      Pose2d avgPose = new Pose2d(
-          (frontRightPose.getX() + frontLeftPose.getX()) / 2.0,
-          (frontRightPose.getY() + frontLeftPose.getY()) / 2.0,
-          frontRightPose.getRotation().interpolate(frontLeftPose.getRotation(), 0.5));
-      PoseEstimate averagedEstimate = new PoseEstimate();
-      averagedEstimate.pose = avgPose;
-      averagedEstimate.tagCount = lastEstimateFrontRight.tagCount + lastEstimateFrontLeft.tagCount;
-      averagedEstimate.avgTagDist = (lastEstimateFrontRight.avgTagDist + lastEstimateFrontLeft.avgTagDist) / 2.0;
-      return Optional.of(averagedEstimate);
+    } else if (!newRightEstimate && !newLeftEstimate && newBackEstimate) {
+      // One valid pose estimate (back)
+      newLeftEstimate = false;
+      return Optional.of(lastEstimateBack);
 
     } else {
       // More than one valid pose estimate, use the closest one
-      newFrontRightEstimate = false;
-      newFrontLeftEstimate = false;
-      newBackRightEstimate = false;
-      newBackLeftEstimate = false;
-      if (lastEstimateFrontRight.avgTagDist < lastEstimateFrontLeft.avgTagDist
-          && lastEstimateFrontRight.avgTagDist < lastEstimateBackRight.avgTagDist) {
-        return Optional.of(lastEstimateFrontRight);
-      } else if (lastEstimateFrontLeft.avgTagDist < lastEstimateFrontRight.avgTagDist
-          && lastEstimateFrontLeft.avgTagDist < lastEstimateBackRight.avgTagDist) {
-        return Optional.of(lastEstimateFrontLeft);
-      } else if (lastEstimateBackRight.avgTagDist < lastEstimateFrontRight.avgTagDist
-          && lastEstimateBackRight.avgTagDist < lastEstimateFrontLeft.avgTagDist) {
-        return Optional.of(lastEstimateBackRight);
-      } else if (lastEstimateBackLeft.avgTagDist < lastEstimateFrontRight.avgTagDist
-          && lastEstimateBackLeft.avgTagDist < lastEstimateFrontLeft.avgTagDist
-          && lastEstimateBackLeft.avgTagDist < lastEstimateBackRight.avgTagDist) {
-        return Optional.of(lastEstimateBackLeft);
+      newRightEstimate = false;
+      newLeftEstimate = false;
+      newBackEstimate = false;
+      if (lastEstimateRight.avgTagDist < lastEstimateLeft.avgTagDist
+          && lastEstimateRight.avgTagDist < lastEstimateBack.avgTagDist) {
+        return Optional.of(lastEstimateRight);
+      } else if (lastEstimateLeft.avgTagDist < lastEstimateRight.avgTagDist
+          && lastEstimateLeft.avgTagDist < lastEstimateBack.avgTagDist) {
+        return Optional.of(lastEstimateLeft);
+      } else if (lastEstimateBack.avgTagDist < lastEstimateRight.avgTagDist
+          && lastEstimateBack.avgTagDist < lastEstimateLeft.avgTagDist) {
+        return Optional.of(lastEstimateBack);
       } else {
         return Optional.empty();
       }

@@ -4,9 +4,10 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import com.frcteam3255.utils.LimelightHelpers;
 import com.frcteam3255.utils.LimelightHelpers.PoseEstimate;
-import java.util.Optional;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -35,13 +36,11 @@ public class AddVisionMeasurement extends Command {
   @Override
   public void execute() {
     // Tells the limelight where we are on the field
-    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_FRONT_RIGHT_NAME,
+    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_RIGHT_NAME,
         subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_FRONT_LEFT_NAME,
+    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_LEFT_NAME,
         subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_BACK_RIGHT_NAME,
-        subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_BACK_LEFT_NAME,
+    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_BACK_NAME,
         subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     AngularVelocity gyroRate = Units.DegreesPerSecond.of(subDrivetrain.getGyroRate());
 
