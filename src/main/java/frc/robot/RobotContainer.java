@@ -127,7 +127,7 @@ public class RobotContainer {
     return subStateMachine.getRobotState();
   }
 
-  public Command AddVisionMeasurement() {
+  public Command addVisionMeasurement() {
     return new AddVisionMeasurement(subDrivetrain, subVision)
         .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
   }
