@@ -17,7 +17,7 @@ import edu.wpi.first.units.measure.Distance;
  */
 public class ConstVision {
   public static final String[] LIMELIGHT_NAMES = new String[] { "limelight-front-right", "limelight-front-left",
-      "limelight-back-left", "limelight-back-right" };
+      "limelight-back-right", "limelight-back-left" };
 
   /**
    * <p>
