@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import frc.robot.RobotMap.mapControllers;
+import frc.robot.DeviceIDs.controllerIDs;
 import frc.robot.commands.*;
 import frc.robot.constants.ConstField;
 import frc.robot.constants.ConstSystem.constControllers;
@@ -34,7 +34,7 @@ public class RobotContainer {
 
   private AutoFactory autoFactory;
 
-  private final SN_XboxController conDriver = new SN_XboxController(mapControllers.DRIVER_USB);
+  private final SN_XboxController conDriver = new SN_XboxController(controllerIDs.DRIVER_USB);
 
   public final static Rotors rotorsInstance = new Rotors();
   public final static Drivetrain subDrivetrain = new Drivetrain();
