@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Orchestra;
 import com.frcteam3255.components.swerve.SN_SuperSwerve;
 import com.frcteam3255.components.swerve.SN_SwerveModule;
 
@@ -33,6 +34,7 @@ public class Drivetrain extends SN_SuperSwerve {
 
   public PoseDriveGroup lastDesiredPoseGroup;
   public Pose2d lastDesiredTarget;
+  public Orchestra badApple = new Orchestra();
 
   private static SN_SwerveModule[] modules = new SN_SwerveModule[] {
       new SN_SwerveModule(0, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
@@ -76,6 +78,13 @@ public class Drivetrain extends SN_SuperSwerve {
         ConstDrivetrain.AUTO.ROBOT_CONFIG,
         () -> ConstField.isRedAlliance(),
         Robot.isSimulation());
+
+    badApple.addInstrument(modules[0].driveMotor);
+    var status = badApple.loadMusic("src/main/java/frc/robot/BadApple.chrp");
+
+    if (!status.isOK()) {
+      System.out.println("Failed to load bad apple music: " + status);
+    }
   }
 
   /**

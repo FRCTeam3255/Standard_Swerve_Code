@@ -63,6 +63,15 @@ public class RobotContainer {
           conDriver.btn_RightBumper),
       Set.of(subDriverStateMachine));
 
+  Command PLAY_AT_POS = Commands.deferredProxy(() -> {
+    if (subDrivetrain.atLastDesiredFieldPosition()) {
+      return Commands.run(() -> subDrivetrain.badApple.play());
+    }
+    return Commands.none();
+  });
+
+  Command STOP_PLAY = Commands.runOnce(() -> subDrivetrain.badApple.stop());
+
   public RobotContainer() {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
 
@@ -88,8 +97,10 @@ public class RobotContainer {
 
     // Example Pose Drive
     conDriver.btn_X
-        .whileTrue(EXAMPLE_POSE_DRIVE)
-        .onFalse(Commands.runOnce(() -> subDriverStateMachine.setDriverState(DriverState.MANUAL)));
+        .whileTrue(EXAMPLE_POSE_DRIVE.alongWith(PLAY_AT_POS))
+        .onFalse(Commands.runOnce(() -> subDriverStateMachine
+            .setDriverState(DriverState.MANUAL))
+            .alongWith(STOP_PLAY));
   }
 
   public void configAutonomous() {
