@@ -87,9 +87,9 @@ public class RobotContainer {
 
   private void configDriverBindings() {
     conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetrain.resetModulesToAbsolute()));
-    conDriver.btn_Back
-        .onTrue(Commands.runOnce(() -> subDrivetrain.resetPoseToPose(new Pose2d(0, 0, new Rotation2d()))));
-
+    conDriver.btn_North
+        .onTrue(Commands
+            .runOnce(() -> subDrivetrain.resetPoseToPose(ConstField.WORKSHOP_STARTING_POSE)));
     // Defaults to Field-Relative, is Robot-Relative while held
     conDriver.btn_LeftBumper
         .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative()))
@@ -138,7 +138,7 @@ public class RobotContainer {
     return subStateMachine.getRobotState();
   }
 
-  public Command addVisionMeasurement() {
+  public Command AddVisionMeasurement() {
     return new AddVisionMeasurement(subDrivetrain, subVision)
         .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
   }

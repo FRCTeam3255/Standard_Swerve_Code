@@ -59,7 +59,7 @@ public class ConstPoseDrive {
   public static final PoseDriveGroup EXAMPLE_POSE_DRIVE_GROUP = new PoseDriveGroup();
 
   static {
-    EXAMPLE_POSE_DRIVE_GROUP.minDistanceBeforeDrive = Units.Inches.of(100);
+    EXAMPLE_POSE_DRIVE_GROUP.minDistanceBeforeDrive = Units.Inches.of(1000);
     EXAMPLE_POSE_DRIVE_GROUP.targetPoseGroup = ConstField.FieldElementGroups.TEST_POSE_SET.getAll();
     EXAMPLE_POSE_DRIVE_GROUP.driveState = DriverState.EXAMPLE_POSE_DRIVE;
     EXAMPLE_POSE_DRIVE_GROUP.snapState = DriverState.EXAMPLE_ROTATION_SNAP;

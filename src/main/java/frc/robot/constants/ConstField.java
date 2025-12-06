@@ -122,7 +122,7 @@ public class ConstField {
 
   public static class FieldElements {
     private static final Pose2d RESET_POSE = new Pose2d(0, 0, new Rotation2d());
-    private static final Pose2d TEST_POSE = new Pose2d(3.159, 4.023, new Rotation2d().kZero);
+    private static final Pose2d TEST_POSE = new Pose2d(2.659, 4.023, new Rotation2d().kZero);
 
   }
 
