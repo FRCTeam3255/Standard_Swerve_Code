@@ -36,7 +36,7 @@ public class Drivetrain extends SN_SuperSwerve {
   public Pose2d lastDesiredTarget;
   public Orchestra badApple = new Orchestra();
 
-  // TODO: VERY CRUSIAL!!!!! Set this based on battery location
+  // TODO: VERY CRUCIAL!!!!! Set this based on battery location
   public static boolean isNorthFront = true;
 
   private static int FRONT_LEFT_MODULE = isNorthFront ? 3 : 0;
