@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Orchestra;
 import com.frcteam3255.components.swerve.SN_SuperSwerve;
 import com.frcteam3255.components.swerve.SN_SwerveModule;
 
@@ -33,18 +34,27 @@ public class Drivetrain extends SN_SuperSwerve {
 
   public PoseDriveGroup lastDesiredPoseGroup;
   public Pose2d lastDesiredTarget;
+  public Orchestra badApple = new Orchestra();
+
+  // TODO: VERY CRUCIAL!!!!! Set this based on battery location
+  public static boolean isNorthFront = true;
+
+  private static int FRONT_LEFT_MODULE = isNorthFront ? 3 : 0;
+  private static int FRONT_RIGHT_MODULE = isNorthFront ? 2 : 1;
+  private static int BACK_LEFT_MODULE = isNorthFront ? 1 : 2;
+  private static int BACK_RIGHT_MODULE = isNorthFront ? 0 : 3;
 
   private static SN_SwerveModule[] modules = new SN_SwerveModule[] {
-      new SN_SwerveModule(0, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
+      new SN_SwerveModule(FRONT_LEFT_MODULE, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
           mapDrivetrain.FRONT_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
           mapDrivetrain.CAN_BUS_NAME),
-      new SN_SwerveModule(1, mapDrivetrain.FRONT_RIGHT_DRIVE_CAN, mapDrivetrain.FRONT_RIGHT_STEER_CAN,
+      new SN_SwerveModule(FRONT_RIGHT_MODULE, mapDrivetrain.FRONT_RIGHT_DRIVE_CAN, mapDrivetrain.FRONT_RIGHT_STEER_CAN,
           mapDrivetrain.FRONT_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
           mapDrivetrain.CAN_BUS_NAME),
-      new SN_SwerveModule(2, mapDrivetrain.BACK_LEFT_DRIVE_CAN, mapDrivetrain.BACK_LEFT_STEER_CAN,
+      new SN_SwerveModule(BACK_LEFT_MODULE, mapDrivetrain.BACK_LEFT_DRIVE_CAN, mapDrivetrain.BACK_LEFT_STEER_CAN,
           mapDrivetrain.BACK_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
           mapDrivetrain.CAN_BUS_NAME),
-      new SN_SwerveModule(3, mapDrivetrain.BACK_RIGHT_DRIVE_CAN, mapDrivetrain.BACK_RIGHT_STEER_CAN,
+      new SN_SwerveModule(BACK_RIGHT_MODULE, mapDrivetrain.BACK_RIGHT_DRIVE_CAN, mapDrivetrain.BACK_RIGHT_STEER_CAN,
           mapDrivetrain.BACK_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
           mapDrivetrain.CAN_BUS_NAME),
   };
@@ -76,6 +86,13 @@ public class Drivetrain extends SN_SuperSwerve {
         ConstDrivetrain.AUTO.ROBOT_CONFIG,
         () -> ConstField.isRedAlliance(),
         Robot.isSimulation());
+
+    badApple.addInstrument(modules[0].driveMotor);
+    var status = badApple.loadMusic("src/main/java/frc/robot/BadApple.chrp");
+
+    if (!status.isOK()) {
+      System.out.println("Failed to load bad apple music: " + status);
+    }
   }
 
   /**

@@ -53,24 +53,14 @@ public class ConstDrivetrain {
   // and copy-pasting the Raw Absolute Encoder value
 
   // TODO: Swoffsets
-  public static final double FRONT_LEFT_ABS_ENCODER_OFFSET = 0.417236;
-  public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET = -0.254395;
-  public static final double BACK_LEFT_ABS_ENCODER_OFFSET = 0.258789;
-  public static final double BACK_RIGHT_ABS_ENCODER_OFFSET = -0.290039;
+  public static final double FRONT_LEFT_ABS_ENCODER_OFFSET = 0.177978515625;
+  public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET = -0.0029296875;
+  public static final double BACK_LEFT_ABS_ENCODER_OFFSET = 0.45068359375;
+  public static final double BACK_RIGHT_ABS_ENCODER_OFFSET = -0.181396484375;
 
   public static final double SLOW_MODE_MULTIPLIER = 0.5;
 
   public static final boolean INVERT_ROTATION = !Robot.isSimulation();
-
-  public static final SN_SwerveConstants SWERVE_CONSTANTS = new SN_SwerveConstants(
-      SN_SwerveConstants.MK4I.FALCON.L3.steerGearRatio,
-      0.09779 * Math.PI,
-      SN_SwerveConstants.MK4I.FALCON.L3.driveGearRatio,
-      SN_SwerveConstants.MK4I.FALCON.L3.maxSpeedMeters);
-
-  public static final double WHEEL_DIAMETER = SWERVE_CONSTANTS.wheelCircumference / Math.PI;
-  public static final Distance WHEEL_RADIUS = Units.Meters.of(WHEEL_DIAMETER / 2);
-
   /**
    * <p>
    * Observed maximum translational speed while manually driving on the
@@ -78,6 +68,16 @@ public class ConstDrivetrain {
    * </p>
    */
   public static final LinearVelocity REAL_DRIVE_SPEED = Units.FeetPerSecond.of(15.1);
+
+  public static final SN_SwerveConstants SWERVE_CONSTANTS = new SN_SwerveConstants(
+      SN_SwerveConstants.MK4I.FALCON.L2.steerGearRatio,
+      0.09779 * Math.PI,
+      SN_SwerveConstants.MK4I.FALCON.L2.driveGearRatio,
+      REAL_DRIVE_SPEED.in(Units.MetersPerSecond));
+
+  public static final double WHEEL_DIAMETER = SWERVE_CONSTANTS.wheelCircumference / Math.PI;
+  public static final Distance WHEEL_RADIUS = Units.Meters.of(WHEEL_DIAMETER / 2);
+
   // Physically measured from center to center of the wheels
   // Distance between Left & Right Wheels for 25 by 25 frame
   public static final double TRACK_WIDTH_25 = Units.Meters.convertFrom(19.75, Units.Inches);
@@ -138,7 +138,7 @@ public class ConstDrivetrain {
     DRIVE_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     DRIVE_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     DRIVE_CONFIG.Feedback.SensorToMechanismRatio = SWERVE_CONSTANTS.driveGearRatio;
-    DRIVE_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+    DRIVE_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = false;
     DRIVE_CONFIG.CurrentLimits.SupplyCurrentLimit = DRIVE_CURRENT_LIMIT.in(Units.Amps);
 
     STEER_CONFIG.Slot0.kP = 100;
@@ -199,7 +199,7 @@ public class ConstDrivetrain {
     public static final Distance AT_POINT_TOLERANCE = Units.Inches.of(0.5);
 
     public static final ProfiledPIDController POSE_ROTATION_CONTROLLER = new ProfiledPIDController(
-        2, 0, 0, new TrapezoidProfile.Constraints(TURN_SPEED.in(Units.DegreesPerSecond),
+        1, 0, 0, new TrapezoidProfile.Constraints(TURN_SPEED.in(Units.DegreesPerSecond),
             Math.pow(TURN_SPEED.in(Units.DegreesPerSecond), 2)));
 
     public static final ProfiledPIDController PATH_ROTATION_CONTROLLER = new ProfiledPIDController(

@@ -107,8 +107,10 @@ public class Vision extends SubsystemBase {
     if (useMegaTag2) {
       currentEstimateRight = LimelightHelpers
           .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_RIGHT_NAME);
-      currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_LEFT_NAME);
-      currentEstimateBack = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_BACK_NAME);
+      currentEstimateLeft = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_LEFT_NAME);
+      currentEstimateBack = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2(ConstVision.LIMELIGHT_BACK_NAME);
     } else {
       currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_RIGHT_NAME);
       currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(ConstVision.LIMELIGHT_LEFT_NAME);
@@ -121,12 +123,14 @@ public class Vision extends SubsystemBase {
       rightPose = currentEstimateRight.pose;
       newRightEstimate = true;
     }
-    if (currentEstimateLeft != null && !rejectUpdate(currentEstimateLeft, gyroRate, ConstVision.AREA_THRESHOLD_FRONT)) {
+    if (currentEstimateLeft != null
+        && !rejectUpdate(currentEstimateLeft, gyroRate, ConstVision.AREA_THRESHOLD_FRONT)) {
       lastEstimateLeft = currentEstimateLeft;
       leftPose = currentEstimateLeft.pose;
       newLeftEstimate = true;
     }
-    if (currentEstimateBack != null && !rejectUpdate(currentEstimateBack, gyroRate, ConstVision.AREA_THRESHOLD_BACK)) {
+    if (currentEstimateBack != null
+        && !rejectUpdate(currentEstimateBack, gyroRate, ConstVision.AREA_THRESHOLD_BACK)) {
       lastEstimateBack = currentEstimateBack;
       backPose = currentEstimateBack.pose;
       newBackEstimate = true;
