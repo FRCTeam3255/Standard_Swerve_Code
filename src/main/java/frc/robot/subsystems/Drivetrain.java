@@ -37,12 +37,12 @@ public class Drivetrain extends SN_SuperSwerve {
   public Orchestra badApple = new Orchestra();
 
   // TODO: VERY CRUSIAL!!!!! Set this based on battery location
-  public static boolean isBatteryFront = true;
+  public static boolean isNorthFront = true;
 
-  private static int FRONT_LEFT_MODULE = isBatteryFront ? 3 : 0;
-  private static int FRONT_RIGHT_MODULE = isBatteryFront ? 2 : 1;
-  private static int BACK_LEFT_MODULE = isBatteryFront ? 1 : 2;
-  private static int BACK_RIGHT_MODULE = isBatteryFront ? 0 : 3;
+  private static int FRONT_LEFT_MODULE = isNorthFront ? 3 : 0;
+  private static int FRONT_RIGHT_MODULE = isNorthFront ? 2 : 1;
+  private static int BACK_LEFT_MODULE = isNorthFront ? 1 : 2;
+  private static int BACK_RIGHT_MODULE = isNorthFront ? 0 : 3;
 
   private static SN_SwerveModule[] modules = new SN_SwerveModule[] {
       new SN_SwerveModule(FRONT_LEFT_MODULE, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
