@@ -53,6 +53,10 @@ public class DriveManual extends Command {
         ConstDrivetrain.REAL_DRIVE_SPEED,
         ConstDrivetrain.TURN_SPEED);
 
+    if (ConstDrivetrain.INVERT_ROTATION) {
+      velocities.omegaRadiansPerSecond = -velocities.omegaRadiansPerSecond;
+    }
+
     subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
 
     subDrivetrain.drive(

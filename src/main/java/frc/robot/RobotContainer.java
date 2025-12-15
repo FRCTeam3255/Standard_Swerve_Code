@@ -64,6 +64,15 @@ public class RobotContainer {
           conDriver.btn_RightBumper),
       Set.of(subDriverStateMachine));
 
+  Command PLAY_AT_POS = Commands.deferredProxy(() -> {
+    if (subDrivetrain.atLastDesiredFieldPosition()) {
+      return Commands.run(() -> subDrivetrain.badApple.play());
+    }
+    return Commands.none();
+  });
+
+  Command STOP_PLAY = Commands.runOnce(() -> subDrivetrain.badApple.stop());
+
   public RobotContainer() {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
 
@@ -79,9 +88,9 @@ public class RobotContainer {
 
   private void configDriverBindings() {
     conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetrain.resetModulesToAbsolute()));
-    conDriver.btn_Back
-        .onTrue(Commands.runOnce(() -> subDrivetrain.resetPoseToPose(new Pose2d(0, 0, new Rotation2d()))));
-
+    conDriver.btn_North
+        .onTrue(Commands
+            .runOnce(() -> subDrivetrain.resetPoseToPose(ConstField.WORKSHOP_STARTING_POSE)));
     // Defaults to Field-Relative, is Robot-Relative while held
     conDriver.btn_LeftBumper
         .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative()))
@@ -89,8 +98,10 @@ public class RobotContainer {
 
     // Example Pose Drive
     conDriver.btn_X
-        .whileTrue(EXAMPLE_POSE_DRIVE)
-        .onFalse(Commands.runOnce(() -> subDriverStateMachine.setDriverState(DriverState.MANUAL)));
+        .whileTrue(EXAMPLE_POSE_DRIVE.alongWith(PLAY_AT_POS))
+        .onFalse(Commands.runOnce(() -> subDriverStateMachine
+            .setDriverState(DriverState.MANUAL))
+            .alongWith(STOP_PLAY));
   }
 
   public void configAutonomous() {
@@ -128,7 +139,7 @@ public class RobotContainer {
     return subStateMachine.getRobotState();
   }
 
-  public Command addVisionMeasurement() {
+  public Command AddVisionMeasurement() {
     return new AddVisionMeasurement(subDrivetrain, subVision)
         .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
   }
