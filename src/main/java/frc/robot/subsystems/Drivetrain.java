@@ -20,7 +20,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
-import frc.robot.RobotMap.mapDrivetrain;
+import frc.robot.DeviceIDs.drivetrainIDs;
 import frc.robot.constants.ConstDrivetrain;
 import frc.robot.constants.ConstField;
 import frc.robot.constants.ConstVision;
@@ -35,18 +35,18 @@ public class Drivetrain extends SN_SuperSwerve {
   public Pose2d lastDesiredTarget;
 
   private static SN_SwerveModule[] modules = new SN_SwerveModule[] {
-      new SN_SwerveModule(0, mapDrivetrain.FRONT_LEFT_DRIVE_CAN, mapDrivetrain.FRONT_LEFT_STEER_CAN,
-          mapDrivetrain.FRONT_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
-          mapDrivetrain.CAN_BUS_NAME),
-      new SN_SwerveModule(1, mapDrivetrain.FRONT_RIGHT_DRIVE_CAN, mapDrivetrain.FRONT_RIGHT_STEER_CAN,
-          mapDrivetrain.FRONT_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
-          mapDrivetrain.CAN_BUS_NAME),
-      new SN_SwerveModule(2, mapDrivetrain.BACK_LEFT_DRIVE_CAN, mapDrivetrain.BACK_LEFT_STEER_CAN,
-          mapDrivetrain.BACK_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
-          mapDrivetrain.CAN_BUS_NAME),
-      new SN_SwerveModule(3, mapDrivetrain.BACK_RIGHT_DRIVE_CAN, mapDrivetrain.BACK_RIGHT_STEER_CAN,
-          mapDrivetrain.BACK_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
-          mapDrivetrain.CAN_BUS_NAME),
+      new SN_SwerveModule(0, drivetrainIDs.FRONT_LEFT_DRIVE_CAN, drivetrainIDs.FRONT_LEFT_STEER_CAN,
+          drivetrainIDs.FRONT_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
+          drivetrainIDs.CAN_BUS_NAME),
+      new SN_SwerveModule(1, drivetrainIDs.FRONT_RIGHT_DRIVE_CAN, drivetrainIDs.FRONT_RIGHT_STEER_CAN,
+          drivetrainIDs.FRONT_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
+          drivetrainIDs.CAN_BUS_NAME),
+      new SN_SwerveModule(2, drivetrainIDs.BACK_LEFT_DRIVE_CAN, drivetrainIDs.BACK_LEFT_STEER_CAN,
+          drivetrainIDs.BACK_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
+          drivetrainIDs.CAN_BUS_NAME),
+      new SN_SwerveModule(3, drivetrainIDs.BACK_RIGHT_DRIVE_CAN, drivetrainIDs.BACK_RIGHT_STEER_CAN,
+          drivetrainIDs.BACK_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
+          drivetrainIDs.CAN_BUS_NAME),
   };
 
   public Drivetrain() {
@@ -55,8 +55,8 @@ public class Drivetrain extends SN_SuperSwerve {
         modules,
         ConstDrivetrain.WHEELBASE,
         ConstDrivetrain.TRACK_WIDTH,
-        mapDrivetrain.CAN_BUS_NAME,
-        mapDrivetrain.PIGEON_CAN,
+        drivetrainIDs.CAN_BUS_NAME,
+        drivetrainIDs.PIGEON_CAN,
         ConstDrivetrain.MIN_STEER_PERCENT,
         ConstDrivetrain.DRIVE_CONFIG,
         ConstDrivetrain.STEER_CONFIG,
