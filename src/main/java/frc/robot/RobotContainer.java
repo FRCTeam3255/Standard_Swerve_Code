@@ -20,6 +20,7 @@ import frc.robot.RobotMap.mapControllers;
 import frc.robot.commands.*;
 import frc.robot.constants.ConstField;
 import frc.robot.constants.ConstSystem.constControllers;
+import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.DriverStateMachine.DriverState;
 import frc.robot.subsystems.StateMachine.RobotState;
@@ -36,11 +37,11 @@ public class RobotContainer {
 
   private final SN_XboxController conDriver = new SN_XboxController(mapControllers.DRIVER_USB);
 
-  private final Drivetrain subDrivetrain = new Drivetrain();
-  private final DriverStateMachine subDriverStateMachine = new DriverStateMachine(subDrivetrain);
-  private final StateMachine subStateMachine = new StateMachine(subDrivetrain);
-  private final RobotPoses robotPose = new RobotPoses(subDrivetrain);
-  private final Vision subVision = new Vision();
+  public final static Drivetrain subDrivetrain = TunerConstants.createDrivetrain();
+  public final static DriverStateMachine subDriverStateMachine = new DriverStateMachine(subDrivetrain);
+  public final static StateMachine subStateMachine = new StateMachine(subDrivetrain);
+  public final static RobotPoses robotPose = new RobotPoses();
+  public final static Vision subVision = new Vision();
 
   Command TRY_NONE = Commands.deferredProxy(
       () -> subStateMachine.tryState(RobotState.NONE));
@@ -73,18 +74,20 @@ public class RobotContainer {
     configOperatorBindings();
     configAutonomous();
 
-    subDrivetrain.resetModulesToAbsolute();
+    // subDrivetrain.resetModulesToAbsolute();
   }
 
   private void configDriverBindings() {
-    conDriver.btn_B.onTrue(Commands.runOnce(() -> subDrivetrain.resetModulesToAbsolute()));
-    conDriver.btn_Back
-        .onTrue(Commands.runOnce(() -> subDrivetrain.resetPoseToPose(new Pose2d(0, 0, new Rotation2d()))));
+    // conDriver.btn_B.onTrue(Commands.runOnce(() ->
+    // subDrivetrain.resetModulesToAbsolute()));
+    // conDriver.btn_Back
+    // .onTrue(Commands.runOnce(() -> subDrivetrain.resetPoseToPose(new Pose2d(0, 0,
+    // new Rotation2d()))));
 
-    // Defaults to Field-Relative, is Robot-Relative while held
-    conDriver.btn_LeftBumper
-        .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative()))
-        .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
+    // // Defaults to Field-Relative, is Robot-Relative while held
+    // conDriver.btn_LeftBumper
+    // .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative()))
+    // .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
 
     // Example Pose Drive
     conDriver.btn_X
@@ -93,13 +96,14 @@ public class RobotContainer {
   }
 
   public void configAutonomous() {
-    autoFactory = new AutoFactory(
-        subDrivetrain::getPose, // A function that returns the current robot pose
-        subDrivetrain::resetPoseToPose, // A function that resets the current robot pose to the provided Pose2d
-        subDrivetrain::followTrajectory, // The drive subsystem trajectory follower
-        true, // If alliance flipping should be enabled
-        subDriverStateMachine // The drive subsystem
-    );
+    // autoFactory = new AutoFactory(
+    // subDrivetrain::getPose, // A function that returns the current robot pose
+    // subDrivetrain::resetPoseToPose, // A function that resets the current robot
+    // pose to the provided Pose2d
+    // subDrivetrain::followTrajectory, // The drive subsystem trajectory follower
+    // true, // If alliance flipping should be enabled
+    // subDriverStateMachine // The drive subsystem
+    // );
 
     // Example: Add autonomous routines to the chooser
     autoChooser.setDefaultOption("Do Nothing", Commands.none());

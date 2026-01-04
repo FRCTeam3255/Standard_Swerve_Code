@@ -49,56 +49,59 @@ public class PoseDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    closestPose = subDrivetrain.getPose().nearest(poseGroup.targetPoseGroup);
-    subDrivetrain.lastDesiredPoseGroup = poseGroup;
-    subDrivetrain.lastDesiredTarget = closestPose;
+    // closestPose = subDrivetrain.getPose().nearest(poseGroup.targetPoseGroup);
+    // subDrivetrain.lastDesiredPoseGroup = poseGroup;
+    // subDrivetrain.lastDesiredTarget = closestPose;
 
-    ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
-        xAxis,
-        yAxis,
-        rotationAxis,
-        slowMode,
-        ConstField.isRedAlliance(),
-        ConstDrivetrain.SLOW_MODE_MULTIPLIER,
-        ConstDrivetrain.REAL_DRIVE_SPEED,
-        ConstDrivetrain.TURN_SPEED);
+    // ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
+    // xAxis,
+    // yAxis,
+    // rotationAxis,
+    // slowMode,
+    // ConstField.isRedAlliance(),
+    // ConstDrivetrain.SLOW_MODE_MULTIPLIER,
+    // ConstDrivetrain.REAL_DRIVE_SPEED,
+    // ConstDrivetrain.TURN_SPEED);
 
-    boolean isInAutoDriveZone = subDrivetrain.isInAutoDriveZone(
-        poseGroup.minDistanceBeforeDrive,
-        closestPose);
+    // boolean isInAutoDriveZone = subDrivetrain.isInAutoDriveZone(
+    // poseGroup.minDistanceBeforeDrive,
+    // closestPose);
 
-    if (isInAutoDriveZone) {
-      subDrivetrain.autoAlign(
-          closestPose,
-          velocities,
-          true,
-          poseGroup.lockX,
-          poseGroup.lockY,
-          ConstDrivetrain.INVERT_ROTATION);
-      subDriverStateMachine.setDriverState(poseGroup.driveState);
-    } else {
-      subDrivetrain.rotationalAlign(
-          closestPose,
-          velocities,
-          true);
-      subDriverStateMachine.setDriverState(poseGroup.snapState);
-    }
+    // if (isInAutoDriveZone) {
+    // subDrivetrain.autoAlign(
+    // closestPose,
+    // velocities,
+    // true,
+    // poseGroup.lockX,
+    // poseGroup.lockY,
+    // ConstDrivetrain.INVERT_ROTATION);
+    // subDriverStateMachine.setDriverState(poseGroup.driveState);
+    // } else {
+    // subDrivetrain.rotationalAlign(
+    // closestPose,
+    // velocities,
+    // true);
+    // subDriverStateMachine.setDriverState(poseGroup.snapState);
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    subDrivetrain.neutralDriveOutputs();
+    // subDrivetrain.neutralDriveOutputs();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (closestPose == null) {
-      return false;
-    }
-    isPoseAligned = subDrivetrain.isAtPosition(closestPose, poseGroup.distanceTolerance) &&
-        subDrivetrain.isAtRotation(closestPose.getRotation(), poseGroup.rotationTolerance);
-    return isPoseAligned;
+    // if (closestPose == null) {
+    // return false;
+    // }
+    // isPoseAligned = subDrivetrain.isAtPosition(closestPose,
+    // poseGroup.distanceTolerance) &&
+    // subDrivetrain.isAtRotation(closestPose.getRotation(),
+    // poseGroup.rotationTolerance);
+    // return isPoseAligned;
+    return false;
   }
 }

@@ -43,27 +43,28 @@ public class DriveManual extends Command {
 
   @Override
   public void execute() {
-    ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
-        xAxis,
-        yAxis,
-        rotationAxis,
-        slowMode,
-        ConstField.isRedAlliance(),
-        ConstDrivetrain.SLOW_MODE_MULTIPLIER,
-        ConstDrivetrain.REAL_DRIVE_SPEED,
-        ConstDrivetrain.TURN_SPEED);
+    // ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
+    // xAxis,
+    // yAxis,
+    // rotationAxis,
+    // slowMode,
+    // ConstField.isRedAlliance(),
+    // ConstDrivetrain.SLOW_MODE_MULTIPLIER,
+    // ConstDrivetrain.REAL_DRIVE_SPEED,
+    // ConstDrivetrain.TURN_SPEED);
 
-    subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
+    // subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
 
-    subDrivetrain.drive(
-        new Translation2d(velocities.vxMetersPerSecond, velocities.vyMetersPerSecond),
-        velocities.omegaRadiansPerSecond,
-        isOpenLoop);
+    // subDrivetrain.drive(
+    // new Translation2d(velocities.vxMetersPerSecond,
+    // velocities.vyMetersPerSecond),
+    // velocities.omegaRadiansPerSecond,
+    // isOpenLoop);
   }
 
   @Override
   public void end(boolean interrupted) {
-    subDrivetrain.neutralDriveOutputs();
+    // subDrivetrain.neutralDriveOutputs();
   }
 
   @Override
