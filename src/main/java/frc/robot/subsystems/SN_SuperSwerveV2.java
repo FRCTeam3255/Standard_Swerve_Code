@@ -39,7 +39,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
-public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
+public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
@@ -67,7 +67,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
    * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
    * @param modules             Constants for each specific module
    */
-  public CommandSwerveDrivetrain(
+  public SN_SuperSwerveV2(
       SwerveDrivetrainConstants drivetrainConstants,
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(
@@ -105,7 +105,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
    *                                  and radians
    * @param modules                   Constants for each specific module
    */
-  public CommandSwerveDrivetrain(
+  public SN_SuperSwerveV2(
       SwerveDrivetrainConstants drivetrainConstants,
       double odometryUpdateFrequency,
       Matrix<N3, N1> odometryStandardDeviation,

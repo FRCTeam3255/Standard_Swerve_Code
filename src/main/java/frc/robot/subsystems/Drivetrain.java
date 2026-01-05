@@ -21,7 +21,7 @@ import frc.robot.DeviceIDs;
 import frc.robot.constants.ConstDrivetrain;
 import frc.robot.constants.ConstPoseDrive.PoseDriveGroup;
 
-public class Drivetrain extends CommandSwerveDrivetrain {
+public class Drivetrain extends SN_SuperSwerveV2 {
 
   public PoseDriveGroup lastDesiredPoseGroup;
   public Pose2d lastDesiredTarget;
