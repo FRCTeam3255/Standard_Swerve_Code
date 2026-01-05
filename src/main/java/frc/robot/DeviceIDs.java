@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.CANBus;
+
 // Contains all ports on our robot
 
 public class DeviceIDs {
@@ -10,7 +12,7 @@ public class DeviceIDs {
 
   // Drivetrain IDs: 0~9
   public static class drivetrainIDs {
-    public static final String CAN_BUS_NAME = "Swerve";
+    public static final CANBus CAN_BUS_NAME = new CANBus("Swerve");
     public static final int PIGEON_CAN = 0;
 
     // Module 0
