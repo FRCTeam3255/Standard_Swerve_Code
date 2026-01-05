@@ -71,16 +71,13 @@ public class PoseDrive extends Command {
       subDrivetrain.autoAlign(
           closestPose,
           velocities,
-          true,
           poseGroup.lockX,
-          poseGroup.lockY,
-          ConstDrivetrain.INVERT_ROTATION);
+          poseGroup.lockY);
       subDriverStateMachine.setDriverState(poseGroup.driveState);
     } else {
       subDrivetrain.rotationalAlign(
           closestPose,
-          velocities,
-          true);
+          velocities);
       subDriverStateMachine.setDriverState(poseGroup.snapState);
     }
   }
@@ -88,7 +85,6 @@ public class PoseDrive extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    subDrivetrain.neutralDriveOutputs();
   }
 
   // Returns true when the command should end.

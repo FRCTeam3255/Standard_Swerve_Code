@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.DeviceIDs;
@@ -123,4 +124,35 @@ public class Drivetrain extends CommandSwerveDrivetrain {
 
     drive(automatedDTVelocity);
   }
+
+  public void rotationalAlign(Pose2d closestPose, ChassisSpeeds velocities) {
+    ProfiledPIDController autoAlignRotationPID = ConstDrivetrain.AUTO_ALIGN.POSE_ROTATION_CONTROLLER;
+    drive(
+        velocities,
+        closestPose.getRotation(),
+        autoAlignRotationPID.getP(),
+        autoAlignRotationPID.getI(),
+        autoAlignRotationPID.getD());
+  }
+
+  public void autoAlign(
+      Pose2d desiredTarget,
+      ChassisSpeeds manualVelocities,
+      boolean lockX,
+      boolean lockY) {
+
+    // Full auto-align
+    ChassisSpeeds automatedDTVelocity = ConstDrivetrain.AUTO_ALIGN.POSE_AUTO_ALIGN_CONTROLLER.calculate(getPose(),
+        desiredTarget, 0,
+        desiredTarget.getRotation());
+
+    if (lockX) {
+      automatedDTVelocity.vxMetersPerSecond = manualVelocities.vxMetersPerSecond;
+    }
+    if (lockY) {
+      automatedDTVelocity.vyMetersPerSecond = manualVelocities.vyMetersPerSecond;
+    }
+    drive(automatedDTVelocity);
+  }
+
 }
