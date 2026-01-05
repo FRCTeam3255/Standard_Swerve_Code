@@ -306,6 +306,25 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
   // =========================================================
   // ******************** SUPERCORE *********************
   // =========================================================
+  public void drive(ChassisSpeeds chassisSpeeds) {
+    setControl(fieldCentricRequest
+        .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+        .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+        .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds, Rotation2d facingAngle, double kP, double kI, double kD) {
+    setControl(fieldCentricFacingAngleRequest
+        .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+        .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+        .withHeadingPID(kP, kI, kD)
+        .withTargetDirection(facingAngle));
+  }
+
+  public void xBrake() {
+    setControl(brakeRequest);
+  }
+
   /**
    * @return The current rate of rotation for the Pigeon 2. <b>Units:</b> Degrees
    *         per Second
@@ -403,22 +422,4 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
         .lte(tolerance);
   }
 
-  public void drive(ChassisSpeeds chassisSpeeds) {
-    setControl(fieldCentricRequest
-        .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-        .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-        .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
-  }
-
-  public void drive(ChassisSpeeds chassisSpeeds, Rotation2d facingAngle, double kP, double kI, double kD) {
-    setControl(fieldCentricFacingAngleRequest
-        .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-        .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-        .withHeadingPID(kP, kI, kD)
-        .withTargetDirection(facingAngle));
-  }
-
-  public void xBrake() {
-    setControl(brakeRequest);
-  }
 }
