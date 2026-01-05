@@ -4,17 +4,15 @@
 
 package frc.robot.commands;
 
-import frc.robot.constants.ConstDrivetrain;
-import frc.robot.constants.ConstField;
-import frc.robot.subsystems.*;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.ConstDrivetrain;
+import frc.robot.constants.ConstField;
+import frc.robot.subsystems.DriverStateMachine;
+import frc.robot.subsystems.Drivetrain;
 
 public class DriveManual extends Command {
   Drivetrain subDrivetrain;
@@ -55,15 +53,11 @@ public class DriveManual extends Command {
 
     subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
 
-    subDrivetrain.drive(
-        new Translation2d(velocities.vxMetersPerSecond, velocities.vyMetersPerSecond),
-        velocities.omegaRadiansPerSecond,
-        isOpenLoop);
+    subDrivetrain.drive(velocities);
   }
 
   @Override
   public void end(boolean interrupted) {
-    subDrivetrain.neutralDriveOutputs();
   }
 
   @Override

@@ -102,7 +102,6 @@ public class Drivetrain extends CommandSwerveDrivetrain {
   private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt pointRequest = new SwerveRequest.PointWheelsAt();
 
   public Drivetrain() {
     super(
@@ -114,9 +113,14 @@ public class Drivetrain extends CommandSwerveDrivetrain {
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
-    driveRequest.withVelocityX(chassisSpeeds.vxMetersPerSecond)
+    setControl(driveRequest
+        .withVelocityX(chassisSpeeds.vxMetersPerSecond)
         .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-        .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond);
+        .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+  }
+
+  public void xBrake() {
+    setControl(brakeRequest);
   }
 
   /**
