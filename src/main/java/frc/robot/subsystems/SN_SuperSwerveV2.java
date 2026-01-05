@@ -40,6 +40,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
+  // ==========================================================
+  // ****************** CTRE GENERATED CODE *******************
+  // ************************ GLOBALS ************************
+  // ==========================================================
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
@@ -51,10 +55,12 @@ public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean m_hasAppliedOperatorPerspective = false;
 
-  private final SwerveRequest.FieldCentric fieldCentricRequest = new SwerveRequest.FieldCentric();
-  private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.FieldCentricFacingAngle fieldCentricFacingAngleRequest = new SwerveRequest.FieldCentricFacingAngle();
-
+  // ==========================================================
+  // ****************** CTRE GENERATED CODE *******************
+  // ********************** CONSTRUCTORS **********************
+  // NOTE: Orignally Extened TunerConstants.TunerSwerveDrivetrain
+  // Modified to extend SwerveDrivetrain directly
+  // ==========================================================
   /**
    * Constructs a CTRE SwerveDrivetrain using the specified constants.
    * <p>
@@ -120,6 +126,10 @@ public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
     }
   }
 
+  // ==========================================================
+  // ****************** CTRE GENERATED CODE *******************
+  // ************************ FUNCTIONS ************************
+  // ==========================================================
   /**
    * Returns a command that applies the specified control request to this swerve
    * drivetrain.
@@ -213,6 +223,7 @@ public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
   }
 
   // ==========================================================
+  // ****************** CTRE GENERATED CODE *******************
   // ************************* SYSID *************************
   // ==========================================================
   /* Swerve requests to apply during SysId characterization */
@@ -304,8 +315,14 @@ public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
   }
 
   // =========================================================
-  // ******************** SUPERCORE *********************
+  // ********************** SUPERCORE ***********************
+  // Code made by the SuperNURDs. Addtions on to CTRE Swerve.
   // =========================================================
+  // Swerve Requests were originally in CTRE Generated Swerve RobotContainer
+  private final SwerveRequest.FieldCentric fieldCentricRequest = new SwerveRequest.FieldCentric();
+  private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest.FieldCentricFacingAngle fieldCentricFacingAngleRequest = new SwerveRequest.FieldCentricFacingAngle();
+
   public void drive(ChassisSpeeds chassisSpeeds) {
     setControl(fieldCentricRequest
         .withVelocityX(chassisSpeeds.vxMetersPerSecond)
