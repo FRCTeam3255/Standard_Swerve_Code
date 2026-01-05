@@ -6,10 +6,16 @@ package frc.robot.constants;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 
@@ -23,6 +29,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.MomentOfInertia;
+import edu.wpi.first.units.measure.Voltage;
 
 /**
  * The {@code ConstDrivetrain} class serves as a centralized repository for all
@@ -81,22 +89,6 @@ public class ConstDrivetrain {
       public static Ratios L3 = new Ratios(steer, driveL3, couple);
     }
   }
-
-  public static class SN_SwerveConstants { // TODO: RENAME TO MODULE_CONSTANTS
-    public Ratios ratios;
-    Distance wheelDiameter;
-    public Distance wheelRadius;
-    public Distance moduleOffsetLocation;
-
-    public SN_SwerveConstants(Ratios ratios, Distance wheelDiameter,
-        Distance moduleOffsetLocation) {
-      this.ratios = ratios;
-      this.wheelDiameter = wheelDiameter;
-      this.wheelRadius = wheelDiameter.div(2);
-      this.moduleOffsetLocation = moduleOffsetLocation;
-    }
-
-  }
   // ====== TO MOVE TO SUPERCODE - END ======
 
   public static final double SLOW_MODE_MULTIPLIER = 0.5;
@@ -143,6 +135,22 @@ public class ConstDrivetrain {
   public static final boolean INVERT_STEER_ENCODER = false;
 
   // -- CONFIGS --
+  // Initial configs for the drive and steer motors and the azimuth encoder; these
+  // cannot be null.
+  // Some configs will be overwritten; check the `with*InitialConfigs()` API
+  // documentation.
+  public static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
+  public static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
+      .withCurrentLimits(
+          new CurrentLimitsConfigs()
+              // Swerve azimuth does not require much torque output, so we can set a
+              // relatively low
+              // stator current limit to help avoid brownouts without impacting performance.
+              .withStatorCurrentLimit(Amps.of(60))
+              .withStatorCurrentLimitEnable(true));
+  public static final CANcoderConfiguration encoderInitialConfigs = null;
+  // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
+  public static final Pigeon2Configuration pigeonConfigs = null;
   public static Slot0Configs DRIVE_CONFIG = new Slot0Configs();
   public static Slot0Configs STEER_CONFIG = new Slot0Configs();
 
@@ -212,6 +220,15 @@ public class ConstDrivetrain {
         PATH_TRANS_CONTROLLER,
         PATH_ROTATION_CONTROLLER);
 
+  }
+
+  public static class SIMULATION {
+    // These are only used for simulation
+    public static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
+    public static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
+    // Simulated voltage necessary to overcome friction
+    public static final Voltage kSteerFrictionVoltage = Volts.of(0.2);
+    public static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
   }
 
 }

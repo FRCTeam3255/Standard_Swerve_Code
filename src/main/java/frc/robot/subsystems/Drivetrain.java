@@ -19,7 +19,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.DeviceIDs;
 import frc.robot.constants.ConstDrivetrain;
 import frc.robot.constants.ConstPoseDrive.PoseDriveGroup;
-import frc.robot.constants.TunerConstants;
 
 public class Drivetrain extends CommandSwerveDrivetrain {
 
@@ -41,13 +40,13 @@ public class Drivetrain extends CommandSwerveDrivetrain {
       .withDriveMotorType(DriveMotorArrangement.TalonFX_Integrated)
       .withSteerMotorType(SteerMotorArrangement.TalonFX_Integrated)
       .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
-      .withDriveMotorInitialConfigs(TunerConstants.driveInitialConfigs)
-      .withSteerMotorInitialConfigs(TunerConstants.steerInitialConfigs)
-      .withEncoderInitialConfigs(TunerConstants.encoderInitialConfigs)
-      .withSteerInertia(TunerConstants.kSteerInertia)
-      .withDriveInertia(TunerConstants.kDriveInertia)
-      .withSteerFrictionVoltage(TunerConstants.kSteerFrictionVoltage)
-      .withDriveFrictionVoltage(TunerConstants.kDriveFrictionVoltage);
+      .withDriveMotorInitialConfigs(ConstDrivetrain.driveInitialConfigs)
+      .withSteerMotorInitialConfigs(ConstDrivetrain.steerInitialConfigs)
+      .withEncoderInitialConfigs(ConstDrivetrain.encoderInitialConfigs)
+      .withSteerInertia(ConstDrivetrain.SIMULATION.kSteerInertia)
+      .withDriveInertia(ConstDrivetrain.SIMULATION.kDriveInertia)
+      .withSteerFrictionVoltage(ConstDrivetrain.SIMULATION.kSteerFrictionVoltage)
+      .withDriveFrictionVoltage(ConstDrivetrain.SIMULATION.kDriveFrictionVoltage);
   public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft = ConstantCreator
       .createModuleConstants(
           DeviceIDs.drivetrainIDs.FRONT_LEFT_STEER_CAN,
@@ -95,7 +94,7 @@ public class Drivetrain extends CommandSwerveDrivetrain {
   public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
       .withCANBusName(DeviceIDs.drivetrainIDs.CAN_BUS_NAME.getName())
       .withPigeon2Id(DeviceIDs.drivetrainIDs.PIGEON_CAN)
-      .withPigeon2Configs(TunerConstants.pigeonConfigs);
+      .withPigeon2Configs(ConstDrivetrain.pigeonConfigs);
 
   public Drivetrain() {
     super(
