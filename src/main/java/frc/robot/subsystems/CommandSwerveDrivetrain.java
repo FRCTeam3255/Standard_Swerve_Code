@@ -356,14 +356,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
       LinearVelocity REAL_DRIVE_SPEED,
       AngularVelocity TURN_SPEED) {
 
-    double redAllianceMultiplier = isRed ? 1 : -1;
+    double redAllianceMultiplier = isRed ? -1 : 1;
     double slowModeMultiplier = slowMode.getAsBoolean() ? SLOW_MODE_MULTIPLIER : 1.0;
 
     double xVelocity = xAxisSupplier.getAsDouble() * REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
         * redAllianceMultiplier * slowModeMultiplier;
-    double yVelocity = yAxisSupplier.getAsDouble() * REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
+    double yVelocity = -yAxisSupplier.getAsDouble() * REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
         * redAllianceMultiplier * slowModeMultiplier;
-    double rotationVelocity = rotationAxisSupplier.getAsDouble()
+    double rotationVelocity = -rotationAxisSupplier.getAsDouble()
         * TURN_SPEED.in(Units.RadiansPerSecond);
 
     return new ChassisSpeeds(xVelocity, yVelocity, rotationVelocity);
