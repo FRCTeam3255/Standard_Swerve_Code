@@ -7,13 +7,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -99,10 +97,6 @@ public class Drivetrain extends CommandSwerveDrivetrain {
       .withPigeon2Id(DeviceIDs.drivetrainIDs.PIGEON_CAN)
       .withPigeon2Configs(TunerConstants.pigeonConfigs);
 
-  private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
-
   public Drivetrain() {
     super(
         DrivetrainConstants,
@@ -110,17 +104,6 @@ public class Drivetrain extends CommandSwerveDrivetrain {
         FrontRight,
         BackLeft,
         BackRight);
-  }
-
-  public void drive(ChassisSpeeds chassisSpeeds) {
-    setControl(driveRequest
-        .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-        .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-        .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
-  }
-
-  public void xBrake() {
-    setControl(brakeRequest);
   }
 
   /**

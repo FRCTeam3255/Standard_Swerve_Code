@@ -49,6 +49,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean m_hasAppliedOperatorPerspective = false;
 
+  private final SwerveRequest.FieldCentric fieldCentricRequest = new SwerveRequest.FieldCentric();
+  private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest.FieldCentricFacingAngle fieldCentricFacingAngleRequest = new SwerveRequest.FieldCentricFacingAngle();
+
   /**
    * Constructs a CTRE SwerveDrivetrain using the specified constants.
    * <p>
@@ -345,12 +349,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       LinearVelocity REAL_DRIVE_SPEED,
       AngularVelocity TURN_SPEED) {
 
-    double redAllianceMultiplier = isRed ? -1 : 1;
+    double redAllianceMultiplier = isRed ? 1 : -1;
     double slowModeMultiplier = slowMode.getAsBoolean() ? SLOW_MODE_MULTIPLIER : 1.0;
 
     double xVelocity = xAxisSupplier.getAsDouble() * REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
         * redAllianceMultiplier * slowModeMultiplier;
-    double yVelocity = -yAxisSupplier.getAsDouble() * REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
+    double yVelocity = yAxisSupplier.getAsDouble() * REAL_DRIVE_SPEED.in(Units.MetersPerSecond)
         * redAllianceMultiplier * slowModeMultiplier;
     double rotationVelocity = rotationAxisSupplier.getAsDouble()
         * TURN_SPEED.in(Units.RadiansPerSecond);
@@ -390,5 +394,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public boolean isAtPosition(Pose2d desiredPose2d, Distance tolerance) {
     return Units.Meters.of(this.getPose().getTranslation().getDistance(desiredPose2d.getTranslation()))
         .lte(tolerance);
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds) {
+    setControl(fieldCentricRequest
+        .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+        .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+        .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds, Rotation2d facingAngle, double kP, double kI, double kD) {
+    setControl(fieldCentricFacingAngleRequest
+        .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+        .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+        .withHeadingPID(kP, kI, kD)
+        .withTargetDirection(facingAngle));
+  }
+
+  public void xBrake() {
+    setControl(brakeRequest);
   }
 }
