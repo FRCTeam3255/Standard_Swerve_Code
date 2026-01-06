@@ -61,9 +61,9 @@ public class ConstDrivetrain {
   }
 
   public static class Ratios {
-    public double steer;
-    public double drive;
-    public double couple;
+    private final double steer;
+    private final double drive;
+    private final double couple;
 
     public Ratios(double steer, double drive, double couple) {
       this.steer = steer;
@@ -71,22 +71,34 @@ public class ConstDrivetrain {
       this.couple = couple;
     }
 
+    public double getSteer() {
+      return steer;
+    }
+
+    public double getDrive() {
+      return drive;
+    }
+
+    public double getCouple() {
+      return couple;
+    }
+
     public static class MK4I {
-      static final double stage1 = 1. / (14. / 50.);
-      static final double stage2L1 = 1. / (25. / 19.);
-      static final double stage2L2 = 1. / (27. / 17.);
-      static final double stage2L3 = 1. / (28. / 16.);
-      static final double stage3 = 1. / (15. / 45.);
-      static final double steer = 150. / 7.;
+      private static final double stage1 = 1. / (14. / 50.);
+      private static final double stage2L1 = 1. / (25. / 19.);
+      private static final double stage2L2 = 1. / (27. / 17.);
+      private static final double stage2L3 = 1. / (28. / 16.);
+      private static final double stage3 = 1. / (15. / 45.);
+      private static final double steer = 150. / 7.;
 
-      static final double driveL1 = stage1 * stage2L1 * stage3;
-      static final double driveL2 = stage1 * stage2L2 * stage3;
-      static final double driveL3 = stage1 * stage2L3 * stage3;
-      static final double couple = stage1;
+      private static final double driveL1 = stage1 * stage2L1 * stage3;
+      private static final double driveL2 = stage1 * stage2L2 * stage3;
+      private static final double driveL3 = stage1 * stage2L3 * stage3;
+      private static final double couple = stage1;
 
-      public static Ratios L1 = new Ratios(steer, driveL1, couple);
-      public static Ratios L2 = new Ratios(steer, driveL2, couple);
-      public static Ratios L3 = new Ratios(steer, driveL3, couple);
+      public static final Ratios L1 = new Ratios(steer, driveL1, couple);
+      public static final Ratios L2 = new Ratios(steer, driveL2, couple);
+      public static final Ratios L3 = new Ratios(steer, driveL3, couple);
     }
   }
   // ====== TO MOVE TO SUPERCODE - END ======

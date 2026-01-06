@@ -58,7 +58,7 @@ public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
   // ==========================================================
   // ****************** CTRE GENERATED CODE *******************
   // ********************** CONSTRUCTORS **********************
-  // NOTE: Orignally Extened TunerConstants.TunerSwerveDrivetrain
+  // NOTE: Originally Extended TunerConstants.TunerSwerveDrivetrain
   // Modified to extend SwerveDrivetrain directly
   // ==========================================================
   /**
@@ -134,7 +134,7 @@ public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
    * Returns a command that applies the specified control request to this swerve
    * drivetrain.
    *
-   * @param request Function returning the request to apply
+   * @param requestSupplier Function returning the request to apply
    * @return Command to run
    */
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -316,7 +316,7 @@ public class SN_SuperSwerveV2 extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
 
   // =========================================================
   // ********************** SUPERCORE ***********************
-  // Code made by the SuperNURDs. Addtions on to CTRE Swerve.
+  // Code made by the SuperNURDs. Additions on to CTRE Swerve.
   // =========================================================
   // Swerve Requests were originally in CTRE Generated Swerve RobotContainer
   private final SwerveRequest.FieldCentric fieldCentricRequest = new SwerveRequest.FieldCentric();
