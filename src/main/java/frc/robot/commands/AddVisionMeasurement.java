@@ -9,7 +9,6 @@ import java.util.Optional;
 import com.frcteam3255.utils.LimelightHelpers;
 import com.frcteam3255.utils.LimelightHelpers.PoseEstimate;
 
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ConstVision;
@@ -42,7 +41,7 @@ public class AddVisionMeasurement extends Command {
         subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_BACK_NAME,
         subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    AngularVelocity gyroRate = Units.DegreesPerSecond.of(subDrivetrain.getGyroRate());
+    AngularVelocity gyroRate = subDrivetrain.getGyroRate();
 
     estimatedPose = subVision.determinePoseEstimate(gyroRate);
     if (estimatedPose.isPresent()) {

@@ -4,120 +4,106 @@
 
 package frc.robot.subsystems;
 
-import com.frcteam3255.components.swerve.SN_SuperSwerve;
-import com.frcteam3255.components.swerve.SN_SwerveModule;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
+import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 import choreo.trajectory.SwerveSample;
-import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
-import frc.robot.DeviceIDs.drivetrainIDs;
+import frc.robot.DeviceIDs;
 import frc.robot.constants.ConstDrivetrain;
-import frc.robot.constants.ConstField;
-import frc.robot.constants.ConstVision;
 import frc.robot.constants.ConstPoseDrive.PoseDriveGroup;
 
-@Logged
-public class Drivetrain extends SN_SuperSwerve {
-  StructPublisher<Pose2d> robotPosePublisher = NetworkTableInstance.getDefault()
-      .getStructTopic("/SmartDashboard/Drivetrain/Robot Pose", Pose2d.struct).publish();
+public class Drivetrain extends SN_SuperSwerveV2 {
 
   public PoseDriveGroup lastDesiredPoseGroup;
   public Pose2d lastDesiredTarget;
 
-  private static SN_SwerveModule[] modules = new SN_SwerveModule[] {
-      new SN_SwerveModule(0, drivetrainIDs.FRONT_LEFT_DRIVE_CAN, drivetrainIDs.FRONT_LEFT_STEER_CAN,
-          drivetrainIDs.FRONT_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
-          drivetrainIDs.CAN_BUS_NAME),
-      new SN_SwerveModule(1, drivetrainIDs.FRONT_RIGHT_DRIVE_CAN, drivetrainIDs.FRONT_RIGHT_STEER_CAN,
-          drivetrainIDs.FRONT_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
-          drivetrainIDs.CAN_BUS_NAME),
-      new SN_SwerveModule(2, drivetrainIDs.BACK_LEFT_DRIVE_CAN, drivetrainIDs.BACK_LEFT_STEER_CAN,
-          drivetrainIDs.BACK_LEFT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
-          drivetrainIDs.CAN_BUS_NAME),
-      new SN_SwerveModule(3, drivetrainIDs.BACK_RIGHT_DRIVE_CAN, drivetrainIDs.BACK_RIGHT_STEER_CAN,
-          drivetrainIDs.BACK_RIGHT_ABSOLUTE_ENCODER_CAN, ConstDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
-          drivetrainIDs.CAN_BUS_NAME),
-  };
+  /** Creates a new Drivetrain. */
+  public static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constantCreator = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
+      .withDriveMotorGearRatio(ConstDrivetrain.GEAR_RATIOS.getDrive())
+      .withSteerMotorGearRatio(ConstDrivetrain.GEAR_RATIOS.getSteer())
+      .withCouplingGearRatio(ConstDrivetrain.GEAR_RATIOS.getCouple())
+      .withWheelRadius(ConstDrivetrain.WHEEL_DIAMETER.div(2))
+      .withSteerMotorGains(ConstDrivetrain.STEER_CONFIG)
+      .withDriveMotorGains(ConstDrivetrain.DRIVE_CONFIG)
+      .withSteerMotorClosedLoopOutput(ConstDrivetrain.closedLoopOutputType)
+      .withDriveMotorClosedLoopOutput(ConstDrivetrain.closedLoopOutputType)
+      .withSlipCurrent(ConstDrivetrain.WHEEL_SLIP_STATOR_CURRENT)
+      .withSpeedAt12Volts(ConstDrivetrain.REAL_DRIVE_SPEED)
+      .withDriveMotorType(DriveMotorArrangement.TalonFX_Integrated)
+      .withSteerMotorType(SteerMotorArrangement.TalonFX_Integrated)
+      .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
+      .withDriveMotorInitialConfigs(ConstDrivetrain.driveInitialConfigs)
+      .withSteerMotorInitialConfigs(ConstDrivetrain.steerInitialConfigs)
+      .withEncoderInitialConfigs(ConstDrivetrain.encoderInitialConfigs)
+      .withSteerInertia(ConstDrivetrain.SIMULATION.kSteerInertia)
+      .withDriveInertia(ConstDrivetrain.SIMULATION.kDriveInertia)
+      .withSteerFrictionVoltage(ConstDrivetrain.SIMULATION.kSteerFrictionVoltage)
+      .withDriveFrictionVoltage(ConstDrivetrain.SIMULATION.kDriveFrictionVoltage);
+  public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft = constantCreator
+      .createModuleConstants(
+          DeviceIDs.drivetrainIDs.FRONT_LEFT_STEER_CAN,
+          DeviceIDs.drivetrainIDs.FRONT_LEFT_DRIVE_CAN,
+          DeviceIDs.drivetrainIDs.FRONT_LEFT_ABSOLUTE_ENCODER_CAN,
+          ConstDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
+          ConstDrivetrain.MODULE_OFFSET_LOCATIONS,
+          ConstDrivetrain.MODULE_OFFSET_LOCATIONS,
+          ConstDrivetrain.INVERT_LEFT_SIDE_DRIVE,
+          ConstDrivetrain.INVERT_STEER,
+          ConstDrivetrain.INVERT_STEER_ENCODER);
+  public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontRight = constantCreator
+      .createModuleConstants(
+          DeviceIDs.drivetrainIDs.FRONT_RIGHT_STEER_CAN,
+          DeviceIDs.drivetrainIDs.FRONT_RIGHT_DRIVE_CAN,
+          DeviceIDs.drivetrainIDs.FRONT_RIGHT_ABSOLUTE_ENCODER_CAN,
+          ConstDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
+          ConstDrivetrain.MODULE_OFFSET_LOCATIONS,
+          ConstDrivetrain.MODULE_OFFSET_LOCATIONS.unaryMinus(),
+          ConstDrivetrain.INVERT_RIGHT_SIDE_DRIVE,
+          ConstDrivetrain.INVERT_STEER,
+          ConstDrivetrain.INVERT_STEER_ENCODER);
+  public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackLeft = constantCreator
+      .createModuleConstants(
+          DeviceIDs.drivetrainIDs.BACK_LEFT_STEER_CAN,
+          DeviceIDs.drivetrainIDs.BACK_LEFT_DRIVE_CAN,
+          DeviceIDs.drivetrainIDs.BACK_LEFT_ABSOLUTE_ENCODER_CAN,
+          ConstDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
+          ConstDrivetrain.MODULE_OFFSET_LOCATIONS.unaryMinus(),
+          ConstDrivetrain.MODULE_OFFSET_LOCATIONS,
+          ConstDrivetrain.INVERT_LEFT_SIDE_DRIVE,
+          ConstDrivetrain.INVERT_STEER,
+          ConstDrivetrain.INVERT_STEER_ENCODER);
+  public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackRight = constantCreator
+      .createModuleConstants(
+          DeviceIDs.drivetrainIDs.BACK_RIGHT_STEER_CAN,
+          DeviceIDs.drivetrainIDs.BACK_RIGHT_DRIVE_CAN,
+          DeviceIDs.drivetrainIDs.BACK_RIGHT_ABSOLUTE_ENCODER_CAN,
+          ConstDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
+          ConstDrivetrain.MODULE_OFFSET_LOCATIONS.unaryMinus(),
+          ConstDrivetrain.MODULE_OFFSET_LOCATIONS.unaryMinus(),
+          ConstDrivetrain.INVERT_RIGHT_SIDE_DRIVE,
+          ConstDrivetrain.INVERT_STEER,
+          ConstDrivetrain.INVERT_STEER_ENCODER);
+  public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
+      .withCANBusName(DeviceIDs.drivetrainIDs.CAN_BUS_NAME.getName())
+      .withPigeon2Id(DeviceIDs.drivetrainIDs.PIGEON_CAN)
+      .withPigeon2Configs(ConstDrivetrain.pigeonConfigs);
 
   public Drivetrain() {
     super(
-        ConstDrivetrain.SWERVE_CONSTANTS,
-        modules,
-        ConstDrivetrain.WHEELBASE,
-        ConstDrivetrain.TRACK_WIDTH,
-        drivetrainIDs.CAN_BUS_NAME,
-        drivetrainIDs.PIGEON_CAN,
-        ConstDrivetrain.MIN_STEER_PERCENT,
-        ConstDrivetrain.DRIVE_CONFIG,
-        ConstDrivetrain.STEER_CONFIG,
-        ConstDrivetrain.CANCODER_CONFIG,
-        VecBuilder.fill(
-            ConstDrivetrain.MEASUREMENT_STD_DEVS_POS,
-            ConstDrivetrain.MEASUREMENT_STD_DEVS_POS,
-            ConstDrivetrain.MEASUREMENT_STD_DEV_HEADING),
-        VecBuilder.fill(
-            ConstVision.STD_DEVS_POS,
-            ConstVision.STD_DEVS_POS,
-            ConstVision.STD_DEVS_HEADING),
-        ConstDrivetrain.AUTO.AUTO_DRIVE_PID,
-        ConstDrivetrain.AUTO.AUTO_STEER_PID,
-        ConstDrivetrain.AUTO_ALIGN.POSE_AUTO_ALIGN_CONTROLLER,
-        ConstDrivetrain.TURN_SPEED,
-        ConstDrivetrain.AUTO.ROBOT_CONFIG,
-        () -> ConstField.isRedAlliance(),
-        Robot.isSimulation());
-  }
-
-  /**
-   * Determines whether the robot is within the specified auto-drive zone based on
-   * the distance
-   * to a target pose.
-   *
-   * @param autoDriveMaxDistance The maximum allowable distance for the auto-drive
-   *                             zone. If null,
-   *                             the method will return false.
-   * @param target               The target pose to calculate the distance from
-   *                             the robot's current pose.
-   * @return True if the robot's current pose is within the specified maximum
-   *         distance from the target pose,
-   *         false otherwise.
-   */
-  public boolean isInAutoDriveZone(Distance autoDriveMaxDistance, Pose2d target) {
-    if (autoDriveMaxDistance == null) {
-      return false;
-    }
-    Distance distanceFromPose = Units.Meters
-        .of(getPose().getTranslation().getDistance(target.getTranslation()));
-    return distanceFromPose.lt(autoDriveMaxDistance);
-  }
-
-  /**
-   * Checks if the drivetrain is at the last desired field position.
-   * 
-   * This method verifies whether the drivetrain has reached the last desired
-   * target position and orientation within the specified tolerances. If no
-   * target or pose group has been set, it will return false.
-   * 
-   * @return {@code true} if the drivetrain is at the last desired target position
-   *         and orientation within the defined tolerances, {@code false}
-   *         otherwise.
-   */
-  public boolean atLastDesiredFieldPosition() {
-    if (lastDesiredTarget == null || lastDesiredPoseGroup == null) {
-      return false;
-    }
-    return isAtPosition(lastDesiredTarget, lastDesiredPoseGroup.distanceTolerance)
-        && isAtRotation(lastDesiredTarget.getRotation(), lastDesiredPoseGroup.rotationTolerance);
+        DrivetrainConstants,
+        FrontLeft,
+        FrontRight,
+        BackLeft,
+        BackRight);
   }
 
   /**
@@ -136,53 +122,37 @@ public class Drivetrain extends SN_SuperSwerve {
         desiredTarget, 0,
         desiredTarget.getRotation());
 
-    // Apply the generated speeds
-    if (ConstDrivetrain.INVERT_ROTATION) {
-      automatedDTVelocity.omegaRadiansPerSecond = -automatedDTVelocity.omegaRadiansPerSecond;
+    drive(automatedDTVelocity);
+  }
+
+  public void rotationalAlign(Pose2d closestPose, ChassisSpeeds velocities) {
+    ProfiledPIDController autoAlignRotationPID = ConstDrivetrain.AUTO_ALIGN.POSE_ROTATION_CONTROLLER;
+    drive(
+        velocities,
+        closestPose.getRotation(),
+        autoAlignRotationPID.getP(),
+        autoAlignRotationPID.getI(),
+        autoAlignRotationPID.getD());
+  }
+
+  public void autoAlign(
+      Pose2d desiredTarget,
+      ChassisSpeeds manualVelocities,
+      boolean lockX,
+      boolean lockY) {
+
+    // Full auto-align
+    ChassisSpeeds automatedDTVelocity = ConstDrivetrain.AUTO_ALIGN.POSE_AUTO_ALIGN_CONTROLLER.calculate(getPose(),
+        desiredTarget, 0,
+        desiredTarget.getRotation());
+
+    if (lockX) {
+      automatedDTVelocity.vxMetersPerSecond = manualVelocities.vxMetersPerSecond;
     }
-    drive(automatedDTVelocity, true);
-  }
-
-  @Override
-  public void configure() {
-    SN_SwerveModule.driveConfiguration = ConstDrivetrain.DRIVE_CONFIG;
-    SN_SwerveModule.steerConfiguration = ConstDrivetrain.STEER_CONFIG;
-    SN_SwerveModule.cancoderConfiguration = ConstDrivetrain.CANCODER_CONFIG;
-    super.configure();
-  }
-
-  public Angle getRotationMeasure() {
-    return Units.Degrees.of(getRotation().getDegrees());
-  }
-
-  @Override
-  public void periodic() {
-    super.periodic();
-
-    for (SN_SwerveModule mod : modules) {
-      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Desired Speed (FPS)",
-          Units.Meters.convertFrom(Math.abs(getDesiredModuleStates()[mod.moduleNumber].speedMetersPerSecond),
-              Units.Feet));
-      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Actual Speed (FPS)",
-          Units.Meters.convertFrom(Math.abs(getActualModuleStates()[mod.moduleNumber].speedMetersPerSecond),
-              Units.Feet));
-
-      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Desired Angle (Degrees)",
-          Math.abs(
-              Units.Meters.convertFrom(getDesiredModuleStates()[mod.moduleNumber].angle.getDegrees(), Units.Feet)));
-      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Actual Angle (Degrees)",
-          Math.abs(Units.Meters.convertFrom(getActualModuleStates()[mod.moduleNumber].angle.getDegrees(), Units.Feet)));
-
-      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Offset Absolute Encoder Angle (Rotations)",
-          mod.getAbsoluteEncoder());
-      SmartDashboard.putNumber("Drivetrain/Module " + mod.moduleNumber + "/Absolute Encoder Raw Value (Rotations)",
-          mod.getRawAbsoluteEncoder());
+    if (lockY) {
+      automatedDTVelocity.vyMetersPerSecond = manualVelocities.vyMetersPerSecond;
     }
-
-    field.setRobotPose(getPose());
-    robotPosePublisher.set(getPose());
-
-    SmartDashboard.putData(field);
-    SmartDashboard.putNumber("Drivetrain/Rotation", getRotationMeasure().in(Units.Degrees));
+    drive(automatedDTVelocity);
   }
+
 }
