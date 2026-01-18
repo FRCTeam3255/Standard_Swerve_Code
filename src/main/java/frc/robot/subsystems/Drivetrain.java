@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -17,6 +22,7 @@ import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.DeviceIDs;
 import frc.robot.constants.ConstDrivetrain;
 import frc.robot.constants.ConstPoseDrive.PoseDriveGroup;
@@ -25,6 +31,7 @@ public class Drivetrain extends SN_SuperSwerveV2 {
 
   public PoseDriveGroup lastDesiredPoseGroup;
   public Pose2d lastDesiredTarget;
+  double manualDriveRotation = 0.0;
 
   /** Creates a new Drivetrain. */
   public static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constantCreator = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
@@ -153,6 +160,18 @@ public class Drivetrain extends SN_SuperSwerveV2 {
       automatedDTVelocity.vyMetersPerSecond = manualVelocities.vyMetersPerSecond;
     }
     drive(automatedDTVelocity);
+  }
+
+  public Angle getStickDegrees(DoubleSupplier rotationXAxis, DoubleSupplier rotationYAxis) {
+    double rightStickX = rotationXAxis.getAsDouble();
+    double rightStickY = rotationYAxis.getAsDouble();
+    double hypotenuse = Math.hypot(rightStickX, rightStickY);
+
+    if (hypotenuse < 1.15 && hypotenuse > 0.85) {
+      manualDriveRotation = Math.atan2(rightStickY, rightStickX) - Math.PI / 2;
+    }
+    return Radians.of(manualDriveRotation);
+
   }
 
 }
