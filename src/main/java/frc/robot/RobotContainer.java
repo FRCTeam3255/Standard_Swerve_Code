@@ -39,17 +39,17 @@ public class RobotContainer {
 
   private final SN_XboxController conDriver = new SN_XboxController(controllerIDs.DRIVER_USB);
 
-  public static Rotors rotorsInstance = new Rotors();
+  public static final Rotors rotorsInstance = new Rotors();
   private final Rotors loggedRotorsInstance = rotorsInstance;
-  public static Drivetrain subDrivetrain = new Drivetrain();
+  public static final Drivetrain subDrivetrain = new Drivetrain();
   private final Drivetrain loggedSubDrivetrain = subDrivetrain;
-  public static DriverStateMachine subDriverStateMachine = new DriverStateMachine(subDrivetrain);
+  public static final DriverStateMachine subDriverStateMachine = new DriverStateMachine(subDrivetrain);
   private final DriverStateMachine loggedSubDriverStateMachine = subDriverStateMachine;
-  public static StateMachine subStateMachine = new StateMachine(subDrivetrain);
+  public static final StateMachine subStateMachine = new StateMachine(subDrivetrain);
   private final StateMachine loggedSubStateMachine = subStateMachine;
-  public static RobotPoses robotPose = new RobotPoses(subDrivetrain);
+  public static final RobotPoses robotPose = new RobotPoses(subDrivetrain);
   private final RobotPoses loggedRobotPose = robotPose;
-  public static Vision subVision = new Vision();
+  public static final Vision subVision = new Vision();
   private final Vision loggedSubVision = subVision;
 
   Command TRY_NONE = Commands.deferredProxy(
