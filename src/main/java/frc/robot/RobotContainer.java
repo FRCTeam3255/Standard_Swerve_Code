@@ -99,6 +99,10 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> subDriverStateMachine.setDriverState(DriverState.MANUAL)));
   }
 
+  private void configOperatorBindings() {
+    // Add operator bindings here if needed
+  }
+
   public void configAutonomous() {
     autoFactory = new AutoFactory(
         subDrivetrain::getPose, // A function that returns the current robot pose
@@ -140,10 +144,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
-  }
-
-  private void configOperatorBindings() {
-    // Add operator bindings here if needed
   }
 
   public RobotState getRobotState() {
