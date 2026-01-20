@@ -6,4 +6,5 @@ package frc.robot.constants;
 
 /** Add your docs here. */
 public class ConstRotors {
+  public static final double STOP = 0;
 }
