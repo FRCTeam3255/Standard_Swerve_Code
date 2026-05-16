@@ -3,7 +3,7 @@ package frc.robot.loggers;
 import edu.wpi.first.epilogue.CustomLoggerFor;
 import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
 import edu.wpi.first.epilogue.logging.EpilogueBackend;
-import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 @CustomLoggerFor(LinearVelocity.class)

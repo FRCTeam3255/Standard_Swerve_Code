@@ -1,5 +1,4 @@
 {
-  "extensions.ignoreRecommendations": false,
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.server.launchMode": "Standard",
   "files.exclude": {
@@ -29,10 +28,6 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "editor.formatOnSave": true,
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-  "editor.detectIndentation": false,
   "java.import.gradle.annotationProcessing.enabled": false,
   "java.completion.favoriteStaticMembers": [
     "org.junit.Assert.*",
@@ -64,6 +59,13 @@
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
   ],
+  "java.dependency.enableDependencyCheckup": false,
+  // CUSTOM - KEEP WHEN UPDATING
+  "extensions.ignoreRecommendations": false,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
   "git.pullBeforeCheckout": true,
   "java.saveActions.organizeImports": true,
   "workbench.iconTheme": "material-icon-theme"
