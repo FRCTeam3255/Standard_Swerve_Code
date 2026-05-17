@@ -59,11 +59,9 @@ public class DriverStateMachine extends SubsystemBase {
           case EXAMPLE_POSE_DRIVE:
           case CHOREO:
             return () -> new DriveManual(
-                subDrivetrain,
                 xAxis,
                 yAxis,
                 rotationAxis,
-                subDriverStateMachine,
                 slowMode);
         }
         break;

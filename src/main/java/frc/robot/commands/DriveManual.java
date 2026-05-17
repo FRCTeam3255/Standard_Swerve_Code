@@ -8,31 +8,32 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.ConstDrivetrain;
 import frc.robot.constants.ConstField;
 import frc.robot.subsystems.DriverStateMachine;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveManual extends Command {
-  Drivetrain subDrivetrain;
-  DoubleSupplier xAxis, yAxis, rotationAxis;
+  DoubleSupplier xAxis, yAxis, rotationXAxis, rotationYAxis;
   boolean isOpenLoop;
-  DriverStateMachine subDriverStateMachine;
   BooleanSupplier slowMode;
+  Timer delayTimer = new Timer();
 
-  public DriveManual(Drivetrain subDrivetrain, DoubleSupplier xAxis, DoubleSupplier yAxis,
-      DoubleSupplier rotationAxis, DriverStateMachine subDriverStateMachine, BooleanSupplier slowMode) {
-    this.subDrivetrain = subDrivetrain;
-    this.subDriverStateMachine = subDriverStateMachine;
+  public DriveManual(DoubleSupplier xAxis, DoubleSupplier yAxis,
+      DoubleSupplier rotationAxis, BooleanSupplier slowMode) {
     this.xAxis = xAxis;
     this.yAxis = yAxis;
-    this.rotationAxis = rotationAxis;
+    this.rotationXAxis = rotationXAxis;
+    this.rotationYAxis = rotationYAxis;
     this.slowMode = slowMode;
 
     isOpenLoop = true;
 
-    addRequirements(this.subDrivetrain);
+    addRequirements(RobotContainer.subDriverStateMachine);
   }
 
   @Override
@@ -41,23 +42,81 @@ public class DriveManual extends Command {
 
   @Override
   public void execute() {
-    ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
+    RobotContainer.subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
+    ChassisSpeeds velocities = calculateVelocities();
+
+    if (DriverStation.isAutonomousEnabled()) {
+      driveWithTargetRotation(velocities);
+      return;
+    }
+
+    driveWithSticks(velocities);
+    updateXbrake();
+  }
+
+  private ChassisSpeeds calculateVelocities() {
+    return RobotContainer.drivetrainInstance.calculateVelocitiesFromInput(
         xAxis,
         yAxis,
-        rotationAxis,
+        rotationXAxis,
         slowMode,
         ConstField.isRedAlliance(),
         ConstDrivetrain.SLOW_MODE_MULTIPLIER,
         ConstDrivetrain.REAL_DRIVE_SPEED,
         ConstDrivetrain.TURN_SPEED);
+  }
 
-    subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
+  private void driveWithSticks(ChassisSpeeds velocities) {
+    double rotInput = -rotationXAxis.getAsDouble();
+    boolean isRotateStickHit = Math.abs(rotInput) > ConstDrivetrain.ROTATION_STICK_DEADBAND;
 
-    subDrivetrain.drive(velocities);
+    if (isRotateStickHit) {
+      manualRotation(velocities);
+    } else {
+      correctRotation(velocities);
+    }
+  }
+
+  private void manualRotation(ChassisSpeeds velocities) {
+    RobotContainer.drivetrainInstance.setIsManualRotationEnabled(true);
+    RobotContainer.drivetrainInstance.drive(velocities);
+    RobotContainer.drivetrainInstance
+        .setDriveRotation(RobotContainer.drivetrainInstance.getPose().getRotation().getMeasure());
+    delayTimer.reset();
+  }
+
+  private void correctRotation(ChassisSpeeds velocities) {
+    delayTimer.start();
+    boolean delayElapsed = delayTimer.hasElapsed(ConstDrivetrain.ROTATION_DELAY.magnitude());
+
+    if (delayElapsed) {
+      driveWithTargetRotation(velocities);
+    } else {
+      RobotContainer.drivetrainInstance.drive(velocities);
+      RobotContainer.drivetrainInstance
+          .setDriveRotation(RobotContainer.drivetrainInstance.getPose().getRotation().getMeasure());
+    }
+  }
+
+  private void driveWithTargetRotation(ChassisSpeeds velocities) {
+    RobotContainer.drivetrainInstance.drive(
+        velocities,
+        RobotContainer.drivetrainInstance.getTargetRotation(),
+        ConstDrivetrain.ROTATION_PID.kP,
+        ConstDrivetrain.ROTATION_PID.kI,
+        ConstDrivetrain.ROTATION_PID.kD);
+  }
+
+  private void updateXbrake() {
+    Drivetrain drivetrain = RobotContainer.drivetrainInstance;
+    boolean isStickHit = drivetrain.isStickHit(xAxis, yAxis)
+        || drivetrain.isStickHit(rotationXAxis, rotationYAxis);
+    drivetrain.setXbrakeAllowed(!isStickHit);
   }
 
   @Override
   public void end(boolean interrupted) {
+    delayTimer.stop();
   }
 
   @Override

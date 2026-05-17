@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.robot.DeviceIDs.controllerIDs;
 import frc.robot.commands.AddVisionMeasurement;
+import frc.robot.constants.ConstSystem;
 import frc.robot.constants.ConstSystem.constControllers;
 import frc.robot.subsystems.DriverStateMachine;
 import frc.robot.subsystems.DriverStateMachine.DriverState;
@@ -43,13 +44,13 @@ public class RobotContainer {
 
   public static final Rotors rotorsInstance = new Rotors();
   private final Rotors loggedRotorsInstance = rotorsInstance;
-  public static final Drivetrain subDrivetrain = new Drivetrain();
-  private final Drivetrain loggedSubDrivetrain = subDrivetrain;
-  public static final DriverStateMachine subDriverStateMachine = new DriverStateMachine(subDrivetrain);
+  public static final Drivetrain drivetrainInstance = new Drivetrain();
+  private final Drivetrain loggedSubDrivetrain = drivetrainInstance;
+  public static final DriverStateMachine subDriverStateMachine = new DriverStateMachine(drivetrainInstance);
   private final DriverStateMachine loggedSubDriverStateMachine = subDriverStateMachine;
-  public static final StateMachine subStateMachine = new StateMachine(subDrivetrain);
+  public static final StateMachine subStateMachine = new StateMachine(drivetrainInstance);
   private final StateMachine loggedSubStateMachine = subStateMachine;
-  public static final RobotPoses robotPose = new RobotPoses(subDrivetrain);
+  public static final RobotPoses robotPose = new RobotPoses(drivetrainInstance);
   private final RobotPoses loggedRobotPose = robotPose;
   public static final Vision subVision = new Vision();
   private final Vision loggedSubVision = subVision;
@@ -92,7 +93,7 @@ public class RobotContainer {
     // conDriver.btn_B.onTrue(Commands.runOnce(() ->
     // subDrivetrain.resetModulesToAbsolute()));
     conDriver.btn_Back
-        .onTrue(Commands.runOnce(() -> subDrivetrain.resetPose(new Pose2d(0, 0, new Rotation2d()))));
+        .onTrue(Commands.runOnce(() -> drivetrainInstance.resetPose(new Pose2d(0, 0, new Rotation2d()))));
 
     // Example Pose Drive
     conDriver.btn_X
@@ -106,9 +107,9 @@ public class RobotContainer {
 
   public void configAutonomous() {
     autoFactory = new AutoFactory(
-        subDrivetrain::getPose, // A function that returns the current robot pose
-        subDrivetrain::resetPose, // A function that resets the current robot pose to the provided Pose2d
-        subDrivetrain::followTrajectory, // The drive subsystem trajectory follower
+        drivetrainInstance::getPose, // A function that returns the current robot pose
+        drivetrainInstance::resetPose, // A function that resets the current robot pose to the provided Pose2d
+        drivetrainInstance::followTrajectory, // The drive subsystem trajectory follower
         true, // If alliance flipping should be enabled
         subDriverStateMachine // The drive subsystem
     );
@@ -152,7 +153,11 @@ public class RobotContainer {
   }
 
   public Command addVisionMeasurement() {
-    return new AddVisionMeasurement(subDrivetrain, subVision)
+    return new AddVisionMeasurement(drivetrainInstance, subVision)
         .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
+  }
+
+  public static boolean isPracticeBot() {
+    return RobotController.getSerialNumber().equals(ConstSystem.PRACTICE_BOT_RIO);
   }
 }

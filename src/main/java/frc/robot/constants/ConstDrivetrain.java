@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -30,6 +31,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 
 /**
@@ -48,11 +50,22 @@ import edu.wpi.first.units.measure.Voltage;
  * easier to update configuration values in a single location.
  */
 public class ConstDrivetrain {
+  public static final double ROTATION_STICK_DEADBAND = 0.05;
+  public static final Time ROTATION_DELAY = Seconds.of(0.5);
+
   // TODO: Swoffsets
   public static final Angle FRONT_LEFT_ABS_ENCODER_OFFSET = Rotations.of(-0.178466796875);
   public static final Angle FRONT_RIGHT_ABS_ENCODER_OFFSET = Rotations.of(-0.498779296875);
   public static final Angle BACK_LEFT_ABS_ENCODER_OFFSET = Rotations.of(-0.459716796875);
   public static final Angle BACK_RIGHT_ABS_ENCODER_OFFSET = Rotations.of(-0.31201171875);
+
+  public static class PRACTICE_BOT {
+    // TODO: Swoffsets
+    public static final Angle FRONT_LEFT_ABS_ENCODER_OFFSET = Rotations.of(-0.199462890625);
+    public static final Angle FRONT_RIGHT_ABS_ENCODER_OFFSET = Rotations.of(0.474365234375);
+    public static final Angle BACK_LEFT_ABS_ENCODER_OFFSET = Rotations.of(-0.447265625);
+    public static final Angle BACK_RIGHT_ABS_ENCODER_OFFSET = Rotations.of(-0.3193359375);
+  }
 
   // ====== TO MOVE TO SUPERCODE - START ======
   public static class ModuleLocations {
@@ -242,5 +255,14 @@ public class ConstDrivetrain {
     public static final Voltage kSteerFrictionVoltage = Volts.of(0.2);
     public static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
   }
+
+  public static class ROTATION_PID {
+    public static final double kP = 5.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0;
+  }
+
+  public static double isStickHitHighTol = 1.15;
+  public static double isStickHitLowTol = 0.15;
 
 }
