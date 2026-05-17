@@ -27,6 +27,7 @@ import frc.robot.constants.ConstSystem.constControllers;
 import frc.robot.subsystems.DriverStateMachine;
 import frc.robot.subsystems.DriverStateMachine.DriverState;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Motion;
 import frc.robot.subsystems.RobotPoses;
 import frc.robot.subsystems.Rotors;
 import frc.robot.subsystems.StateMachine;
@@ -44,6 +45,8 @@ public class RobotContainer {
 
   public static final Rotors rotorsInstance = new Rotors();
   private final Rotors loggedRotorsInstance = rotorsInstance;
+  public static final Motion motionInstance = new Motion();
+  private final Motion loggedMotionInstance = motionInstance;
   public static final Drivetrain drivetrainInstance = new Drivetrain();
   private final Drivetrain loggedSubDrivetrain = drivetrainInstance;
   public static final DriverStateMachine subDriverStateMachine = new DriverStateMachine(drivetrainInstance);
