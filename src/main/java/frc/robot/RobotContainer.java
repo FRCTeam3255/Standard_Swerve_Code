@@ -29,6 +29,7 @@ import frc.robot.subsystems.RobotPoses;
 import frc.robot.subsystems.Rotors;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.StateMachine.RobotState;
+import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.Vision;
 
 @Logged
@@ -42,61 +43,63 @@ public class RobotContainer {
 
   public static final Rotors rotorsInstance = new Rotors();
   private final Rotors loggedRotorsInstance = rotorsInstance;
-  public static final Drivetrain subDrivetrain = new Drivetrain();
-  private final Drivetrain loggedSubDrivetrain = subDrivetrain;
-  public static final DriverStateMachine subDriverStateMachine = new DriverStateMachine(subDrivetrain);
-  private final DriverStateMachine loggedSubDriverStateMachine = subDriverStateMachine;
-  public static final StateMachine subStateMachine = new StateMachine(subDrivetrain);
-  private final StateMachine loggedSubStateMachine = subStateMachine;
-  public static final RobotPoses robotPose = new RobotPoses(subDrivetrain);
+  public static final Drivetrain drivetrainInstance = new Drivetrain();
+  private final Drivetrain loggedDrivetrainInstance = drivetrainInstance;
+  public static final DriverStateMachine driverStateMachineInstance = new DriverStateMachine(drivetrainInstance);
+  private final DriverStateMachine loggedDriverStateMachineInstance = driverStateMachineInstance;
+  public static final StateMachine stateMachineInstance = new StateMachine(drivetrainInstance);
+  private final StateMachine loggedStateMachineInstance = stateMachineInstance;
+  public static final RobotPoses robotPose = new RobotPoses(drivetrainInstance);
   private final RobotPoses loggedRobotPose = robotPose;
-  public static final Vision subVision = new Vision();
-  private final Vision loggedSubVision = subVision;
+  public static final Vision visionInstance = new Vision();
+  private final Vision loggedVisionInstance = visionInstance;
+  public static final Telemetry telemetryInstance = new Telemetry();
+  private final Telemetry loggedTelemetryInstance = telemetryInstance;
 
   Command TRY_NONE = Commands.deferredProxy(
-      () -> subStateMachine.tryState(RobotState.NONE));
+      () -> stateMachineInstance.tryState(RobotState.NONE));
 
   Command MANUAL = new DeferredCommand(
-      subDriverStateMachine.tryState(
+      driverStateMachineInstance.tryState(
           DriverStateMachine.DriverState.MANUAL,
           conDriver.axis_LeftY,
           conDriver.axis_LeftX,
           conDriver.axis_RightX,
           conDriver.btn_RightBumper),
-      Set.of(subDriverStateMachine));
+      Set.of(driverStateMachineInstance));
 
   Command EXAMPLE_POSE_DRIVE = new DeferredCommand(
-      subDriverStateMachine.tryState(
+      driverStateMachineInstance.tryState(
           DriverStateMachine.DriverState.EXAMPLE_POSE_DRIVE,
           conDriver.axis_LeftY,
           conDriver.axis_LeftX,
           conDriver.axis_RightX,
           conDriver.btn_RightBumper),
-      Set.of(subDriverStateMachine));
+      Set.of(driverStateMachineInstance));
 
   public RobotContainer() {
     conDriver.setLeftDeadband(constControllers.DRIVER_LEFT_STICK_DEADBAND);
 
-    subDriverStateMachine
+    driverStateMachineInstance
         .setDefaultCommand(MANUAL);
 
     configDriverBindings();
     configOperatorBindings();
     configAutonomous();
 
-    // subDrivetrain.resetModulesToAbsolute();
+    // drivetrainInstance.resetModulesToAbsolute();
   }
 
   private void configDriverBindings() {
     // conDriver.btn_B.onTrue(Commands.runOnce(() ->
-    // subDrivetrain.resetModulesToAbsolute()));
+    // drivetrainInstance.resetModulesToAbsolute()));
     conDriver.btn_Back
-        .onTrue(Commands.runOnce(() -> subDrivetrain.resetPose(new Pose2d(0, 0, new Rotation2d()))));
+        .onTrue(Commands.runOnce(() -> drivetrainInstance.resetPose(new Pose2d(0, 0, new Rotation2d()))));
 
     // Example Pose Drive
     conDriver.btn_X
         .whileTrue(EXAMPLE_POSE_DRIVE)
-        .onFalse(Commands.runOnce(() -> subDriverStateMachine.setDriverState(DriverState.MANUAL)));
+        .onFalse(Commands.runOnce(() -> driverStateMachineInstance.setDriverState(DriverState.MANUAL)));
   }
 
   private void configOperatorBindings() {
@@ -105,11 +108,11 @@ public class RobotContainer {
 
   public void configAutonomous() {
     autoFactory = new AutoFactory(
-        subDrivetrain::getPose, // A function that returns the current robot pose
-        subDrivetrain::resetPose, // A function that resets the current robot pose to the provided Pose2d
-        subDrivetrain::followTrajectory, // The drive subsystem trajectory follower
+        drivetrainInstance::getPose, // A function that returns the current robot pose
+        drivetrainInstance::resetPose, // A function that resets the current robot pose to the provided Pose2d
+        drivetrainInstance::followTrajectory, // The drive subsystem trajectory follower
         true, // If alliance flipping should be enabled
-        subDriverStateMachine // The drive subsystem
+        driverStateMachineInstance // The drive subsystem
     );
 
     // make our entries name
@@ -139,7 +142,7 @@ public class RobotContainer {
 
   public Command runPath(String pathName) {
     return autoFactory.trajectoryCmd(pathName).asProxy()
-        .alongWith(Commands.runOnce(() -> subDriverStateMachine.setDriverState(DriverState.CHOREO)));
+        .alongWith(Commands.runOnce(() -> driverStateMachineInstance.setDriverState(DriverState.CHOREO)));
   }
 
   public Command getAutonomousCommand() {
@@ -147,11 +150,19 @@ public class RobotContainer {
   }
 
   public RobotState getRobotState() {
-    return subStateMachine.getRobotState();
+    return stateMachineInstance.getRobotState();
+  }
+
+  public String robotStateToString() {
+    return stateMachineInstance.getRobotState().toString();
+  }
+
+  public String driverStateToString() {
+    return driverStateMachineInstance.getDriverState().toString();
   }
 
   public Command addVisionMeasurement() {
-    return new AddVisionMeasurement(subDrivetrain, subVision)
+    return new AddVisionMeasurement(drivetrainInstance, visionInstance)
         .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
   }
 }
