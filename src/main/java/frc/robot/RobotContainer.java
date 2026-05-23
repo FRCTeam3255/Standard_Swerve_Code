@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.robot.DeviceIDs.controllerIDs;
@@ -49,11 +50,11 @@ public class RobotContainer {
   private final Motion loggedMotionInstance = motionInstance;
   public static final Drivetrain drivetrainInstance = new Drivetrain();
   private final Drivetrain loggedDrivetrainInstance = drivetrainInstance;
-  public static final DriverStateMachine driverStateMachineInstance = new DriverStateMachine(drivetrainInstance);
+  public static final DriverStateMachine driverStateMachineInstance = new DriverStateMachine();
   private final DriverStateMachine loggedDriverStateMachineInstance = driverStateMachineInstance;
-  public static final StateMachine stateMachineInstance = new StateMachine(drivetrainInstance);
+  public static final StateMachine stateMachineInstance = new StateMachine();
   private final StateMachine loggedStateMachineInstance = stateMachineInstance;
-  public static final RobotPoses robotPose = new RobotPoses(drivetrainInstance);
+  public static final RobotPoses robotPose = new RobotPoses();
   private final RobotPoses loggedRobotPose = robotPose;
   public static final Vision visionInstance = new Vision();
   private final Vision loggedVisionInstance = visionInstance;
@@ -124,10 +125,9 @@ public class RobotContainer {
     autoChooser.onChange(selectedAuto -> {
       String startingPose = autoStartingPoses.get(selectedAuto);
       // if there is a stating pose, reset to it
-      if (startingPose != null) {
-        autoFactory.resetOdometry(startingPose)
-            .ignoringDisable(true) // Run even when disabled
-            .schedule();
+      if (startingPose != null) { // Run even when disabled
+        CommandScheduler.getInstance().schedule(autoFactory.resetOdometry(startingPose)
+            .ignoringDisable(true));
       }
     });
 

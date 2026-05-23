@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.ConstDrivetrain;
 import frc.robot.constants.ConstField;
-import frc.robot.subsystems.DriverStateMachine;
+import frc.robot.subsystems.DriverStateMachine.DriverState;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveManual extends Command {
@@ -41,7 +41,7 @@ public class DriveManual extends Command {
 
   @Override
   public void execute() {
-    RobotContainer.driverStateMachineInstance.setDriverState(DriverStateMachine.DriverState.MANUAL);
+    RobotContainer.driverStateMachineInstance.setDriverState(DriverState.MANUAL);
     ChassisSpeeds velocities = RobotContainer.drivetrainInstance.calculateVelocitiesFromInput(
         xAxis,
         yAxis,

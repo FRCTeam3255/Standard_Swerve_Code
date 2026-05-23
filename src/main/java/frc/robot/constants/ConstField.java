@@ -110,8 +110,8 @@ public class ConstField {
     }
   }
 
-  public static final Distance FIELD_LENGTH = Units.Feet.of(57).plus(Units.Inches.of(6.875));
-  public static final Distance FIELD_WIDTH = Units.Feet.of(26).plus(Units.Inches.of(5));
+  public static final Distance FIELD_LENGTH = Units.Inches.of(651.2); // TODO: Update from game manual
+  public static final Distance FIELD_WIDTH = Units.Inches.of(317.7); // TODO: Update from game manual
 
   /**
    * Boolean that controls when the path will be mirrored for the red
