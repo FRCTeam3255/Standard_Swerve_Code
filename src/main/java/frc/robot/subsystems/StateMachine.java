@@ -14,16 +14,11 @@ import frc.robot.commands.states.*;
 @Logged
 public class StateMachine extends SubsystemBase {
   public static RobotState currentRobotState;
-  @NotLogged
-  Drivetrain subDrivetrain;
-  @NotLogged
-  StateMachine subStateMachine = this;
 
   /** Creates a new StateMachine. */
-  public StateMachine(Drivetrain subDrivetrain) {
+  public StateMachine() {
     currentRobotState = RobotState.NONE;
 
-    this.subDrivetrain = subDrivetrain;
   }
 
   public void setRobotState(RobotState robotState) {
@@ -39,7 +34,7 @@ public class StateMachine extends SubsystemBase {
       case NONE:
         switch (currentRobotState) {
           case NONE:
-            return new None(subStateMachine);
+            return new None();
         }
         break;
     }

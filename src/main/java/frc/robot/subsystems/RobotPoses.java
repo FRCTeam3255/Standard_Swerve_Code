@@ -20,14 +20,11 @@ public class RobotPoses extends SubsystemBase {
   Field2d field2d = new Field2d();
   FieldObject2d robotObject = field2d.getObject("Robot");
 
-  @NotLogged
-  Drivetrain subDrivetrain;
-
   Pose3d comp0Drivetrain = Pose3d.kZero;
   Pose3d comp1Bumpers = Pose3d.kZero.plus(ConstSystem.ROBOT_TO_BUMPERS);
 
-  public RobotPoses(Drivetrain subDrivetrain) {
-    this.subDrivetrain = subDrivetrain;
+  public RobotPoses() {
+
     SmartDashboard.putData("Field", field2d);
   }
 
@@ -37,6 +34,6 @@ public class RobotPoses extends SubsystemBase {
     // This method will be called once per scheduler run
 
     // Robot Positions
-    comp0Drivetrain = new Pose3d(subDrivetrain.getPose());
+    comp0Drivetrain = new Pose3d(RobotContainer.drivetrainInstance.getPose());
   }
 }
