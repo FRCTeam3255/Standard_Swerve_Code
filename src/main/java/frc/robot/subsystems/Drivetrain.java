@@ -217,17 +217,6 @@ public class Drivetrain extends SN_SuperSwerveV2 {
     return (stickValue < ConstDrivetrain.isStickHitHighTol && stickValue > ConstDrivetrain.isStickHitLowTol);
   }
 
-  public double getStickRadians(DoubleSupplier rotationXAxis, DoubleSupplier rotationYAxis) {
-    double rightStickX = rotationXAxis.getAsDouble();
-    double rightStickY = rotationYAxis.getAsDouble();
-    double hypotenuse = Math.hypot(rightStickX, rightStickY);
-
-    if (hypotenuse < ConstDrivetrain.isStickHitHighTol && hypotenuse > ConstDrivetrain.isStickHitLowTol) {
-      manualDriveRotation = Math.atan2(rightStickY, rightStickX) - Math.PI / 2;
-    }
-    return manualDriveRotation;
-  }
-
   public void setDriveRotation(Angle rotation) {
     this.targetDriveRotation = Rotation2d.fromDegrees(rotation.in(Degrees));
   }
