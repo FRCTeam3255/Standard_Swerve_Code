@@ -9,22 +9,19 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.ConstDrivetrain;
 import frc.robot.constants.ConstField;
-import frc.robot.subsystems.DriverStateMachine;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.DriverStateMachine.DriverState;
 
 public class DriveManual extends Command {
-  Drivetrain subDrivetrain;
   DoubleSupplier xAxis, yAxis, rotationAxis;
   boolean isOpenLoop;
-  DriverStateMachine subDriverStateMachine;
   BooleanSupplier slowMode;
 
-  public DriveManual(Drivetrain subDrivetrain, DoubleSupplier xAxis, DoubleSupplier yAxis,
-      DoubleSupplier rotationAxis, DriverStateMachine subDriverStateMachine, BooleanSupplier slowMode) {
-    this.subDrivetrain = subDrivetrain;
-    this.subDriverStateMachine = subDriverStateMachine;
+  public DriveManual(DoubleSupplier xAxis, DoubleSupplier yAxis,
+      DoubleSupplier rotationAxis, BooleanSupplier slowMode) {
+
     this.xAxis = xAxis;
     this.yAxis = yAxis;
     this.rotationAxis = rotationAxis;
@@ -32,7 +29,7 @@ public class DriveManual extends Command {
 
     isOpenLoop = true;
 
-    addRequirements(this.subDrivetrain);
+    addRequirements(RobotContainer.driverStateMachineInstance);
   }
 
   @Override
@@ -41,7 +38,7 @@ public class DriveManual extends Command {
 
   @Override
   public void execute() {
-    ChassisSpeeds velocities = subDrivetrain.calculateVelocitiesFromInput(
+    ChassisSpeeds velocities = RobotContainer.drivetrainInstance.calculateVelocitiesFromInput(
         xAxis,
         yAxis,
         rotationAxis,
@@ -51,9 +48,9 @@ public class DriveManual extends Command {
         ConstDrivetrain.REAL_DRIVE_SPEED,
         ConstDrivetrain.TURN_SPEED);
 
-    subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
+    RobotContainer.driverStateMachineInstance.setDriverState(DriverState.MANUAL);
 
-    subDrivetrain.drive(velocities);
+    RobotContainer.drivetrainInstance.drive(velocities);
   }
 
   @Override
