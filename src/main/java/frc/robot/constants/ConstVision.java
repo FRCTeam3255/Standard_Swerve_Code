@@ -93,4 +93,7 @@ public class ConstVision {
     public static final Angle LL_YAW = Units.Degrees.of(0);
   }
 
+  static {
+
+  }
 }

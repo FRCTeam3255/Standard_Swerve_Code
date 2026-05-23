@@ -21,4 +21,7 @@ public final class ConstSystem {
     public static final boolean SILENCE_JOYSTICK_WARNINGS = true;
   }
 
+  static {
+
+  }
 }

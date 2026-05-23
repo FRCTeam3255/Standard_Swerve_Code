@@ -141,4 +141,7 @@ public class ConstField {
   }
 
   public static final Pose2d WORKSHOP_STARTING_POSE = new Pose2d(5.98, 2.60, new Rotation2d(0));
+  static {
+
+  }
 }
