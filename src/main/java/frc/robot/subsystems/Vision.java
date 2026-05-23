@@ -48,7 +48,7 @@ public class Vision extends SubsystemBase {
     RIGHT, LEFT, BACK, NONE
   }
 
-  private boolean useMegaTag2 = true;
+  private boolean useMegaTag2 = ConstVision.USE_MEGA_TAG_2;
 
   public Vision() {
   }

@@ -44,6 +44,7 @@ public class ConstVision {
     public static final int INTERNAL_EXTERNAL_ASSIST = 4;
   }
 
+  public static final double IMU_ASSIST_ALPHA_VALUE = 0.01;
   public static final String LIMELIGHT_RIGHT_NAME = "limelight-right";
   public static final String LIMELIGHT_LEFT_NAME = "limelight-left";
   public static final String LIMELIGHT_BACK_NAME = "limelight-back";
@@ -85,9 +86,11 @@ public class ConstVision {
    * The area that one tag (if its the only tag in the update) needs to exceed
    * before being accepted
    */
-  public static final double AREA_THRESHOLD_FRONT = 0.1;
+  public static final double AREA_THRESHOLD_FRONT = 0.05;
   public static final double AREA_THRESHOLD_BACK = 0.05;
+  public static final int DisabledThrottle = 100;
   public static final int TeleopThrottle = 0;
+  public static final Boolean USE_MEGA_TAG_2 = true;
 
   // The below values are accounted for in the limelight interface, NOT in code
   public static class LimelightRight {
