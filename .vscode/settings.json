@@ -68,5 +68,24 @@
   "editor.detectIndentation": false,
   "git.pullBeforeCheckout": true,
   "java.saveActions.organizeImports": true,
-  "workbench.iconTheme": "material-icon-theme"
+  "workbench.iconTheme": "material-icon-theme",
+  "githubIssues.queries": [
+    {
+      "label": "Issues",
+      "query": "is:open repo:${owner}/${repository}",
+      "groupBy": [
+        "milestone"
+      ]
+    }
+  ],
+  "githubPullRequests.queries": [
+    {
+      "label": "Ready PRs",
+      "query": "repo:${owner}/${repository} is:open draft:false"
+    },
+    {
+      "label": "Draft PRs",
+      "query": "repo:${owner}/${repository} is:open draft:true"
+    }
+  ],
 }
