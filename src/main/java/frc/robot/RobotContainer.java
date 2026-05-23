@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.robot.DeviceIDs.controllerIDs;
@@ -127,10 +128,9 @@ public class RobotContainer {
     autoChooser.onChange(selectedAuto -> {
       String startingPose = autoStartingPoses.get(selectedAuto);
       // if there is a stating pose, reset to it
-      if (startingPose != null) {
-        autoFactory.resetOdometry(startingPose)
-            .ignoringDisable(true) // Run even when disabled
-            .schedule();
+      if (startingPose != null) { // Run even when disabled
+        CommandScheduler.getInstance().schedule(autoFactory.resetOdometry(startingPose)
+            .ignoringDisable(true));
       }
     });
 
