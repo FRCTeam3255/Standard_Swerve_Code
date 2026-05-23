@@ -9,6 +9,6 @@ public class ConstMotion {
   public static final double STOP = 0;
 
   static {
-
+    // Configure TalonFXConfiguration objects here
   }
 }
