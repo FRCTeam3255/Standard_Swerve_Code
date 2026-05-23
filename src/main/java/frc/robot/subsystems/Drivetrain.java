@@ -114,14 +114,14 @@ public class Drivetrain extends SN_SuperSwerveV2 {
       .withPigeon2Configs(ConstDrivetrain.pigeonConfigs);
 
   // Exposed motors for Epilogue logging
-  public final TalonFX FrontLeftDrive;
-  public final TalonFX FrontLeftSteer;
-  public final TalonFX FrontRightDrive;
-  public final TalonFX FrontRightSteer;
-  public final TalonFX BackLeftDrive;
-  public final TalonFX BackLeftSteer;
-  public final TalonFX BackRightDrive;
-  public final TalonFX BackRightSteer;
+  public final TalonFX frontLeftDrive;
+  public final TalonFX frontLeftSteer;
+  public final TalonFX frontRightDrive;
+  public final TalonFX frontRightSteer;
+  public final TalonFX backLeftDrive;
+  public final TalonFX backLeftSteer;
+  public final TalonFX backRightDrive;
+  public final TalonFX backRightSteer;
   private Angle resetYawValue = Degrees.zero();
   private boolean isXbrakeAllowed = true;
 
@@ -135,17 +135,17 @@ public class Drivetrain extends SN_SuperSwerveV2 {
 
     // Initialize motor references for Epilogue logging
     // Front Left (index 0)
-    FrontLeftDrive = getModule(0).getDriveMotor();
-    FrontLeftSteer = getModule(0).getSteerMotor();
+    frontLeftDrive = getModule(0).getDriveMotor();
+    frontLeftSteer = getModule(0).getSteerMotor();
     // Front Right (index 1)
-    FrontRightDrive = getModule(1).getDriveMotor();
-    FrontRightSteer = getModule(1).getSteerMotor();
+    frontRightDrive = getModule(1).getDriveMotor();
+    frontRightSteer = getModule(1).getSteerMotor();
     // Back Left (index 2)
-    BackLeftDrive = getModule(2).getDriveMotor();
-    BackLeftSteer = getModule(2).getSteerMotor();
+    backLeftDrive = getModule(2).getDriveMotor();
+    backLeftSteer = getModule(2).getSteerMotor();
     // Back Right (index 3)
-    BackRightDrive = getModule(3).getDriveMotor();
-    BackRightSteer = getModule(3).getSteerMotor();
+    backRightDrive = getModule(3).getDriveMotor();
+    backRightSteer = getModule(3).getSteerMotor();
   }
 
   public void followTrajectory(SwerveSample sample) {
