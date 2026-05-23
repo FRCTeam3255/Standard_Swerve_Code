@@ -34,7 +34,7 @@ public class PoseDrive extends Command {
     this.rotationAxis = rotationAxis;
     this.poseGroup = poseGroup;
     this.slowMode = slowMode;
-    addRequirements(RobotContainer.driverStateMachineInstance);
+    addRequirements(RobotContainer.driverStateMachineInstance, RobotContainer.drivetrainInstance);
   }
 
   // Called when the command is initially scheduled.
