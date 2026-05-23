@@ -28,9 +28,6 @@ public class RobotPoses extends SubsystemBase {
 
   public RobotPoses(Drivetrain subDrivetrain) {
     this.subDrivetrain = subDrivetrain;
-  }
-
-  public RobotPoses() {
     SmartDashboard.putData("Field", field2d);
   }
 
