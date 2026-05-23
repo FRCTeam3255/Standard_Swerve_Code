@@ -153,11 +153,6 @@ public class Drivetrain extends SN_SuperSwerveV2 {
     Pose2d pose = getPose();
 
     double targetHeading = sample.heading;
-
-    if (!manualRotationEnabled) { // keep the !, manualRotationEnabled is false in prepanywhere
-      targetHeading = targetDriveRotation.getRadians();
-    }
-
     // Generate the next speeds for the robot
     ChassisSpeeds speeds = new ChassisSpeeds(
         sample.vx + ConstDrivetrain.AUTO_ALIGN.POSE_TRANS_CONTROLLER.calculate(pose.getX(), sample.x),
