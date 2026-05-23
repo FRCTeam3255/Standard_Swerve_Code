@@ -124,7 +124,6 @@ public class Drivetrain extends SN_SuperSwerveV2 {
   public final TalonFX BackRightSteer;
   private Angle resetYawValue = Degrees.zero();
   private boolean isXbreakAllowed = true;
-  public boolean isXbreaked = false;
 
   public Drivetrain() {
     super(
@@ -147,11 +146,6 @@ public class Drivetrain extends SN_SuperSwerveV2 {
     // Back Right (index 3)
     BackRightDrive = getModule(3).getDriveMotor();
     BackRightSteer = getModule(3).getSteerMotor();
-  }
-
-  public void xBreak() {
-    isXbreaked = true;
-    xBrake();
   }
 
   public void followTrajectory(SwerveSample sample) {
