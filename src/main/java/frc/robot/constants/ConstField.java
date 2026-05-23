@@ -98,6 +98,16 @@ public class ConstField {
       }
       return new Pose2dAllianceSet(combined.toArray(new Pose2d[0]));
     }
+
+    public List<Pose2d> getAlliancePoses() {
+      List<Pose2d> poses;
+      if (isRedAlliance()) {
+        poses = getRed();
+      } else {
+        poses = getBlue();
+      }
+      return poses;
+    }
   }
 
   public static final Distance FIELD_LENGTH = Units.Feet.of(57).plus(Units.Inches.of(6.875));

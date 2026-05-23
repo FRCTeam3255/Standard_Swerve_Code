@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.ConstField;
 import frc.robot.constants.ConstSystem;
+import frc.robot.constants.ConstVision;
 import edu.wpi.first.cameraserver.CameraServer;
 
 @Logged
@@ -62,10 +63,23 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     ConstField.ALLIANCE = DriverStation.getAlliance();
     SmartDashboard.putString("ALLIANCE", ConstField.ALLIANCE.toString());
+    double yaw = m_robotContainer.drivetrainInstance.getPose().getRotation().getDegrees();
+    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_RIGHT_NAME,
+        yaw, 0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_LEFT_NAME,
+        yaw, 0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_BACK_NAME,
+        yaw, 0, 0, 0, 0, 0);
+
   }
 
   @Override
   public void disabledExit() {
+    LimelightHelpers.SetThrottle(ConstVision.LIMELIGHT_RIGHT_NAME, ConstVision.TeleopThrottle);
+    LimelightHelpers.SetThrottle(ConstVision.LIMELIGHT_LEFT_NAME, ConstVision.TeleopThrottle);
+    LimelightHelpers.SetThrottle(ConstVision.LIMELIGHT_BACK_NAME, ConstVision.TeleopThrottle);
+    m_robotContainer.visionInstance.setIMUAssistMode(true);
+    m_robotContainer.addVisionMeasurement().schedule();
   }
 
   @Override

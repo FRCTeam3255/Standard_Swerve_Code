@@ -42,19 +42,7 @@ public class DriveManual extends Command {
   @Override
   public void execute() {
     RobotContainer.driverStateMachineInstance.setDriverState(DriverStateMachine.DriverState.MANUAL);
-    ChassisSpeeds velocities = calculateVelocities();
-
-    if (DriverStation.isAutonomousEnabled()) {
-      driveWithTargetRotation(velocities);
-      return;
-    }
-
-    driveWithSticks(velocities);
-    updateXbrake();
-  }
-
-  private ChassisSpeeds calculateVelocities() {
-    return RobotContainer.drivetrainInstance.calculateVelocitiesFromInput(
+    ChassisSpeeds velocities = RobotContainer.drivetrainInstance.calculateVelocitiesFromInput(
         xAxis,
         yAxis,
         rotationXAxis,
@@ -63,6 +51,14 @@ public class DriveManual extends Command {
         ConstDrivetrain.SLOW_MODE_MULTIPLIER,
         ConstDrivetrain.REAL_DRIVE_SPEED,
         ConstDrivetrain.TURN_SPEED);
+
+    if (DriverStation.isAutonomousEnabled()) {
+      driveWithTargetRotation(velocities);
+      return;
+    }
+
+    driveWithSticks(velocities);
+    updateXbrake();
   }
 
   private void driveWithSticks(ChassisSpeeds velocities) {

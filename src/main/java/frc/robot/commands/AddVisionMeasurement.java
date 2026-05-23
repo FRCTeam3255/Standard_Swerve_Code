@@ -6,26 +6,20 @@ package frc.robot.commands;
 
 import java.util.Optional;
 
-import com.frcteam3255.utils.LimelightHelpers;
-import com.frcteam3255.utils.LimelightHelpers.PoseEstimate;
-
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.RobotContainer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ConstVision;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Vision;
 
 public class AddVisionMeasurement extends Command {
-  Drivetrain subDrivetrain;
-  Vision subVision;
 
   Optional<PoseEstimate> estimatedPose;
 
-  public AddVisionMeasurement(Drivetrain subDrivetrain, Vision subVision) {
-    this.subDrivetrain = subDrivetrain;
-    this.subVision = subVision;
+  public AddVisionMeasurement() {
 
-    addRequirements(subVision);
+    addRequirements(RobotContainer.visionInstance);
   }
 
   @Override
@@ -35,17 +29,18 @@ public class AddVisionMeasurement extends Command {
   @Override
   public void execute() {
     // Tells the limelight where we are on the field
+    double yaw = RobotContainer.drivetrainInstance.getPose().getRotation().getDegrees();
     LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_RIGHT_NAME,
-        subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        yaw, 0, 0, 0, 0, 0);
     LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_LEFT_NAME,
-        subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        yaw, 0, 0, 0, 0, 0);
     LimelightHelpers.SetRobotOrientation(ConstVision.LIMELIGHT_BACK_NAME,
-        subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    AngularVelocity gyroRate = subDrivetrain.getGyroRate();
-
-    estimatedPose = subVision.determinePoseEstimate(gyroRate);
-    if (estimatedPose.isPresent()) {
-      subDrivetrain.addVisionMeasurement(estimatedPose.get().pose, estimatedPose.get().timestampSeconds);
+        yaw, 0, 0, 0, 0, 0);
+    AngularVelocity gyroRate = RobotContainer.drivetrainInstance.getGyroRate();
+    estimatedPose = RobotContainer.visionInstance.determinePoseEstimate(gyroRate);
+    if (estimatedPose.isPresent() && RobotContainer.visionInstance.isVisionEnabled()) {
+      RobotContainer.drivetrainInstance.addVisionMeasurement(estimatedPose.get().pose,
+          estimatedPose.get().timestampSeconds);
     }
   }
 
