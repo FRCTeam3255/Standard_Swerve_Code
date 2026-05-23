@@ -19,7 +19,6 @@ public class AddVisionMeasurement extends Command {
   Optional<PoseEstimate> estimatedPose;
 
   public AddVisionMeasurement() {
-    // Initialize any required subsystems or variables
     addRequirements(RobotContainer.visionInstance);
   }
 
