@@ -98,10 +98,20 @@ public class ConstField {
       }
       return new Pose2dAllianceSet(combined.toArray(new Pose2d[0]));
     }
+
+    public List<Pose2d> getAlliancePoses() {
+      List<Pose2d> poses;
+      if (isRedAlliance()) {
+        poses = getRed();
+      } else {
+        poses = getBlue();
+      }
+      return poses;
+    }
   }
 
-  public static final Distance FIELD_LENGTH = Units.Feet.of(57).plus(Units.Inches.of(6.875));
-  public static final Distance FIELD_WIDTH = Units.Feet.of(26).plus(Units.Inches.of(5));
+  public static final Distance FIELD_LENGTH = Units.Inches.of(651.2); // TODO: Update from game manual
+  public static final Distance FIELD_WIDTH = Units.Inches.of(317.7); // TODO: Update from game manual
 
   /**
    * Boolean that controls when the path will be mirrored for the red
