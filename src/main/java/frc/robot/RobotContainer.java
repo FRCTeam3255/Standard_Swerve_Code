@@ -49,11 +49,11 @@ public class RobotContainer {
   private final Motion loggedMotionInstance = motionInstance;
   public static final Drivetrain drivetrainInstance = new Drivetrain();
   private final Drivetrain loggedDrivetrainInstance = drivetrainInstance;
-  public static final DriverStateMachine driverStateMachineInstance = new DriverStateMachine(drivetrainInstance);
+  public static final DriverStateMachine driverStateMachineInstance = new DriverStateMachine();
   private final DriverStateMachine loggedDriverStateMachineInstance = driverStateMachineInstance;
-  public static final StateMachine stateMachineInstance = new StateMachine(drivetrainInstance);
+  public static final StateMachine stateMachineInstance = new StateMachine();
   private final StateMachine loggedStateMachineInstance = stateMachineInstance;
-  public static final RobotPoses robotPose = new RobotPoses(drivetrainInstance);
+  public static final RobotPoses robotPose = new RobotPoses();
   private final RobotPoses loggedRobotPose = robotPose;
   public static final Vision visionInstance = new Vision();
   private final Vision loggedVisionInstance = visionInstance;
@@ -165,7 +165,7 @@ public class RobotContainer {
   }
 
   public Command addVisionMeasurement() {
-    return new AddVisionMeasurement(drivetrainInstance, visionInstance)
+    return new AddVisionMeasurement()
         .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
   }
 }
