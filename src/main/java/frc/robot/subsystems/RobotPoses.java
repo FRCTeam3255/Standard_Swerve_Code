@@ -7,12 +7,17 @@ package frc.robot.subsystems;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ConstSystem;
 
 @Logged
 public class RobotPoses extends SubsystemBase {
   /** Creates a new RobotPoses. */
+  Field2d field2d = new Field2d();
+  FieldObject2d robotObject = field2d.getObject("Robot");
 
   @NotLogged
   Drivetrain subDrivetrain;
@@ -22,6 +27,10 @@ public class RobotPoses extends SubsystemBase {
 
   public RobotPoses(Drivetrain subDrivetrain) {
     this.subDrivetrain = subDrivetrain;
+  }
+
+  public RobotPoses() {
+    SmartDashboard.putData("Field", field2d);
   }
 
   @Override
