@@ -94,7 +94,7 @@ public class PoseDrive extends Command {
       return false;
     }
     isPoseAligned = subDrivetrain.isAtPosition(closestPose, poseGroup.distanceTolerance) &&
-        subDrivetrain.isAtRotation(closestPose.getRotation(), poseGroup.rotationTolerance);
+        subDrivetrain.isAtPosition(closestPose.getRotation(), poseGroup.rotationTolerance);
     return isPoseAligned;
   }
 }

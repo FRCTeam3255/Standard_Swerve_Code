@@ -124,6 +124,7 @@ public class Drivetrain extends SN_SuperSwerveV2 {
   public final TalonFX BackRightSteer;
   private Angle resetYawValue = Degrees.zero();
   private boolean isXbreakAllowed = true;
+  public boolean isXbreaked = false;
 
   public Drivetrain() {
     super(
@@ -148,6 +149,11 @@ public class Drivetrain extends SN_SuperSwerveV2 {
     BackRightSteer = getModule(3).getSteerMotor();
   }
 
+  public void xBreak() {
+    isXbreaked = true;
+    xBrake();
+  }
+
   public void followTrajectory(SwerveSample sample) {
     // Get the current pose of the robot
     Pose2d pose = getPose();
@@ -162,7 +168,6 @@ public class Drivetrain extends SN_SuperSwerveV2 {
     drive(speeds);
   }
 
-  // TODO: Move To Standard Swerve
   public void rotationalAlign(Pose2d closestPose, ChassisSpeeds velocities) {
     ProfiledPIDController autoAlignRotationPID = ConstDrivetrain.AUTO_ALIGN.POSE_ROTATION_CONTROLLER;
     drive(
