@@ -59,6 +59,16 @@
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
   ],
+  "java.dependency.enableDependencyCheckup": false,
+  // CUSTOM - KEEP WHEN UPDATING
+  "extensions.ignoreRecommendations": false,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "git.pullBeforeCheckout": true,
+  "java.saveActions.organizeImports": true,
+  "workbench.iconTheme": "material-icon-theme",
   "githubIssues.queries": [
     {
       "label": "Issues",
@@ -78,14 +88,4 @@
       "query": "repo:${owner}/${repository} is:open draft:true"
     }
   ],
-  "java.dependency.enableDependencyCheckup": false,
-  // CUSTOM - KEEP WHEN UPDATING
-  "extensions.ignoreRecommendations": false,
-  "editor.formatOnSave": true,
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-  "editor.detectIndentation": false,
-  "git.pullBeforeCheckout": true,
-  "java.saveActions.organizeImports": true,
-  "workbench.iconTheme": "material-icon-theme"
 }
