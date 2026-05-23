@@ -151,8 +151,12 @@ public class Drivetrain extends SN_SuperSwerveV2 {
   public void followTrajectory(SwerveSample sample) {
     // Get the current pose of the robot
     Pose2d pose = getPose();
-
     double targetHeading = sample.heading;
+
+    if (!manualRotationEnabled) { // keep the !, manualRotationEnabled is false in prepanywhere
+      targetHeading = targetDriveRotation.getRadians();
+    }
+
     // Generate the next speeds for the robot
     ChassisSpeeds speeds = new ChassisSpeeds(
         sample.vx + ConstDrivetrain.AUTO_ALIGN.POSE_TRANS_CONTROLLER.calculate(pose.getX(), sample.x),
@@ -200,12 +204,17 @@ public class Drivetrain extends SN_SuperSwerveV2 {
     return isXbreakAllowed;
   }
 
-  public boolean isStickHit(DoubleSupplier rotationXAxis, DoubleSupplier rotationYAxis) {
-    double rightStickX = rotationXAxis.getAsDouble();
-    double rightStickY = rotationYAxis.getAsDouble();
+  public boolean isStickHit(DoubleSupplier xAxis, DoubleSupplier yAxis) {
+    double rightStickX = xAxis.getAsDouble();
+    double rightStickY = yAxis.getAsDouble();
     double hypotenuse = Math.hypot(rightStickX, rightStickY);
 
     return (hypotenuse < ConstDrivetrain.isStickHitHighTol && hypotenuse > ConstDrivetrain.isStickHitLowTol);
+  }
+
+  public boolean isStickHit(DoubleSupplier axis) {
+    double stickValue = axis.getAsDouble();
+    return (stickValue < ConstDrivetrain.isStickHitHighTol && stickValue > ConstDrivetrain.isStickHitLowTol);
   }
 
   public double getStickRadians(DoubleSupplier rotationXAxis, DoubleSupplier rotationYAxis) {

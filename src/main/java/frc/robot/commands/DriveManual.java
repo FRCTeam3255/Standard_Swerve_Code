@@ -18,7 +18,7 @@ import frc.robot.subsystems.DriverStateMachine;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveManual extends Command {
-  DoubleSupplier xAxis, yAxis, rotationXAxis, rotationYAxis;
+  DoubleSupplier xAxis, yAxis, rotationXAxis;
   boolean isOpenLoop;
   BooleanSupplier slowMode;
   Timer delayTimer = new Timer();
@@ -27,13 +27,12 @@ public class DriveManual extends Command {
       DoubleSupplier rotationAxis, BooleanSupplier slowMode) {
     this.xAxis = xAxis;
     this.yAxis = yAxis;
-    this.rotationXAxis = rotationXAxis;
-    this.rotationYAxis = rotationYAxis;
+    this.rotationXAxis = rotationAxis;
     this.slowMode = slowMode;
 
     isOpenLoop = true;
 
-    addRequirements(RobotContainer.subDriverStateMachine);
+    addRequirements(RobotContainer.driverStateMachineInstance);
   }
 
   @Override
@@ -42,7 +41,7 @@ public class DriveManual extends Command {
 
   @Override
   public void execute() {
-    RobotContainer.subDriverStateMachine.setDriverState(DriverStateMachine.DriverState.MANUAL);
+    RobotContainer.driverStateMachineInstance.setDriverState(DriverStateMachine.DriverState.MANUAL);
     ChassisSpeeds velocities = calculateVelocities();
 
     if (DriverStation.isAutonomousEnabled()) {
@@ -110,7 +109,7 @@ public class DriveManual extends Command {
   private void updateXbrake() {
     Drivetrain drivetrain = RobotContainer.drivetrainInstance;
     boolean isStickHit = drivetrain.isStickHit(xAxis, yAxis)
-        || drivetrain.isStickHit(rotationXAxis, rotationYAxis);
+        || drivetrain.isStickHit(rotationXAxis);
     drivetrain.setXbrakeAllowed(!isStickHit);
   }
 
