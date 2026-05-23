@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.ConstSystem;
 
 @Logged
@@ -35,6 +36,7 @@ public class RobotPoses extends SubsystemBase {
 
   @Override
   public void periodic() {
+    robotObject.setPose(RobotContainer.drivetrainInstance.getPose());
     // This method will be called once per scheduler run
 
     // Robot Positions
