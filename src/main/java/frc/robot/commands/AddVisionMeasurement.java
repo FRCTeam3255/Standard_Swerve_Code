@@ -19,7 +19,7 @@ public class AddVisionMeasurement extends Command {
   Optional<PoseEstimate> estimatedPose;
 
   public AddVisionMeasurement() {
-    addRequirements(RobotContainer.visionInstance, RobotContainer.drivetrainInstance);
+    addRequirements(RobotContainer.visionInstance);
   }
 
   @Override

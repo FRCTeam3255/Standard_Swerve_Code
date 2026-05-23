@@ -29,7 +29,7 @@ public class DriveManual extends Command {
 
     isOpenLoop = true;
 
-    addRequirements(RobotContainer.driverStateMachineInstance, RobotContainer.drivetrainInstance);
+    addRequirements(RobotContainer.driverStateMachineInstance);
   }
 
   @Override
