@@ -8,6 +8,10 @@ import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.net.WebServer;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -29,6 +33,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private final StringTopic selectedTabTopic = NetworkTableInstance.getDefault()
+      .getStringTopic("/Elastic/SelectedTab");
+  private final StringPublisher selectedTabPublisher = selectedTabTopic
+      .publish(PubSubOption.keepDuplicates(true));
 
   @Override
   public void robotInit() {
@@ -49,6 +57,10 @@ public class Robot extends TimedRobot {
     DriverStation.silenceJoystickConnectionWarning(ConstSystem.constControllers.SILENCE_JOYSTICK_WARNINGS);
   }
 
+  public void selectTab(String tabName) {
+    selectedTabPublisher.set(tabName);
+  }
+
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
@@ -56,6 +68,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    selectTab("Disabled");
   }
 
   @Override
@@ -70,6 +83,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    selectTab("Autonomous");
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -87,6 +101,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    selectTab("Teleoperated");
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
