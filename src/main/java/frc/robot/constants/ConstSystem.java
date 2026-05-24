@@ -22,5 +22,4 @@ public final class ConstSystem {
     public static final double DRIVER_LEFT_STICK_DEADBAND = 0.05;
     public static final boolean SILENCE_JOYSTICK_WARNINGS = true;
   }
-
 }
