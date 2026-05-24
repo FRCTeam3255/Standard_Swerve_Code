@@ -64,6 +64,13 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     selectTab("Disabled");
+    LimelightHelpers.SetIMUAssistAlpha(ConstVision.LIMELIGHT_RIGHT_NAME, ConstVision.IMU_ASSIST_ALPHA_VALUE);
+    LimelightHelpers.SetIMUAssistAlpha(ConstVision.LIMELIGHT_LEFT_NAME, ConstVision.IMU_ASSIST_ALPHA_VALUE);
+    LimelightHelpers.SetIMUAssistAlpha(ConstVision.LIMELIGHT_BACK_NAME, ConstVision.IMU_ASSIST_ALPHA_VALUE);
+    LimelightHelpers.SetThrottle(ConstVision.LIMELIGHT_RIGHT_NAME, ConstVision.DisabledThrottle);
+    LimelightHelpers.SetThrottle(ConstVision.LIMELIGHT_LEFT_NAME, ConstVision.DisabledThrottle);
+    LimelightHelpers.SetThrottle(ConstVision.LIMELIGHT_BACK_NAME, ConstVision.DisabledThrottle);
+    m_robotContainer.visionInstance.setIMUAssistMode(false);
   }
 
   @Override
