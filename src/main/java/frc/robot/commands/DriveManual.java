@@ -62,8 +62,8 @@ public class DriveManual extends Command {
   }
 
   private void driveWithSticks(ChassisSpeeds velocities) {
-    double rotInput = -rotationXAxis.getAsDouble();
-    boolean isRotateStickHit = Math.abs(rotInput) > ConstDrivetrain.ROTATION_STICK_DEADBAND;
+    boolean isRotateStickHit = RobotContainer.drivetrainInstance.isStickHit(rotationXAxis,
+        ConstDrivetrain.ROTATION_STICK_DEADBAND);
 
     if (isRotateStickHit) {
       manualRotation(velocities);
@@ -104,8 +104,8 @@ public class DriveManual extends Command {
 
   private void updateXbrake() {
     Drivetrain drivetrain = RobotContainer.drivetrainInstance;
-    boolean isStickHit = drivetrain.isStickHit(xAxis, yAxis)
-        || drivetrain.isStickHit(rotationXAxis);
+    boolean isStickHit = drivetrain.isStickHit(xAxis, yAxis, ConstDrivetrain.ROTATION_STICK_DEADBAND)
+        || drivetrain.isStickHit(rotationXAxis, ConstDrivetrain.ROTATION_STICK_DEADBAND);
     drivetrain.setXbrakeAllowed(!isStickHit);
   }
 
