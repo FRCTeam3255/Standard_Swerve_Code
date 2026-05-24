@@ -12,8 +12,7 @@ import com.frcteam3255.joystick.SN_XboxController;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.robot.DeviceIDs.controllerIDs;
 import frc.robot.commands.AddVisionMeasurement;
+import frc.robot.commands.ResetPose;
+import frc.robot.constants.ConstSystem;
 import frc.robot.constants.ConstSystem.constControllers;
 import frc.robot.subsystems.DriverStateMachine;
 import frc.robot.subsystems.DriverStateMachine.DriverState;
@@ -90,16 +91,12 @@ public class RobotContainer {
     configDriverBindings();
     configOperatorBindings();
     configAutonomous();
-
+    RobotController.setBrownoutVoltage(5.5);
     // drivetrainInstance.resetModulesToAbsolute();
   }
 
   private void configDriverBindings() {
-    // conDriver.btn_B.onTrue(Commands.runOnce(() ->
-    // drivetrainInstance.resetModulesToAbsolute()));
-    conDriver.btn_Back
-        .onTrue(Commands.runOnce(() -> drivetrainInstance.resetPose(new Pose2d(0, 0, new Rotation2d()))));
-
+    conDriver.btn_North.whileTrue(new ResetPose());
     // Example Pose Drive
     conDriver.btn_X
         .whileTrue(EXAMPLE_POSE_DRIVE)
@@ -167,5 +164,9 @@ public class RobotContainer {
   public Command addVisionMeasurement() {
     return new AddVisionMeasurement()
         .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true);
+  }
+
+  public static boolean isPracticeBot() {
+    return RobotController.getSerialNumber().equals(ConstSystem.PRACTICE_BOT_RIO);
   }
 }

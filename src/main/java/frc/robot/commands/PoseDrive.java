@@ -90,7 +90,7 @@ public class PoseDrive extends Command {
       return false;
     }
     isPoseAligned = RobotContainer.drivetrainInstance.isAtPosition(closestPose, poseGroup.distanceTolerance) &&
-        RobotContainer.drivetrainInstance.isAtRotation(closestPose.getRotation(), poseGroup.rotationTolerance);
+        RobotContainer.drivetrainInstance.isAtPosition(closestPose.getRotation(), poseGroup.rotationTolerance);
     return isPoseAligned;
   }
 }

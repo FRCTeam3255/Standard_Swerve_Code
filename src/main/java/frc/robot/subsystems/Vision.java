@@ -6,14 +6,14 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 
-import com.frcteam3255.utils.LimelightHelpers;
-import com.frcteam3255.utils.LimelightHelpers.PoseEstimate;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.frcteam3255.utils.LimelightHelpers;
+import com.frcteam3255.utils.LimelightHelpers.*;
 import frc.robot.constants.ConstVision;
 
 @Logged
@@ -21,6 +21,7 @@ public class Vision extends SubsystemBase {
   PoseEstimate lastEstimateRight = new PoseEstimate();
   PoseEstimate lastEstimateLeft = new PoseEstimate();
   PoseEstimate lastEstimateBack = new PoseEstimate();
+  private boolean visionEnabled = true;
 
   // Not logged, as they turn to false immediately after being read
   @NotLogged
@@ -34,7 +35,21 @@ public class Vision extends SubsystemBase {
   Pose2d leftPose = new Pose2d();
   Pose2d backPose = new Pose2d();
 
-  private boolean useMegaTag2 = true;
+  int rightTagCount = 0;
+  int leftTagCount = 0;
+  int backTagCount = 0;
+
+  String limelightInUse = LL_INUSE.NONE.toString();
+
+  public String getLimelightInUse() {
+    return limelightInUse;
+  }
+
+  public enum LL_INUSE {
+    RIGHT, LEFT, BACK, NONE
+  }
+
+  private boolean useMegaTag2 = ConstVision.USE_MEGA_TAG_2;
 
   public Vision() {
   }
@@ -45,6 +60,18 @@ public class Vision extends SubsystemBase {
 
   public void setMegaTag2(boolean useMegaTag2) {
     this.useMegaTag2 = useMegaTag2;
+  }
+
+  public void setIMUAssistMode(boolean useAssist) {
+    if (useAssist == true) {
+      LimelightHelpers.SetIMUMode(ConstVision.LIMELIGHT_RIGHT_NAME, ConstVision.IMUMode.INTERNAL_MT1_ASSIST);
+      LimelightHelpers.SetIMUMode(ConstVision.LIMELIGHT_LEFT_NAME, ConstVision.IMUMode.INTERNAL_MT1_ASSIST);
+      LimelightHelpers.SetIMUMode(ConstVision.LIMELIGHT_BACK_NAME, ConstVision.IMUMode.INTERNAL_MT1_ASSIST);
+    } else {
+      LimelightHelpers.SetIMUMode(ConstVision.LIMELIGHT_RIGHT_NAME, ConstVision.IMUMode.EXTERNAL_SEED);
+      LimelightHelpers.SetIMUMode(ConstVision.LIMELIGHT_LEFT_NAME, ConstVision.IMUMode.EXTERNAL_SEED);
+      LimelightHelpers.SetIMUMode(ConstVision.LIMELIGHT_BACK_NAME, ConstVision.IMUMode.EXTERNAL_SEED);
+    }
   }
 
   /**
@@ -63,11 +90,25 @@ public class Vision extends SubsystemBase {
       return true;
     }
 
+    if (poseEstimate == null
+        || poseEstimate.pose == null
+        || poseEstimate.pose.getTranslation() == null
+        || !Double.isFinite(poseEstimate.pose.getTranslation().getX())
+        || !Double.isFinite(poseEstimate.pose.getTranslation().getY())) {
+      System.err.println("********REJECTING POSE ESTIMATE: pose contained non-finite X or Y (NaN/Inf)********");
+      return true;
+    }
     // No tags :<
     if (poseEstimate.tagCount == 0) {
       return true;
     }
 
+    // If MegaTag 2 do not reject if other items passed
+    if (useMegaTag2) {
+      return false;
+    }
+
+    // If MegaTag 1 have additional checks
     // 1 Tag with a large area
     if (poseEstimate.tagCount == 1 && poseEstimate.avgTagArea > areaThreshold) {
       return false;
@@ -120,17 +161,45 @@ public class Vision extends SubsystemBase {
       lastEstimateRight = currentEstimateRight;
       rightPose = currentEstimateRight.pose;
       newRightEstimate = true;
+      rightTagCount = currentEstimateRight.tagCount;
+    } else {
+      rightTagCount = 0;
     }
     if (currentEstimateLeft != null && !rejectUpdate(currentEstimateLeft, gyroRate, ConstVision.AREA_THRESHOLD_FRONT)) {
       lastEstimateLeft = currentEstimateLeft;
       leftPose = currentEstimateLeft.pose;
       newLeftEstimate = true;
+      leftTagCount = currentEstimateLeft.tagCount;
+    } else {
+      leftTagCount = 0;
     }
     if (currentEstimateBack != null && !rejectUpdate(currentEstimateBack, gyroRate, ConstVision.AREA_THRESHOLD_BACK)) {
       lastEstimateBack = currentEstimateBack;
       backPose = currentEstimateBack.pose;
       newBackEstimate = true;
+      backTagCount = currentEstimateBack.tagCount;
+    } else {
+      backTagCount = 0;
     }
+  }
+
+  public boolean isVisionEnabled() {
+    return visionEnabled;
+  }
+
+  /**
+   * Sets the enabled status of the vision subsystem.
+   * <p>
+   * Vision is set to disabled when we reset pose, as we assume that vision/pose
+   * is messed up before driver resets pose.
+   * <p>
+   * <strong>Please set it back to enabled when using a prep which relies on
+   * vision.</strong>
+   * 
+   * @param enabled The enabled status to set.
+   */
+  public void setVisionEnabled(boolean enabled) {
+    this.visionEnabled = enabled;
   }
 
   public Optional<PoseEstimate> determinePoseEstimate(AngularVelocity gyroRate) {
@@ -138,21 +207,25 @@ public class Vision extends SubsystemBase {
 
     // No valid pose estimates :(
     if (!newRightEstimate && !newLeftEstimate && !newBackEstimate) {
+      limelightInUse = LL_INUSE.NONE.toString();
       return Optional.empty();
 
     } else if (newRightEstimate && !newLeftEstimate && !newBackEstimate) {
       // One valid pose estimate (right)
+      limelightInUse = LL_INUSE.RIGHT.toString();
       newRightEstimate = false;
       return Optional.of(lastEstimateRight);
 
     } else if (!newRightEstimate && newLeftEstimate && !newBackEstimate) {
       // One valid pose estimate (left)
+      limelightInUse = LL_INUSE.LEFT.toString();
       newLeftEstimate = false;
       return Optional.of(lastEstimateLeft);
 
     } else if (!newRightEstimate && !newLeftEstimate && newBackEstimate) {
       // One valid pose estimate (back)
-      newLeftEstimate = false;
+      limelightInUse = LL_INUSE.BACK.toString();
+      newBackEstimate = false;
       return Optional.of(lastEstimateBack);
 
     } else {
@@ -160,19 +233,32 @@ public class Vision extends SubsystemBase {
       newRightEstimate = false;
       newLeftEstimate = false;
       newBackEstimate = false;
-      if (lastEstimateRight.avgTagDist < lastEstimateLeft.avgTagDist
-          && lastEstimateRight.avgTagDist < lastEstimateBack.avgTagDist) {
+
+      if (rightTagCount >= leftTagCount
+          && rightTagCount >= backTagCount) {
+        limelightInUse = LL_INUSE.RIGHT.toString();
         return Optional.of(lastEstimateRight);
-      } else if (lastEstimateLeft.avgTagDist < lastEstimateRight.avgTagDist
-          && lastEstimateLeft.avgTagDist < lastEstimateBack.avgTagDist) {
+      } else if (leftTagCount >= rightTagCount
+          && leftTagCount >= backTagCount) {
+        limelightInUse = LL_INUSE.LEFT.toString();
         return Optional.of(lastEstimateLeft);
-      } else if (lastEstimateBack.avgTagDist < lastEstimateRight.avgTagDist
-          && lastEstimateBack.avgTagDist < lastEstimateLeft.avgTagDist) {
+      } else if (backTagCount >= rightTagCount
+          && backTagCount >= leftTagCount) {
+        limelightInUse = LL_INUSE.BACK.toString();
         return Optional.of(lastEstimateBack);
       } else {
+        limelightInUse = LL_INUSE.NONE.toString();
         return Optional.empty();
       }
     }
+  }
+
+  public int getTotalTagCount() {
+    return rightTagCount + leftTagCount + backTagCount;
+  }
+
+  public boolean seesTags() {
+    return getTotalTagCount() > 0;
   }
 
   @Override

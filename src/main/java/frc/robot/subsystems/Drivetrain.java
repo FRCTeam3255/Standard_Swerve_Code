@@ -4,27 +4,38 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
-
+import com.frcteam3255.components.swerve.SN_SuperSwerveV2;
 import choreo.trajectory.SwerveSample;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.DeviceIDs;
+import frc.robot.RobotContainer;
 import frc.robot.constants.ConstDrivetrain;
 import frc.robot.constants.ConstPoseDrive.PoseDriveGroup;
 
+@Logged
 public class Drivetrain extends SN_SuperSwerveV2 {
 
   public PoseDriveGroup lastDesiredPoseGroup;
   public Pose2d lastDesiredTarget;
+  private Rotation2d targetDriveRotation = new Rotation2d();
+  private boolean manualRotationEnabled = true;
 
   /** Creates a new Drivetrain. */
   public static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constantCreator = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
@@ -53,7 +64,8 @@ public class Drivetrain extends SN_SuperSwerveV2 {
           DeviceIDs.drivetrainIDs.FRONT_LEFT_STEER_CAN,
           DeviceIDs.drivetrainIDs.FRONT_LEFT_DRIVE_CAN,
           DeviceIDs.drivetrainIDs.FRONT_LEFT_ABSOLUTE_ENCODER_CAN,
-          ConstDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
+          (RobotContainer.isPracticeBot()) ? ConstDrivetrain.PRACTICE_BOT.FRONT_LEFT_ABS_ENCODER_OFFSET
+              : ConstDrivetrain.FRONT_LEFT_ABS_ENCODER_OFFSET,
           ConstDrivetrain.MODULE_OFFSET_LOCATIONS,
           ConstDrivetrain.MODULE_OFFSET_LOCATIONS,
           ConstDrivetrain.INVERT_LEFT_SIDE_DRIVE,
@@ -64,7 +76,8 @@ public class Drivetrain extends SN_SuperSwerveV2 {
           DeviceIDs.drivetrainIDs.FRONT_RIGHT_STEER_CAN,
           DeviceIDs.drivetrainIDs.FRONT_RIGHT_DRIVE_CAN,
           DeviceIDs.drivetrainIDs.FRONT_RIGHT_ABSOLUTE_ENCODER_CAN,
-          ConstDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
+          (RobotContainer.isPracticeBot()) ? ConstDrivetrain.PRACTICE_BOT.FRONT_RIGHT_ABS_ENCODER_OFFSET
+              : ConstDrivetrain.FRONT_RIGHT_ABS_ENCODER_OFFSET,
           ConstDrivetrain.MODULE_OFFSET_LOCATIONS,
           ConstDrivetrain.MODULE_OFFSET_LOCATIONS.unaryMinus(),
           ConstDrivetrain.INVERT_RIGHT_SIDE_DRIVE,
@@ -75,7 +88,8 @@ public class Drivetrain extends SN_SuperSwerveV2 {
           DeviceIDs.drivetrainIDs.BACK_LEFT_STEER_CAN,
           DeviceIDs.drivetrainIDs.BACK_LEFT_DRIVE_CAN,
           DeviceIDs.drivetrainIDs.BACK_LEFT_ABSOLUTE_ENCODER_CAN,
-          ConstDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
+          (RobotContainer.isPracticeBot()) ? ConstDrivetrain.PRACTICE_BOT.BACK_LEFT_ABS_ENCODER_OFFSET
+              : ConstDrivetrain.BACK_LEFT_ABS_ENCODER_OFFSET,
           ConstDrivetrain.MODULE_OFFSET_LOCATIONS.unaryMinus(),
           ConstDrivetrain.MODULE_OFFSET_LOCATIONS,
           ConstDrivetrain.INVERT_LEFT_SIDE_DRIVE,
@@ -86,7 +100,8 @@ public class Drivetrain extends SN_SuperSwerveV2 {
           DeviceIDs.drivetrainIDs.BACK_RIGHT_STEER_CAN,
           DeviceIDs.drivetrainIDs.BACK_RIGHT_DRIVE_CAN,
           DeviceIDs.drivetrainIDs.BACK_RIGHT_ABSOLUTE_ENCODER_CAN,
-          ConstDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
+          (RobotContainer.isPracticeBot()) ? ConstDrivetrain.PRACTICE_BOT.BACK_RIGHT_ABS_ENCODER_OFFSET
+              : ConstDrivetrain.BACK_RIGHT_ABS_ENCODER_OFFSET,
           ConstDrivetrain.MODULE_OFFSET_LOCATIONS.unaryMinus(),
           ConstDrivetrain.MODULE_OFFSET_LOCATIONS.unaryMinus(),
           ConstDrivetrain.INVERT_RIGHT_SIDE_DRIVE,
@@ -97,6 +112,18 @@ public class Drivetrain extends SN_SuperSwerveV2 {
       .withPigeon2Id(DeviceIDs.drivetrainIDs.PIGEON_CAN)
       .withPigeon2Configs(ConstDrivetrain.pigeonConfigs);
 
+  // Exposed motors for Epilogue logging
+  public final TalonFX frontLeftDrive;
+  public final TalonFX frontLeftSteer;
+  public final TalonFX frontRightDrive;
+  public final TalonFX frontRightSteer;
+  public final TalonFX backLeftDrive;
+  public final TalonFX backLeftSteer;
+  public final TalonFX backRightDrive;
+  public final TalonFX backRightSteer;
+  private Angle resetYawValue = Degrees.zero();
+  private boolean isXbrakeAllowed = true;
+
   public Drivetrain() {
     super(
         DrivetrainConstants,
@@ -104,25 +131,38 @@ public class Drivetrain extends SN_SuperSwerveV2 {
         FrontRight,
         BackLeft,
         BackRight);
+
+    // Initialize motor references for Epilogue logging
+    // Front Left (index 0)
+    frontLeftDrive = getModule(0).getDriveMotor();
+    frontLeftSteer = getModule(0).getSteerMotor();
+    // Front Right (index 1)
+    frontRightDrive = getModule(1).getDriveMotor();
+    frontRightSteer = getModule(1).getSteerMotor();
+    // Back Left (index 2)
+    backLeftDrive = getModule(2).getDriveMotor();
+    backLeftSteer = getModule(2).getSteerMotor();
+    // Back Right (index 3)
+    backRightDrive = getModule(3).getDriveMotor();
+    backRightSteer = getModule(3).getSteerMotor();
   }
 
-  /**
-   * Follows a trajectory by calculating the desired chassis speeds based on the
-   * current pose
-   * of the robot and the target pose provided in the trajectory sample.
-   *
-   * @param sample The trajectory sample containing the desired target pose and
-   *               other relevant data.
-   *               This is used to determine the robot's next movement.
-   */
   public void followTrajectory(SwerveSample sample) {
     // Get the current pose of the robot
-    Pose2d desiredTarget = sample.getPose();
-    ChassisSpeeds automatedDTVelocity = ConstDrivetrain.AUTO_ALIGN.PATH_AUTO_ALIGN_CONTROLLER.calculate(getPose(),
-        desiredTarget, 0,
-        desiredTarget.getRotation());
+    Pose2d pose = getPose();
+    double targetHeading = sample.heading;
 
-    drive(automatedDTVelocity);
+    if (!manualRotationEnabled) { // keep the !, manualRotationEnabled is false in prepanywhere
+      targetHeading = targetDriveRotation.getRadians();
+    }
+
+    // Generate the next speeds for the robot
+    ChassisSpeeds speeds = new ChassisSpeeds(
+        sample.vx + ConstDrivetrain.AUTO_ALIGN.POSE_TRANS_CONTROLLER.calculate(pose.getX(), sample.x),
+        sample.vy + ConstDrivetrain.AUTO_ALIGN.POSE_TRANS_CONTROLLER.calculate(pose.getY(), sample.y),
+        sample.omega + ConstDrivetrain.AUTO_ALIGN.POSE_ROTATION_CONTROLLER.calculate(pose.getRotation().getRadians(),
+            targetHeading));
+    drive(speeds);
   }
 
   public void rotationalAlign(Pose2d closestPose, ChassisSpeeds velocities) {
@@ -155,4 +195,46 @@ public class Drivetrain extends SN_SuperSwerveV2 {
     drive(automatedDTVelocity);
   }
 
+  public void setXbrakeAllowed(boolean isAllowed) {
+    this.isXbrakeAllowed = isAllowed;
+  }
+
+  public boolean isXbrakeAllowed() {
+    return isXbrakeAllowed;
+  }
+
+  public void setDriveRotation(Angle rotation) {
+    this.targetDriveRotation = Rotation2d.fromDegrees(rotation.in(Degrees));
+  }
+
+  public Rotation2d getTargetRotation() {
+    return this.targetDriveRotation;
+  }
+
+  public Angle getDrivetrainRotation() {
+    return getPose().getRotation().getMeasure();
+  }
+
+  public boolean isManualRotationEnabled() {
+    return manualRotationEnabled;
+  }
+
+  public void setIsManualRotationEnabled(boolean set) {
+    manualRotationEnabled = set;
+  }
+
+  public void resetPoseAndYaw(Pose2d pose) {
+    resetPose(pose);
+    resetYawValue = pose.getRotation().getMeasure();
+    getPigeon2().setYaw(resetYawValue);
+    setDriveRotation(resetYawValue);
+  }
+
+  public Angle pigeonYaw() {
+    return getPigeon2().getYaw().getValue();
+  }
+
+  public Rotation2d getRawHeading() {
+    return getState().RawHeading;
+  }
 }
