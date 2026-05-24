@@ -35,7 +35,6 @@ public class Drivetrain extends SN_SuperSwerveV2 {
   public PoseDriveGroup lastDesiredPoseGroup;
   public Pose2d lastDesiredTarget;
   private Rotation2d targetDriveRotation = new Rotation2d();
-  private double manualDriveRotation = 0.0;
   private boolean manualRotationEnabled = true;
 
   /** Creates a new Drivetrain. */
