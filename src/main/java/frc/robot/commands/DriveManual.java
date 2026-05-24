@@ -103,10 +103,10 @@ public class DriveManual extends Command {
   }
 
   private void updateXbrake() {
-    Drivetrain drivetrain = RobotContainer.drivetrainInstance;
-    boolean isStickHit = drivetrain.isStickHit(xAxis, yAxis, ConstDrivetrain.ROTATION_STICK_DEADBAND)
-        || drivetrain.isStickHit(rotationXAxis, ConstDrivetrain.ROTATION_STICK_DEADBAND);
-    drivetrain.setXbrakeAllowed(!isStickHit);
+    boolean isStickHit = RobotContainer.drivetrainInstance.isStickHit(xAxis, yAxis,
+        ConstDrivetrain.ROTATION_STICK_DEADBAND)
+        || RobotContainer.drivetrainInstance.isStickHit(rotationXAxis, ConstDrivetrain.ROTATION_STICK_DEADBAND);
+    RobotContainer.drivetrainInstance.setXbrakeAllowed(!isStickHit);
   }
 
   @Override
