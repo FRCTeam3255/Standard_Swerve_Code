@@ -123,12 +123,16 @@ public class RobotContainer {
     Command AutoPIDTuning = Commands.sequence(runPath(ChoreoTraj.AutoPIDTuning));
     Command DoNothing = Commands.none();
 
+    // Example: Add autonomous routines to the chooser
+    // Add more autonomous routines as needed, e.g.:
+    // autoChooser.addOption("Score and Leave", runPath("ScoreAndLeave"));
     autoChooser.setDefaultOption("Do Nothing", DoNothing);
     autoChooser.addOption("AutoPIDTuning", AutoPIDTuning);
 
     // make our entries name
     final Map<Command, ChoreoTraj> autoStartingPoses = Map.ofEntries(
         // Example
+        // TODO: update DoNotiong Path match your actual field
         Map.entry(DoNothing, ChoreoTraj.AutoPIDTuning),
         Map.entry(AutoPIDTuning, ChoreoTraj.AutoPIDTuning));
 
@@ -144,10 +148,6 @@ public class RobotContainer {
             .schedule();
       }
     });
-
-    // Example: Add autonomous routines to the chooser
-    // Add more autonomous routines as needed, e.g.:
-    // autoChooser.addOption("Score and Leave", runPath("ScoreAndLeave"));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
