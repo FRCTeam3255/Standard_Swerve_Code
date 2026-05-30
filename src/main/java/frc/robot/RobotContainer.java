@@ -142,10 +142,9 @@ public class RobotContainer {
     {
       ChoreoTraj startingPose = autoStartingPoses.get(selectedAuto);
       // if there is a starting pose, reset to it
-      if (startingPose != null) {
-        autoFactory.resetOdometry(startingPose.name())
-            .ignoringDisable(true) // Run even when disabled
-            .schedule();
+      if (startingPose != null) { // Run even when disabled
+        CommandScheduler.getInstance().schedule(autoFactory.resetOdometry(startingPose.name())
+            .ignoringDisable(true));// Run even when disabled
       }
     });
 

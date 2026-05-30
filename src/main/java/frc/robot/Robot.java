@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
     LimelightHelpers.SetThrottle(ConstVision.LIMELIGHT_LEFT_NAME, ConstVision.TeleopThrottle);
     LimelightHelpers.SetThrottle(ConstVision.LIMELIGHT_BACK_NAME, ConstVision.TeleopThrottle);
     m_robotContainer.visionInstance.setIMUAssistMode(true);
-    m_robotContainer.addVisionMeasurement().schedule();
+    CommandScheduler.getInstance().schedule(m_robotContainer.addVisionMeasurement());
   }
 
   @Override
