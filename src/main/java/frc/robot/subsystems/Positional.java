@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
 public class Positional extends SubsystemBase {
-  /** Creates a new Positional. */
   public Positional() {
   }
 

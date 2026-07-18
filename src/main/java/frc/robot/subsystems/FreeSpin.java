@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
 public class FreeSpin extends SubsystemBase {
-  /** Creates a new Rotors. */
   public FreeSpin() {
   }
 
