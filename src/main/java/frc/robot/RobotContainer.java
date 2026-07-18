@@ -183,6 +183,6 @@ public class RobotContainer {
   }
 
   public static boolean isPracticeBot() {
-    return RobotController.getSerialNumber().equals(ConstSystem.PRACTICE_BOT_RIO);
+    return RobotController.getSerialNumber().equals(ConstSystem.PRACTICE_BOT_RIO_SERIAL_NUMBER);
   }
 }

@@ -45,6 +45,7 @@ public class ConstVision {
   }
 
   public static final double IMU_ASSIST_ALPHA_VALUE = 0.01;
+  // TODO: Replace with actual names
   public static final String LIMELIGHT_RIGHT_NAME = "limelight-right";
   public static final String LIMELIGHT_LEFT_NAME = "limelight-left";
   public static final String LIMELIGHT_BACK_NAME = "limelight-back";
@@ -93,6 +94,7 @@ public class ConstVision {
   public static final Boolean USE_MEGA_TAG_2 = true;
 
   // The below values are accounted for in the limelight interface, NOT in code
+  // TODO: Replace with actual measurement
   public static class LimelightRight {
     public static final Distance LL_FORWARD = Units.Meters.of(0.269494);
     public static final Distance LL_RIGHT = Units.Meters.of(0.307594);
@@ -103,6 +105,7 @@ public class ConstVision {
     public static final Angle LL_YAW = Units.Degrees.of(51.25);
   }
 
+  // TODO: Replace with actual measurement
   public static class LimelightLeft {
     public static final Distance LL_FORWARD = Units.Meters.of(0.269494);
     public static final Distance LL_RIGHT = Units.Meters.of(-0.307594);
@@ -114,6 +117,7 @@ public class ConstVision {
 
   }
 
+  // TODO: Replace with actual measurement
   public static class LimelightBack {
     public static final Distance LL_FORWARD = Units.Meters.of(0.3429);
     public static final Distance LL_RIGHT = Units.Meters.of(0);
