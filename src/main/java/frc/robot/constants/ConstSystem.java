@@ -10,7 +10,7 @@ import edu.wpi.first.units.Units;
 
 public final class ConstSystem {
 
-  public static final String PRACTICE_BOT_RIO = ""; // TODO: Replace with actual RIO name
+  public static final String PRACTICE_BOT_RIO = ""; // TODO: Replace with actual RIO serial number
   /**
    * Volts
    */
