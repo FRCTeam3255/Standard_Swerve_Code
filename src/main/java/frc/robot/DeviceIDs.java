@@ -36,7 +36,7 @@ public class DeviceIDs {
     public static final int BACK_RIGHT_ABSOLUTE_ENCODER_CAN = 3;
   }
 
-  // FreeSpin and Positional IDs: 10~29
+  // FreeSpin IDs: 10~29
   public static class freeSpinIDs {
 
   }
