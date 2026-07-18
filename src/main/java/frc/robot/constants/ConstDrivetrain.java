@@ -72,8 +72,10 @@ public class ConstDrivetrain {
   public static final double SLOW_MODE_MULTIPLIER = 0.5;
 
   // Physical dimensions
+  // TODO: Confirm Gear Ratios
   public static Ratios GEAR_RATIOS = Ratios.MK4I.L2;
 
+  // TODO: Replace with actual measurement
   public static Distance WHEEL_DIAMETER = Inches.of(4.0);
   public static Distance MODULE_OFFSET_LOCATIONS = ModuleLocations.frame29x29;
 
@@ -107,6 +109,7 @@ public class ConstDrivetrain {
   public static final double MEASUREMENT_STD_DEV_HEADING = Units.Radians.convertFrom(5, Units.Degrees);
 
   // Inverts
+  // TODO: Replace with actual measurement
   public static final boolean INVERT_LEFT_SIDE_DRIVE = false;
   public static final boolean INVERT_RIGHT_SIDE_DRIVE = true;
   public static final boolean INVERT_STEER = true;
@@ -159,6 +162,7 @@ public class ConstDrivetrain {
   public static class AUTO_ALIGN {
     public static final LinearVelocity MIN_DRIVER_OVERRIDE = ConstDrivetrain.REAL_DRIVE_SPEED.div(10);
 
+    // TODO: Replace with actual PID
     public static final PIDController POSE_TRANS_CONTROLLER = new PIDController(
         3,
         0,
@@ -171,6 +175,7 @@ public class ConstDrivetrain {
 
     public static final Distance AT_POINT_TOLERANCE = Units.Inches.of(0.5);
 
+    // TODO: Replace with actual PID
     public static final ProfiledPIDController POSE_ROTATION_CONTROLLER = new ProfiledPIDController(
         2, 0, 0, new TrapezoidProfile.Constraints(TURN_SPEED.in(Units.DegreesPerSecond),
             Math.pow(TURN_SPEED.in(Units.DegreesPerSecond), 2)));
@@ -209,6 +214,7 @@ public class ConstDrivetrain {
     public static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
   }
 
+  // TODO: Replace with actual PID
   public static class ROTATION_PID {
     public static final double kP = 5.0;
     public static final double kI = 0.0;

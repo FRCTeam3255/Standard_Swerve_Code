@@ -131,6 +131,7 @@ public class ConstField {
   };
 
   public static class FieldElements {
+    // TODO: Replace with actual measurement
     private static final Pose2d RESET_POSE = new Pose2d(0, 0, new Rotation2d());
 
   }
