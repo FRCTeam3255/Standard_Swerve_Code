@@ -5,7 +5,7 @@
 package frc.robot.constants;
 
 /** Add your docs here. */
-public class ConstMotion {
+public class ConstPositional {
   public static final double STOP = 0;
 
   static {

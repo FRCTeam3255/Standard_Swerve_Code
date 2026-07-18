@@ -8,9 +8,9 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
-public class Rotors extends SubsystemBase {
+public class FreeSpinComponents extends SubsystemBase {
   /** Creates a new Rotors. */
-  public Rotors() {
+  public FreeSpinComponents() {
   }
 
   @Override
