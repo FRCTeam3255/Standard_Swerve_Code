@@ -41,7 +41,7 @@ public class DeviceIDs {
 
   }
 
-  // PositionalComponents Profile IDs: 30~49
+  // Positional IDs: 30~49
   public static class positionalIDs {
 
   }

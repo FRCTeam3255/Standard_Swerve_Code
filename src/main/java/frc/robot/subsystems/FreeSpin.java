@@ -8,9 +8,9 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
-public class PositionalComponents extends SubsystemBase {
-  /** Creates a new Positional. */
-  public PositionalComponents() {
+public class FreeSpin extends SubsystemBase {
+  /** Creates a new Rotors. */
+  public FreeSpin() {
   }
 
   @Override

@@ -29,9 +29,9 @@ import frc.robot.constants.ConstSystem.constControllers;
 import frc.robot.subsystems.DriverStateMachine;
 import frc.robot.subsystems.DriverStateMachine.DriverState;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.PositionalComponents;
+import frc.robot.subsystems.FreeSpin;
+import frc.robot.subsystems.Positional;
 import frc.robot.subsystems.RobotPoses;
-import frc.robot.subsystems.FreeSpinComponents;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.StateMachine.RobotState;
 import frc.robot.subsystems.Telemetry;
@@ -48,10 +48,10 @@ public class RobotContainer {
 
   private final SN_XboxController conDriver = new SN_XboxController(controllerIDs.DRIVER_USB);
 
-  public static final FreeSpinComponents freeSpinInstance = new FreeSpinComponents();
-  private final FreeSpinComponents loggedFreeSpinInstance = freeSpinInstance;
-  public static final PositionalComponents positionalInstance = new PositionalComponents();
-  private final PositionalComponents loggedPositionalInstance = positionalInstance;
+  public static final FreeSpin freeSpinInstance = new FreeSpin();
+  private final FreeSpin loggedFreeSpinInstance = freeSpinInstance;
+  public static final Positional positionalInstance = new Positional();
+  private final Positional loggedPositionalInstance = positionalInstance;
   public static final Drivetrain drivetrainInstance = new Drivetrain();
   private final Drivetrain loggedDrivetrainInstance = drivetrainInstance;
   public static final DriverStateMachine driverStateMachineInstance = new DriverStateMachine();
