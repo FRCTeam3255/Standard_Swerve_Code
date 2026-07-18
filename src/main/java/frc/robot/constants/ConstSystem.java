@@ -11,12 +11,6 @@ import edu.wpi.first.units.Units;
 public final class ConstSystem {
 
   public static final String PRACTICE_BOT_RIO_SERIAL_NUMBER = ""; // TODO: Replace with actual RIO serial number
-  /**
-   * Volts
-   */
-
-  public static final Transform3d ROBOT_TO_BUMPERS = new Transform3d(0, 0, Units.Meters.convertFrom(5, Units.Inches),
-      Rotation3d.kZero); // TODO: Replace with actual measurement
 
   public static class constControllers {
     public static final double DRIVER_LEFT_STICK_DEADBAND = 0.05;
