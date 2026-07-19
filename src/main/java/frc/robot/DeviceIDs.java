@@ -36,13 +36,13 @@ public class DeviceIDs {
     public static final int BACK_RIGHT_ABSOLUTE_ENCODER_CAN = 3;
   }
 
-  // Rotor and Motion IDs: 10~29
-  public static class rotorIDs {
+  // FreeSpin IDs: 10~29
+  public static class freeSpinIDs {
 
   }
 
-  // Motion Profile IDs: 30~49
-  public static class motionIDs {
+  // Positional IDs: 30~49
+  public static class positionalIDs {
 
   }
 }

@@ -8,9 +8,8 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
-public class Motion extends SubsystemBase {
-  /** Creates a new Motion. */
-  public Motion() {
+public class FreeSpin extends SubsystemBase {
+  public FreeSpin() {
   }
 
   @Override
